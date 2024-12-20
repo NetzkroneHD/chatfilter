@@ -1,0 +1,5 @@
+name: NetzChatFilter
+version: '1.0-SNAPSHOT'
+main: de.netzkronehd.chatfilter.platform.spigot.ChatFilterSpigot
+api-version: '1.13'
+authors: [NetzkroneHD]
