@@ -15,7 +15,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        plugin.getPlayers().put(e.getPlayer().getUniqueId(), new SpigotChatFilterPlayer());
+        plugin.getPlayers().put(e.getPlayer().getUniqueId(), new SpigotChatFilterPlayer(plugin.getSenderFactory().wrap(e.getPlayer())));
     }
 
     @EventHandler

@@ -51,6 +51,11 @@ public class FilterChainResult {
         return results.get(0);
     }
 
+
+    /**
+     * Returns the reason why the message was blocked by the filter chain.
+     * @return the reason why the message was blocked by the filter chain
+     */
     public Optional<String> getReason() {
         return results.stream()
                 .filter(FilterProcessorResult::isBlocked)

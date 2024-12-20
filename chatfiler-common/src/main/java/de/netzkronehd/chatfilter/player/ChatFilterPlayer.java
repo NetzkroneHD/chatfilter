@@ -9,4 +9,6 @@ public interface ChatFilterPlayer {
 
     ChatMetrics getChatMetrics();
 
+    Sender getSender();
+
 }
