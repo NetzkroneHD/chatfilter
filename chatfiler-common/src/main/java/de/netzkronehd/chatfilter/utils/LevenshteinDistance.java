@@ -67,7 +67,7 @@ public class LevenshteinDistance {
         final double maxLength = Integer.max(msg1.length(), msg2.length());
 
         if (maxLength > 0) {
-            return (maxLength - LevenshteinDistance.compare(msg1.toLowerCase(), msg2.toLowerCase())) / maxLength;
+            return (maxLength - compare(msg1.toLowerCase(), msg2.toLowerCase())) / maxLength;
         }
         return 1.0;
     }

@@ -7,9 +7,16 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 import java.util.regex.Pattern;
 
+/**
+ * ChatFilterConfig
+ * Represents the configuration of a chat filter.
+ * This class is used to configure the different filters that are used by the chat filter.
+ * Each filter has its own configuration.
+ */
 public abstract class ChatFilterConfig {
 
     public abstract boolean isEnabled();
+
     public abstract String getReason();
 
     @Data
@@ -67,7 +74,6 @@ public abstract class ChatFilterConfig {
         private boolean enabled;
         private String reason;
     }
-
 
 
 }

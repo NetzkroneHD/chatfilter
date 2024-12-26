@@ -15,12 +15,12 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        plugin.getPlayers().put(e.getPlayer().getUniqueId(), new SpigotChatFilterPlayer(plugin.getSenderFactory().wrap(e.getPlayer())));
+        plugin.getPlayerCache().put(e.getPlayer().getUniqueId(), new SpigotChatFilterPlayer(plugin.getSenderFactory().wrap(e.getPlayer())));
     }
 
     @EventHandler
     public void onQuit(PlayerQuitEvent e) {
-        plugin.getPlayers().remove(e.getPlayer().getUniqueId());
+        plugin.getPlayerCache().remove(e.getPlayer().getUniqueId());
     }
 
 }

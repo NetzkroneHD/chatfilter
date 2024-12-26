@@ -1,13 +1,11 @@
 package de.netzkronehd.chatfilter.chain;
 
+import de.netzkronehd.chatfilter.exception.FilterNotFoundException;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.processor.FilterProcessor;
 import de.netzkronehd.chatfilter.processor.FilterProcessorResult;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class FilterChain {
 
@@ -15,6 +13,16 @@ public class FilterChain {
 
     public FilterChain() {
         this.processors = new ArrayList<>();
+    }
+
+
+    /**
+     * Runs
+     * @see #process(ChatFilterPlayer, String, boolean)
+     * with stopOnBlock set to true.
+     */
+    public FilterChainResult process(ChatFilterPlayer player, String message) {
+        return process(player, message, true);
     }
 
     /**
@@ -36,6 +44,30 @@ public class FilterChain {
             previousResult = result;
         }
         return new FilterChainResult(results);
+    }
+
+    /**
+     * Runs
+     * @see #process(ChatFilterPlayer, String, String, boolean)
+     * with ignoreCase set to true.
+     */
+    public FilterChainResult process(ChatFilterPlayer player, String message, String processorName) throws FilterNotFoundException {
+        return process(player, message, processorName, true);
+    }
+
+    /**
+     * Processes the message through a specific filter processor. The processor is identified by its name.
+     * @param player the player who sent the message
+     * @param message the message to process
+     * @param processorName the name of the filter processor
+     * @param ignoreCase whether to ignore the case of the processor name
+     * @return the result of the processing
+     */
+    public FilterChainResult process(ChatFilterPlayer player, String message, String processorName, boolean ignoreCase) throws FilterNotFoundException {
+        final FilterProcessorResult result = findProcessor(processorName, ignoreCase)
+                .orElseThrow(() -> new FilterNotFoundException(processorName))
+                .process(player, null, message);
+        return new FilterChainResult(Collections.singletonList(result));
     }
 
     /**
@@ -62,6 +94,18 @@ public class FilterChain {
      */
     public List<FilterProcessor> getProcessors() {
         return Collections.unmodifiableList(processors);
+    }
+
+    /**
+     * Finds a filter processor by name.
+     * @param name the name of the filter processor
+     * @param ignoreCase whether to ignore the case of the name
+     * @return an optional containing the filter processor if found, otherwise an empty optional
+     */
+    public Optional<FilterProcessor> findProcessor(String name, boolean ignoreCase) {
+        return processors.stream()
+                .filter(processor -> ignoreCase ? processor.getName().equalsIgnoreCase(name) : processor.getName().equals(name))
+                .findFirst();
     }
 
     /**
