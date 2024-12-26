@@ -21,11 +21,11 @@ public class BlockedPatternFilter implements FilterProcessor {
     private final List<Pattern> patterns;
     private final String reason;
 
-    public BlockedPatternFilter(String name, int priority, List<Pattern> patterns) {
+    public BlockedPatternFilter(String name, int priority, List<Pattern> patterns, String reason) {
         this.name = name;
         this.priority = priority;
         this.patterns = patterns;
-        this.reason = "chatfilter.blocked-pattern";
+        this.reason = reason;
     }
 
     @Override

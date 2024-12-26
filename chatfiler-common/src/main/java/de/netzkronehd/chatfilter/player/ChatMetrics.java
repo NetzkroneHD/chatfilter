@@ -32,11 +32,31 @@ public class ChatMetrics {
      */
     private @Nullable FilterChainResult lastFilterProcessorResult;
 
-    private int messageCount;
+    private int totalMessageCount;
 
     private int allowedMessageCount;
     private int filteredMessageCount;
     private int blockedMessageCount;
+
+    public void incrementTotalMessageCount() {
+        totalMessageCount++;
+    }
+
+    public void incrementAllowedMessageCount() {
+        allowedMessageCount++;
+    }
+
+    public void incrementFilteredMessageCount() {
+        filteredMessageCount++;
+    }
+
+    public void incrementBlockedMessageCount() {
+        blockedMessageCount++;
+    }
+
+    public int getViolations() {
+        return filteredMessageCount + blockedMessageCount;
+    }
 
 
 }

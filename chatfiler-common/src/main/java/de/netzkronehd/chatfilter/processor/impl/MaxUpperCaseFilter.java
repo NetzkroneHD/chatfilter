@@ -19,12 +19,12 @@ public class MaxUpperCaseFilter implements FilterProcessor {
     private final float maxUpperCase;
     private final String reason;
 
-    public MaxUpperCaseFilter(String name, int priority, int minLength, float maxUpperCase) {
+    public MaxUpperCaseFilter(String name, int priority, int minLength, float maxUpperCase, String reason) {
         this.name = name;
         this.priority = priority;
         this.minLength = minLength;
         this.maxUpperCase = maxUpperCase;
-        this.reason = "chatfilter.max-upper-case";
+        this.reason = reason;
     }
 
     @Override

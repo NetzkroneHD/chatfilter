@@ -117,6 +117,13 @@ public interface Messages {
             .color(RED)
     );
 
+    Args.Args1<String> BLOCKED = (reason) -> prefixed(translatable()
+            // "&cMessage blocked: &e{0}"
+            .key("chatfilter.command.blocked")
+            .color(RED)
+            .arguments(text(reason).color(YELLOW))
+    );
+
     Args.Args1<Exception> ERROR = (ex) -> prefixed(translatable()
             // "&cAn error occurred: &e{0}"
             .key("chatfilter.command.error")

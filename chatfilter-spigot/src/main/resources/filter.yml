@@ -1,0 +1,50 @@
+# Whether to stop processing when a processor blocks the message
+# This can boost performance, because the message will not be processed by other processors since it is already blocked
+stopOnBlock: true
+
+lastMessageTimeFilter:
+  name: LastMessageTimeFilter
+  # Whether to enable the processor
+  enabled: true
+  # The higher the priority, the earlier the processor will be executed.
+  priority: 1000
+  # The time interval in milliseconds
+  delay: 2000
+  # The error message
+  reason: "Please wait for 2 seconds before sending the next message."
+sameMessageFilter:
+  name: SameMessageFilter
+  enabled: true
+  priority: 900
+  reason: "The message is the same as the previous one."
+maxUpperCaseFilter:
+  name: MaxUpperCaseFilter
+  enabled: true
+  priority: 800
+  # The maximum percentage of uppercase letters allowed in the message
+  maxUpperCase: 0.4
+  # The minimum message length
+  minMessageLength: 10
+  reason: "The number of uppercase letters in the message exceeds the limit."
+tooManyViolationsFilter:
+  name: TooManyViolationsFilter
+  enabled: true
+  priority: 700
+  # The maximum percentage of violations allowed
+  # Calculates the percentage of violations by dividing the number of violations by the number total messages sent by the player
+  maxViolations: 0.3
+  reason: "You have violated the filter too many times."
+similarityFilter:
+  name: SimilarityFilter
+  enabled: true
+  priority: 600
+  # The maximum similarity percentage
+  # The similarity is calculated by comparing the message with the previous one via the Levenshtein distance algorithm
+  maxSimilarity: 0.8
+  reason: "The message is too similar to the previous one."
+blockedPatternFilter:
+  name: BlockedPatternFilter
+  enabled: true
+  priority: 500
+  reason: "The message contains blocked patterns."
+  # The blocked patterns can be found in blocked-patterns.yml

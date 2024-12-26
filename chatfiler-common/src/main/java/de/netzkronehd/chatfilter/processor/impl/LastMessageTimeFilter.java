@@ -18,11 +18,11 @@ public class LastMessageTimeFilter implements FilterProcessor {
     private final long delay;
     private final String reason;
 
-    public LastMessageTimeFilter(String name, int priority, long delay) {
+    public LastMessageTimeFilter(String name, int priority, long delay, String reason) {
         this.name = name;
         this.priority = priority;
         this.delay = delay;
-        this.reason = "chatfilter.last-message-time";
+        this.reason = reason;
     }
 
     @Override

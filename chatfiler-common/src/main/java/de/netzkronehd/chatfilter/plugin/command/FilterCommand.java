@@ -25,7 +25,9 @@ public interface FilterCommand {
     }
 
     default boolean hasPermission(ChatFilterPlayer chatFilterPlayer) {
-        return chatFilterPlayer.getSender().hasPermission(getPermission()) || chatFilterPlayer.getSender().hasPermission("chatfilter.command.*");
+        return chatFilterPlayer.getSender().hasPermission(getPermission()) ||
+                chatFilterPlayer.getSender().hasPermission("chatfilter.command.*") ||
+                chatFilterPlayer.getSender().hasPermission("chatfilter.*");
     }
 
     static void registerCommand(FilterCommand baseCommand) {

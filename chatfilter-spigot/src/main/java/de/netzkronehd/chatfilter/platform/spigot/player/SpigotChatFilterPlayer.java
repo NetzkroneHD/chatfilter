@@ -26,6 +26,6 @@ public class SpigotChatFilterPlayer implements ChatFilterPlayer {
 
     @Override
     public Sender getSender() {
-        return null;
+        return sender;
     }
 }

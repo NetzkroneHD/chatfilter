@@ -76,5 +76,25 @@ public class FilterChainResult {
                 .findFirst();
     }
 
+    /**
+     * Returns the first filter processor that blocked the message.
+     * @return the first filter processor that blocked the message
+     */
+    public Optional<FilterProcessorResult> blockedBy() {
+        return results.stream()
+                .filter(FilterProcessorResult::isBlocked)
+                .findFirst();
+    }
+
+    /**
+     * Returns the first filter processor that filtered the message.
+     * @return the first filter processor that filtered the message
+     */
+    public Optional<FilterProcessorResult> filteredBy() {
+        return results.stream()
+                .filter(FilterProcessorResult::isFiltered)
+                .findFirst();
+    }
+
 
 }

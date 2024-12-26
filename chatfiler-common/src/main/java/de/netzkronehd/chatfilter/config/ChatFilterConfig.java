@@ -1,6 +1,12 @@
 package de.netzkronehd.chatfilter.config;
 
+import de.netzkronehd.chatfilter.database.Database;
+import de.netzkronehd.chatfilter.database.driver.impl.MySQLDriver;
+import de.netzkronehd.chatfilter.database.driver.impl.PostgresDriver;
+import de.netzkronehd.chatfilter.database.driver.impl.SqlLiteDriver;
+import de.netzkronehd.chatfilter.processor.impl.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,67 +19,139 @@ import java.util.regex.Pattern;
  * This class is used to configure the different filters that are used by the chat filter.
  * Each filter has its own configuration.
  */
-public abstract class ChatFilterConfig {
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class ChatFilterConfig {
 
-    public abstract boolean isEnabled();
+    private boolean stopOnBlock;
 
-    public abstract String getReason();
+    private DatabaseConfig databaseConfig;
+    private BlockedPatternFilterConfig blockedPatternFilterConfig;
+    private LastMessageTimeFilterConfig lastMessageTimeFilterConfig;
+    private MaxUpperCaseFilterConfig maxUpperCaseFilterConfig;
+    private SameMessageFilterConfig sameMessageFilterConfig;
+    private SimilarityFilterConfig similarityFilterConfig;
+    private TooManyViolationsFilterConfig tooManyViolationsFilterConfig;
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class BlockedPatternFilterConfig extends ChatFilterConfig {
+    @Builder
+    public static class BlockedPatternFilterConfig {
         private String name;
         private int priority;
         private List<Pattern> patterns;
         private boolean enabled;
         private String reason;
 
+        public BlockedPatternFilter createProcessor() {
+            return new BlockedPatternFilter(name, priority, patterns, reason);
+        }
+
     }
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class LastMessageTimeFilterConfig extends ChatFilterConfig {
+    @Builder
+    public static class LastMessageTimeFilterConfig {
         private String name;
         private int priority;
         private long delay;
         private boolean enabled;
         private String reason;
+
+        public LastMessageTimeFilter createProcessor() {
+            return new LastMessageTimeFilter(name, priority, delay, reason);
+        }
     }
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class MaxUpperCaseFilterConfig extends ChatFilterConfig {
+    @Builder
+    public static class MaxUpperCaseFilterConfig {
         private String name;
         private int priority;
         private int maxUpperCase;
         private int minMessageLength;
         private boolean enabled;
         private String reason;
+
+        public MaxUpperCaseFilter createProcessor() {
+            return new MaxUpperCaseFilter(name, priority, minMessageLength, maxUpperCase, reason);
+        }
     }
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class SameMessageFilterConfig extends ChatFilterConfig {
+    @Builder
+    public static class SameMessageFilterConfig {
         private String name;
         private int priority;
         private boolean enabled;
         private String reason;
+
+        public SameMessageFilter createProcessor() {
+            return new SameMessageFilter(name, priority, reason);
+        }
     }
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class SimilarityFilterConfig extends ChatFilterConfig {
+    @Builder
+    public static class SimilarityFilterConfig {
         private String name;
         private int priority;
         private int maxSimilarity;
         private boolean enabled;
         private String reason;
+
+        public SimilarityFilter createProcessor() {
+            return new SimilarityFilter(name, priority, maxSimilarity, reason);
+        }
     }
 
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class TooManyViolationsFilterConfig {
+        private String name;
+        private int priority;
+        private double maxViolations;
+        private boolean enabled;
+        private String reason;
+
+        public TooManyViolationsFilter createProcessor() {
+            return new TooManyViolationsFilter(name, priority, reason, maxViolations);
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class DatabaseConfig {
+        private String driver;
+        private String host;
+        private int port;
+        private String database;
+        private String username;
+        private String password;
+
+        public Database createDatabase() {
+            return switch (driver.toLowerCase()) {
+                case "mysql" -> new MySQLDriver();
+                case "sqlite" -> new SqlLiteDriver();
+                case "postgresql" -> new PostgresDriver();
+                default -> throw new IllegalArgumentException("Unknown database driver: " + driver);
+            };
+        }
+
+    }
 
 }

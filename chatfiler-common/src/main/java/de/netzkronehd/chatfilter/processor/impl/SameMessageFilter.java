@@ -17,10 +17,10 @@ public class SameMessageFilter implements FilterProcessor {
     private final int priority;
     private final String reason;
 
-    public SameMessageFilter(String name, int priority) {
+    public SameMessageFilter(String name, int priority, String reason) {
         this.name = name;
         this.priority = priority;
-        this.reason = "chatfilter.same-message";
+        this.reason = reason;
     }
 
     @Override

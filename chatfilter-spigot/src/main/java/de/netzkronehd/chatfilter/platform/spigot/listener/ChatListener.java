@@ -1,6 +1,8 @@
 package de.netzkronehd.chatfilter.platform.spigot.listener;
 
+import de.netzkronehd.chatfilter.exception.NoFilterChainException;
 import de.netzkronehd.chatfilter.platform.spigot.ChatFilterSpigot;
+import de.netzkronehd.chatfilter.plugin.event.ChatEvent;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -10,7 +12,6 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 public class ChatListener implements Listener {
 
     private final ChatFilterSpigot plugin;
-    private final boolean stopOnBlock;
 
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
@@ -18,11 +19,21 @@ public class ChatListener implements Listener {
             plugin.getLogger().warning("FilterProcessorChain is null, ignoring chat event.");
             return;
         }
-        plugin.getPlayer(e.getPlayer().getUniqueId()).ifPresentOrElse(player -> {
-            if(plugin.getFilterChain().process(player, e.getMessage(), stopOnBlock).isBlocked()) {
-                e.setCancelled(true);
+        plugin.getPlayer(e.getPlayer()).ifPresentOrElse(player -> {
+            try {
+                final ChatEvent event = new ChatEvent(player, e.getMessage());
+                plugin.callChatEvent(event);
+                if(event.isCancelled()) {
+                    e.setCancelled(true);
+                    return;
+                }
+                if(event.getFilteredMessage() != null) {
+                    e.setMessage(event.getFilteredMessage());
+                }
+            } catch (NoFilterChainException ex) {
+                throw new RuntimeException(ex);
             }
-        }, () -> plugin.getLogger().warning("Player not found in player map."));
+        }, () -> plugin.getLogger().severe("Player not found in player map."));
 
     }
 

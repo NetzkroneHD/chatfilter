@@ -1,5 +1,6 @@
 package de.netzkronehd.chatfilter.database;
 
+import de.netzkronehd.chatfilter.config.ChatFilterConfig;
 import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.violation.FilterViolation;
 
@@ -15,6 +16,10 @@ import java.util.UUID;
 public abstract class Database {
 
     private Connection connection;
+
+    public void connect(ChatFilterConfig.DatabaseConfig config) throws SQLException {
+        connect(config.getHost(), config.getPort(), config.getDatabase(), config.getUsername(), config.getPassword());
+    }
 
     public void connect(String host, int port, String database, String user, String password) throws SQLException {
         connection = createConnection(host, port, database, user, password);
@@ -69,22 +74,21 @@ public abstract class Database {
         return Optional.of(UUID.fromString(rs.getString("player_uniqueId")));
     }
 
-    public FilterViolation insertViolation(UUID playerUniqueId, String playerName, String filterName, String messageText, MessageState state, long messageTime) throws SQLException {
+    public FilterViolation insertViolation(UUID playerUniqueId, String filterName, String messageText, MessageState state, long messageTime) throws SQLException {
         final PreparedStatement ps = connection.prepareStatement("""
-                INSERT INTO chatfilter_violations (player_uniqueId, player_name, filter_name, message_text, message_state, message_time)
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO chatfilter_violations (player_uniqueId, filter_name, message_text, message_state, message_time)
+                VALUES (?, ?, ?, ?, ?)
                 """, PreparedStatement.RETURN_GENERATED_KEYS);
         ps.setString(1, playerUniqueId.toString());
-        ps.setString(2, playerName);
-        ps.setString(3, filterName);
-        ps.setString(4, messageText);
-        ps.setString(5, state.name());
-        ps.setLong(6, messageTime);
+        ps.setString(2, filterName);
+        ps.setString(3, messageText);
+        ps.setString(4, state.name());
+        ps.setLong(5, messageTime);
         ps.executeUpdate();
         ps.getGeneratedKeys().next();
 
         final int id = ps.getGeneratedKeys().getInt(1);
-        return new FilterViolation(id, playerUniqueId, playerName, filterName, state, messageText, messageTime);
+        return new FilterViolation(id, playerUniqueId, filterName, state, messageText, messageTime);
     }
 
     public Optional<FilterViolation> getViolation(int id) throws SQLException {
@@ -175,7 +179,6 @@ public abstract class Database {
         return new FilterViolation(
                 rs.getInt("id"),
                 UUID.fromString(rs.getString("player_uniqueId")),
-                rs.getString("player_name"),
                 rs.getString("filter_name"),
                 MessageState.valueOf(rs.getString("message_state")),
                 rs.getString("message_text"),

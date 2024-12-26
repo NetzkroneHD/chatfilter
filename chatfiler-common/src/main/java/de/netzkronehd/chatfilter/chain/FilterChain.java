@@ -1,20 +1,44 @@
 package de.netzkronehd.chatfilter.chain;
 
+import de.netzkronehd.chatfilter.config.ChatFilterConfig;
 import de.netzkronehd.chatfilter.exception.FilterNotFoundException;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.processor.FilterProcessor;
 import de.netzkronehd.chatfilter.processor.FilterProcessorResult;
+import lombok.Getter;
 
 import java.util.*;
 
 public class FilterChain {
 
+    @Getter
     private final List<FilterProcessor> processors;
 
     public FilterChain() {
         this.processors = new ArrayList<>();
     }
 
+    public void loadFilters(ChatFilterConfig config) {
+        processors.clear();
+        if (config.getBlockedPatternFilterConfig().isEnabled()) {
+            processors.add(config.getBlockedPatternFilterConfig().createProcessor());
+        }
+        if (config.getLastMessageTimeFilterConfig().isEnabled()) {
+            processors.add(config.getLastMessageTimeFilterConfig().createProcessor());
+        }
+        if (config.getMaxUpperCaseFilterConfig().isEnabled()) {
+            processors.add(config.getMaxUpperCaseFilterConfig().createProcessor());
+        }
+        if (config.getSameMessageFilterConfig().isEnabled()) {
+            processors.add(config.getSameMessageFilterConfig().createProcessor());
+        }
+        if(config.getSimilarityFilterConfig().isEnabled()) {
+            processors.add(config.getSimilarityFilterConfig().createProcessor());
+        }
+        if(config.getTooManyViolationsFilterConfig().isEnabled()) {
+            processors.add(config.getTooManyViolationsFilterConfig().createProcessor());
+        }
+    }
 
     /**
      * Runs
@@ -89,14 +113,6 @@ public class FilterChain {
     }
 
     /**
-     * Returns an unmodifiable list of filter processors.
-     * @return an unmodifiable list of filter processors
-     */
-    public List<FilterProcessor> getProcessors() {
-        return Collections.unmodifiableList(processors);
-    }
-
-    /**
      * Finds a filter processor by name.
      * @param name the name of the filter processor
      * @param ignoreCase whether to ignore the case of the name
@@ -111,7 +127,7 @@ public class FilterChain {
     /**
      * Sorts the filter processors by priority.
      */
-    private void sortProcessors() {
+    public void sortProcessors() {
         processors.sort(Comparator.comparingInt(FilterProcessor::getPriority).reversed());
     }
 

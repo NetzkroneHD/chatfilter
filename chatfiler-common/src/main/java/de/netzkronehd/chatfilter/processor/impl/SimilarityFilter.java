@@ -20,11 +20,11 @@ public class SimilarityFilter implements FilterProcessor {
     private final double maxSimilarity;
     private final String reason;
 
-    public SimilarityFilter(String name, int priority, double maxSimilarity) {
+    public SimilarityFilter(String name, int priority, double maxSimilarity, String reason) {
         this.name = name;
         this.priority = priority;
         this.maxSimilarity = maxSimilarity;
-        this.reason = "chatfilter.similarity";
+        this.reason = reason;
     }
 
     @Override
