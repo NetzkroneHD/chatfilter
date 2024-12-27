@@ -1,7 +1,7 @@
 package de.netzkronehd.chatfilter.platform.spigot.listener;
 
 import de.netzkronehd.chatfilter.platform.spigot.ChatFilterSpigot;
-import de.netzkronehd.chatfilter.platform.spigot.player.SpigotChatFilterPlayer;
+import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,7 +15,7 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent e) {
-        plugin.getPlayerCache().put(e.getPlayer().getUniqueId(), new SpigotChatFilterPlayer(plugin.getSenderFactory().wrap(e.getPlayer())));
+        plugin.getPlayerCache().put(e.getPlayer().getUniqueId(), new ChatFilterPlayer(plugin.getSenderFactory().wrap(e.getPlayer())));
     }
 
     @EventHandler

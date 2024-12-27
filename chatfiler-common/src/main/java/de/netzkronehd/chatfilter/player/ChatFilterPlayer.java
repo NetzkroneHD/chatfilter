@@ -1,14 +1,24 @@
 package de.netzkronehd.chatfilter.player;
 
 import de.netzkronehd.translation.sender.Sender;
+import lombok.Getter;
 
 /**
  * Represents a player that is being filtered by the chat filter.
  */
-public interface ChatFilterPlayer {
+@Getter
+public class ChatFilterPlayer {
 
-    ChatMetrics getChatMetrics();
+    private final ChatMetrics chatMetrics;
+    private final Sender sender;
 
-    Sender getSender();
+    public ChatFilterPlayer(Sender sender) {
+        this.chatMetrics = new ChatMetrics();
+        this.sender = sender;
+    }
 
+    public ChatFilterPlayer(ChatMetrics chatMetrics, Sender sender) {
+        this.chatMetrics = chatMetrics;
+        this.sender = sender;
+    }
 }

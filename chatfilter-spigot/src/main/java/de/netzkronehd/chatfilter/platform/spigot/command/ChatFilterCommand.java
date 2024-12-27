@@ -1,7 +1,7 @@
 package de.netzkronehd.chatfilter.platform.spigot.command;
 
 import de.netzkronehd.chatfilter.platform.spigot.ChatFilterSpigot;
-import de.netzkronehd.chatfilter.platform.spigot.player.SpigotChatFilterPlayer;
+import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.command.impl.BaseCommand;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -28,7 +28,7 @@ public class ChatFilterCommand implements CommandExecutor, TabCompleter {
         if(sender instanceof final Player player) {
             baseCommand.execute(plugin.getPlayer(player).orElseThrow(), args);
         } else {
-            baseCommand.execute(new SpigotChatFilterPlayer(plugin.getSenderFactory().wrap(sender)), args);
+            baseCommand.execute(new ChatFilterPlayer(plugin.getSenderFactory().wrap(sender)), args);
         }
         return true;
     }
@@ -38,7 +38,7 @@ public class ChatFilterCommand implements CommandExecutor, TabCompleter {
         if(sender instanceof final Player player) {
             return baseCommand.tabComplete(plugin.getPlayer(player).orElseThrow(), args);
         } else {
-            return baseCommand.tabComplete(new SpigotChatFilterPlayer(plugin.getSenderFactory().wrap(sender)), args);
+            return baseCommand.tabComplete(new ChatFilterPlayer(plugin.getSenderFactory().wrap(sender)), args);
         }
     }
 }

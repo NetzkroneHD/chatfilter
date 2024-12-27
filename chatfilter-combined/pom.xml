@@ -9,8 +9,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>chatfilter-bundle</artifactId>
-    <description>The plugin with all server versions and dependencies</description>
+    <artifactId>chatfilter-combined</artifactId>
+    <description>The plugin with all server versions, but without the dependencies</description>
+
 
     <dependencies>
         <dependency>
@@ -32,27 +33,6 @@
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.6.0</version>
                 <executions>
-                    <!-- Relocate zuerst -->
-                    <execution>
-                        <id>relocate</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <relocations>
-                                <relocation>
-                                    <pattern>de.netzkronehd.translation</pattern>
-                                    <shadedPattern>de.netzkronehd.chatfilter.lib.de.netzkronehd.translation</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>org.sqlite</pattern>
-                                    <shadedPattern>de.netzkronehd.chatfilter.lib.org.sqlite</shadedPattern>
-                                </relocation>
-                            </relocations>
-                        </configuration>
-                    </execution>
-
                     <execution>
                         <id>remove</id>
                         <phase>package</phase>
