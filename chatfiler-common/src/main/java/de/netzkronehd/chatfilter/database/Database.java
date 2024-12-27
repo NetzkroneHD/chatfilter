@@ -1,6 +1,7 @@
 package de.netzkronehd.chatfilter.database;
 
 import de.netzkronehd.chatfilter.config.ChatFilterConfig;
+import de.netzkronehd.chatfilter.database.model.UuidAndName;
 import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.violation.FilterViolation;
 
@@ -37,7 +38,7 @@ public abstract class Database {
                 """).executeUpdate();
         connection.prepareStatement("""
                 CREATE TABLE IF NOT EXISTS chatfilter_violations
-                 (
+                (
                      id              INT PRIMARY KEY AUTO_INCREMENT,
                      player_uniqueId VARCHAR(36),
                      filter_name     TEXT NOT NULL,
@@ -66,12 +67,12 @@ public abstract class Database {
         ps.executeUpdate();
     }
 
-    public Optional<UUID> getUuid(String playerName) throws SQLException {
-        final PreparedStatement ps = connection.prepareStatement("SELECT player_uniqueId FROM chatfilter_players WHERE LOWER(player_name) = ?");
+    public Optional<UuidAndName> getUuid(String playerName) throws SQLException {
+        final PreparedStatement ps = connection.prepareStatement("SELECT player_uniqueId, player_name FROM chatfilter_players WHERE LOWER(player_name) = ?");
         ps.setString(1, playerName.toLowerCase());
         final ResultSet rs = ps.executeQuery();
         if (!rs.next()) return Optional.empty();
-        return Optional.of(UUID.fromString(rs.getString("player_uniqueId")));
+        return Optional.of(UuidAndName.of(UUID.fromString(rs.getString("player_uniqueId")), rs.getString("player_name")));
     }
 
     public FilterViolation insertViolation(UUID playerUniqueId, String filterName, String messageText, MessageState state, long messageTime) throws SQLException {

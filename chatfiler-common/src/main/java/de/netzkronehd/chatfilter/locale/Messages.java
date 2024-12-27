@@ -23,18 +23,22 @@ import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 public interface Messages {
 
     SimpleDateFormat DATE_TIME_FORMATTER = new SimpleDateFormat("HH:mm:ss dd.MM.yyyy");
-    TextComponent FULL_STOP = Component.text('.');
+    TextComponent FULL_STOP = text('.');
+    TextComponent ARROW_RIGHT = text("»");
+    TextComponent ARROW_LEFT = text("«");
 
     Component PREFIX_COMPONENT = text()
             .color(GRAY)
-            .append(text('['))
+            .append(text('[').color(DARK_GRAY))
             .append(text()
                     .decoration(BOLD, true)
                     .append(text('N', AQUA))
                     .append(text('C', BLUE))
                     .append(text('F', BLUE))
             )
-            .append(text(']'))
+            .append(text(']').color(DARK_GRAY))
+            .append(space())
+            .append(ARROW_RIGHT)
             .build();
 
     static TextComponent prefixed(ComponentLike component) {
@@ -50,10 +54,10 @@ public interface Messages {
     }
 
     static TextComponent formatMessageState(MessageState state) {
-        if(state.isAllowed()) return Component.text("ALLOWED", NamedTextColor.GREEN);
-        if(state.isFiltered()) return Component.text("FILTERED", GOLD);
-        if(state.isBlocked()) return Component.text("BLOCKED", NamedTextColor.RED);
-        return Component.text("UNKNOWN", LIGHT_PURPLE);
+        if(state.isAllowed()) return text("ALLOWED", NamedTextColor.GREEN);
+        if(state.isFiltered()) return text("FILTERED", GOLD);
+        if(state.isBlocked()) return text("BLOCKED", NamedTextColor.RED);
+        return text("UNKNOWN", LIGHT_PURPLE);
     }
 
     static TextComponent formatProcessorResult(FilterProcessorResult result) {
@@ -161,17 +165,19 @@ public interface Messages {
             ).append(FULL_STOP)
     );
 
-    Args.Args1<FilterViolation> FILTER_VIOLATION = (violation) -> prefixed(translatable()
-            // "&7: &e{0} &7({1}) &7- {2} &7- ({3}) {4}"
+    Args.Args2<FilterViolation, String> FILTER_VIOLATION = (violation, playerName) -> prefixed(translatable()
+            // "&3{0}&7: &e{0} &7({1}) &7- {2} &7- ({3}) {4}"
+            // &31&7: &eNetzkroneHD &7(MaxSimilarityFilter) &7- &cBLOCKED &7- (12:00:00 05.06.2002) Hello World"
             .key("chatfilter.command.violations.violation")
             .color(GRAY)
             .arguments(
-                    text(violation.name()).color(YELLOW),
+                    text(violation.id()).color(DARK_AQUA),
+                    text(playerName).color(YELLOW),
                     text(violation.filterName()).color(DARK_AQUA),
                     formatMessageState(violation.state()),
                     formatTime(violation.messageTime()).color(GRAY),
                     text(violation.message()).color(GRAY)
-            ).append(FULL_STOP)
+            )
     );
 
 }

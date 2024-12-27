@@ -1,12 +1,13 @@
 package de.netzkronehd.chatfilter.plugin.command.impl;
 
-import de.netzkronehd.chatfilter.locale.Messages;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.command.FilterCommand;
 
 import java.util.List;
 
+import static de.netzkronehd.chatfilter.locale.Messages.BASE_USAGE;
 import static de.netzkronehd.chatfilter.locale.Messages.NO_PERMISSION;
+import static java.util.Collections.emptyList;
 
 public class BaseCommand implements FilterCommand {
 
@@ -17,7 +18,7 @@ public class BaseCommand implements FilterCommand {
             return;
         }
         if(args.length < 1) {
-            Messages.BASE_USAGE.send(chatFilterPlayer.getSender());
+            BASE_USAGE.send(chatFilterPlayer.getSender());
             return;
         }
 
@@ -27,7 +28,14 @@ public class BaseCommand implements FilterCommand {
 
     @Override
     public List<String> tabComplete(ChatFilterPlayer chatFilterPlayer, String[] args) {
-        return FilterCommand.super.tabComplete(chatFilterPlayer, args);
+        if(!hasPermission(chatFilterPlayer) || args.length == 0) {
+            return emptyList();
+        }
+        final String command = args[0].toLowerCase();
+        if (args.length == 1) {
+            return FilterCommand.COMMANDS.keySet().stream().filter(s -> s.startsWith(command)).toList();
+        }
+        return FilterCommand.executeSubTab(command, chatFilterPlayer, args);
     }
 
     @Override

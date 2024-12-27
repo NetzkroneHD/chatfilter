@@ -37,3 +37,6 @@ build/
 ### Mac OS ###
 .DS_Store
 /.idea/
+/docker-compose/
+/chatfilter-bundle/dependency-reduced-pom.xml
+/chatfilter-spigot/dependency-reduced-pom.xml

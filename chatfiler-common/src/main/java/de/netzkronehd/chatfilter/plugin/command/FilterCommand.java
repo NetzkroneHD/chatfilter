@@ -3,10 +3,11 @@ package de.netzkronehd.chatfilter.plugin.command;
 import de.netzkronehd.chatfilter.locale.Messages;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.Collections.emptyList;
 
 public interface FilterCommand {
 
@@ -15,7 +16,7 @@ public interface FilterCommand {
     void execute(ChatFilterPlayer chatFilterPlayer, String[] args);
 
     default List<String> tabComplete(ChatFilterPlayer chatFilterPlayer, String[] args) {
-        return Collections.emptyList();
+        return emptyList();
     }
 
     String getName();
@@ -43,6 +44,16 @@ public interface FilterCommand {
         final String[] subArgs = new String[args.length - 1];
         System.arraycopy(args, 1, subArgs, 0, subArgs.length);
         subCommand.execute(chatFilterPlayer, subArgs);
+    }
+
+    static List<String> executeSubTab(String command, ChatFilterPlayer chatFilterPlayer, String[] args) {
+        final FilterCommand subCommand = COMMANDS.get(command.toLowerCase());
+        if(subCommand == null) {
+            return emptyList();
+        }
+        final String[] subArgs = new String[args.length - 1];
+        System.arraycopy(args, 1, subArgs, 0, subArgs.length);
+        return subCommand.tabComplete(chatFilterPlayer, subArgs);
     }
 
 }

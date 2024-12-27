@@ -1,6 +1,6 @@
 package de.netzkronehd.chatfilter.plugin.command.impl;
 
-import de.netzkronehd.chatfilter.locale.Messages;
+import de.netzkronehd.chatfilter.database.model.UuidAndName;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.FilterPlugin;
 import de.netzkronehd.chatfilter.plugin.command.FilterCommand;
@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import static de.netzkronehd.chatfilter.locale.Messages.*;
 import static org.apache.commons.cli.Option.builder;
@@ -51,18 +50,18 @@ public class ViolationsCommand implements FilterCommand {
             final String filterName = parsed.getOptionValue("n");
             final String from = parsed.getOptionValue("f");
             final String to = parsed.getOptionValue("t");
-            final long fromTime = (from == null) ? System.currentTimeMillis() : dateFormat.parse(from).getTime();
+            final long fromTime = (from == null) ? 0 : dateFormat.parse(from).getTime();
             final long toTime = (to == null) ? System.currentTimeMillis() : dateFormat.parse(to).getTime();
             filterPlugin.runAsync(() -> {
                 try {
-                    final UUID uuid = filterPlugin.getDatabase().getUuid(playerName).orElse(null);
+                    final UuidAndName uuid = filterPlugin.getDatabase().getUuid(playerName).orElse(null);
                     if(uuid == null) {
                         PLAYER_NOT_FOUND.send(chatFilterPlayer.getSender(), playerName);
                         return;
                     }
                     sendViolations(chatFilterPlayer, uuid, filterName, fromTime, toTime);
                 } catch (SQLException e) {
-                    Messages.ERROR.send(chatFilterPlayer.getSender(), e);
+                    ERROR.send(chatFilterPlayer.getSender(), e);
                     throw new RuntimeException(e);
                 }
             });
@@ -105,14 +104,14 @@ public class ViolationsCommand implements FilterCommand {
         return "violations";
     }
 
-    private void sendViolations(ChatFilterPlayer chatFilterPlayer, UUID uuid, String filterName, long fromTime, long toTime) throws SQLException {
+    private void sendViolations(ChatFilterPlayer chatFilterPlayer, UuidAndName uuidAndName, String filterName, long fromTime, long toTime) throws SQLException {
         final List<FilterViolation> violations;
         if(filterName == null) {
-             violations = filterPlugin.getDatabase().listViolations(uuid, fromTime, toTime);
+             violations = filterPlugin.getDatabase().listViolations(uuidAndName.uuid(), fromTime, toTime);
         } else {
-            violations = filterPlugin.getDatabase().listViolations(uuid, filterName, fromTime, toTime);
+            violations = filterPlugin.getDatabase().listViolations(uuidAndName.uuid(), filterName, fromTime, toTime);
         }
-        violations.forEach(violation -> FILTER_VIOLATION.send(chatFilterPlayer.getSender(), violation));
+        violations.forEach(violation -> FILTER_VIOLATION.send(chatFilterPlayer.getSender(), violation, uuidAndName.name()));
     }
 
 }
