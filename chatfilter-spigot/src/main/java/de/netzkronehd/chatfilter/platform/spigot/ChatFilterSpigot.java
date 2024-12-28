@@ -15,7 +15,7 @@ import de.netzkronehd.chatfilter.plugin.command.impl.ParseCommand;
 import de.netzkronehd.chatfilter.plugin.command.impl.ReloadCommand;
 import de.netzkronehd.chatfilter.plugin.command.impl.ViolationsCommand;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
-import de.netzkronehd.chatfilter.plugin.event.ChatEvent;
+import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 import de.netzkronehd.chatfilter.plugin.listener.ChatFilterListener;
 import de.netzkronehd.translation.sender.spigot.SpigotSenderFactory;
 import lombok.Getter;
@@ -32,7 +32,7 @@ import static de.netzkronehd.chatfilter.plugin.command.FilterCommand.registerCom
 public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
 
     private final Map<UUID, ChatFilterPlayer> playerCache = new HashMap<>();
-    private final SpigotSenderFactory senderFactory = new SpigotSenderFactory(this);
+    private SpigotSenderFactory senderFactory;
 
     private final FilterChain filterChain = new FilterChain();
     private final ChatFilterConfig filterConfig = new ChatFilterConfig();
@@ -43,25 +43,30 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
 
     @Override
     public void onEnable() {
+        getLogger().info("ChatFilter is loading...");
+        this.senderFactory = new SpigotSenderFactory(this);
         this.chatFilterListener = new ChatFilterListener(this);
         saveResource("blocked-patterns.yml", false);
         saveResource("filter.yml", false);
         saveResource("database.yml", false);
+        saveResource("chatfilter.db", false);
 
-        registerCommands();
-
-        getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
-        getServer().getPluginManager().registerEvents(new ChatListener(this), this);
+        getLogger().info("Loading config files...");
         configLoader = new SpigotConfigLoader(
                 new File(getDataFolder(), "blocked-patterns.yml"),
                 new File(getDataFolder(), "filter.yml"),
                 new File(getDataFolder(), "database.yml")
         );
         try {
+            getLogger().info("Reading config and connecting to database...");
             reload();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        registerCommands();
+        getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
+        getServer().getPluginManager().registerEvents(new ChatListener(this), this);
     }
 
     @Override
@@ -79,16 +84,9 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
     }
 
     @Override
-    public void reload() throws SQLException {
-        configLoader.load(filterConfig);
-        filterChain.loadFilters(filterConfig);
-        database.connect(filterConfig.getDatabaseConfig());
-        filterConfig.setDatabaseConfig(null);
-    }
-
-    @Override
     public void onDisable() {
         // Plugin shutdown logic
+
     }
 
     @Override
@@ -105,7 +103,7 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
     }
 
     @Override
-    public void callChatEvent(ChatEvent event) throws NoFilterChainException {
+    public void callChatEvent(PlatformChatEvent event) throws NoFilterChainException {
         this.chatFilterListener.onChat(event);
     }
 
@@ -144,4 +142,8 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
         return getPlayer(player.getUniqueId());
     }
 
+    @Override
+    public void setDatabase(Database database) {
+        this.database = database;
+    }
 }

@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 @Data
 @RequiredArgsConstructor
-public class ChatEvent {
+public class PlatformChatEvent {
 
     private final ChatFilterPlayer player;
     private final String message;

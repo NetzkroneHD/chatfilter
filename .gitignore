@@ -41,3 +41,5 @@ build/
 /chatfilter-bundle/dependency-reduced-pom.xml
 /chatfilter-spigot/dependency-reduced-pom.xml
 /chatfilter-bungee/dependency-reduced-pom.xml
+/chatfiler-common/dependency-reduced-pom.xml
+/chatfilter-common/dependency-reduced-pom.xml

@@ -84,6 +84,10 @@
                                     <pattern>de.netzkronehd.translation</pattern>
                                     <shadedPattern>de.netzkronehd.chatfilter.lib.de.netzkronehd.translation</shadedPattern>
                                 </relocation>
+                                <relocation>
+                                    <pattern>net.kyori</pattern>
+                                    <shadedPattern>de.netzkronehd.chatfilter.lib.net.kyori</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -103,6 +107,7 @@
                                         <include>de/netzkronehd/chatfilter/**</include>
                                         <include>*.yml</include>
                                         <include>chatfilter_*.properties</include>
+                                        <include>chatfilter.db</include>
                                     </includes>
                                 </filter>
                             </filters>

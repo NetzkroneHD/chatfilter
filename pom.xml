@@ -16,7 +16,7 @@
     </properties>
 
     <modules>
-        <module>chatfiler-common</module>
+        <module>chatfilter-common</module>
         <module>chatfilter-spigot</module>
         <module>chatfilter-bungee</module>
         <module>chatfilter-bundle</module>

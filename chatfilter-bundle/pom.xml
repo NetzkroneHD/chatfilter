@@ -71,6 +71,8 @@
                                         <include>*.yml</include>
                                         <include>*.json</include>
                                         <include>chatfilter_*.properties</include>
+                                        <include>chatfilter.db</include>
+
                                     </includes>
                                 </filter>
                             </filters>
