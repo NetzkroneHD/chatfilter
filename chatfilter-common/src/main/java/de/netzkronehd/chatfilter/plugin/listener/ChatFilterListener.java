@@ -21,9 +21,9 @@ public class ChatFilterListener {
         if(filterPlugin.getFilterChain() == null) {
             throw new NoFilterChainException("FilterProcessorChain is null");
         }
-        if(event.getPlayer().getSender().hasPermission("chatfilter.bypass") || event.getPlayer().getSender().hasPermission("chatfilter.*")) {
-            return;
-        }
+//        if(event.getPlayer().getSender().hasPermission("chatfilter.bypass") || event.getPlayer().getSender().hasPermission("chatfilter.*")) {
+//            return;
+//        }
         event.getPlayer().getChatMetrics().incrementTotalMessageCount();
         final FilterChainResult result = filterPlugin.getFilterChain().process(event.getPlayer(), event.getMessage(), filterPlugin.getFilterConfig().isStopOnBlock());
         final long messageTime = System.currentTimeMillis();

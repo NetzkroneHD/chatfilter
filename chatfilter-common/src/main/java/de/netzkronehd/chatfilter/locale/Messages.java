@@ -5,6 +5,7 @@ import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.processor.FilterProcessorResult;
 import de.netzkronehd.chatfilter.violation.FilterViolation;
 import de.netzkronehd.translation.args.Args;
+import de.netzkronehd.translation.manager.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
@@ -21,6 +22,8 @@ import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 
 public interface Messages {
+
+    TranslationManager TRANSLATION_MANAGER = new TranslationManager("netzchatfilter", "main");
 
     SimpleDateFormat DATE_TIME_FORMATTER = new SimpleDateFormat("HH:mm:ss dd.MM.yyyy");
     TextComponent FULL_STOP = text('.');
@@ -115,22 +118,22 @@ public interface Messages {
     );
 
     Args.Args0 VIOLATIONS_USAGE = () -> prefixed(translatable()
-            // "&cUsage: &e/chatfilter violations <player> [options]\n
-            // &cOptions: &e-f <from> &e-t <to> &e-n <filterName>"
+            // &cOptions: &e-f <from> &e-t <to> &e-n <filterName>\n
+            // "&cUsage: &e/chatfilter violations <player> [options]
             .key("chatfilter.command.violations.usage")
             .color(RED)
     );
 
     Args.Args1<String> BLOCKED = (reason) -> prefixed(translatable()
             // "&cMessage blocked: &e{0}"
-            .key("chatfilter.command.blocked")
+            .key("chatfilter.blocked")
             .color(RED)
             .arguments(text(reason).color(YELLOW))
     );
 
     Args.Args1<Exception> ERROR = (ex) -> prefixed(translatable()
             // "&cAn error occurred: &e{0}"
-            .key("chatfilter.command.error")
+            .key("chatfilter.error")
             .color(RED)
             .arguments(text(ex.getMessage()).color(YELLOW))
     );

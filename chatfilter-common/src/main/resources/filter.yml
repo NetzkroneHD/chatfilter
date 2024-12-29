@@ -32,7 +32,7 @@ tooManyViolationsFilter:
   priority: 700
   # The maximum percentage of violations allowed
   # Calculates the percentage of violations by dividing the number of violations by the number total messages sent by the player
-  maxViolations: 0.3
+  maxViolations: 0.7
   reason: "You have violated the filter too many times."
 similarityFilter:
   name: SimilarityFilter

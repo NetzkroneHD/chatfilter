@@ -12,6 +12,7 @@ import de.netzkronehd.chatfilter.plugin.FilterPlugin;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 import de.netzkronehd.chatfilter.plugin.listener.ChatFilterListener;
+import de.netzkronehd.translation.exception.UnknownLocaleException;
 import de.netzkronehd.translation.sender.bungee.BungeeSenderFactory;
 import lombok.Getter;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -19,6 +20,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
@@ -60,9 +62,10 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
         try {
             getLogger().info("Reading config and connecting to database...");
             reload();
-        } catch (SQLException e) {
+        } catch (SQLException | UnknownLocaleException | IOException e) {
             throw new RuntimeException(e);
         }
+        getLogger().info("Using Database: " + database.getClass().getSimpleName());
         registerCommands();
 
         getProxy().getPluginManager().registerListener(this, new PlayerListener(this));
@@ -113,6 +116,11 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
     @Override
     public Collection<ChatFilterPlayer> getPlayers() {
         return playerCache.values();
+    }
+
+    @Override
+    public Path getPluginDataFolder() {
+        return Path.of(getDataFolder().getPath());
     }
 
     @Override

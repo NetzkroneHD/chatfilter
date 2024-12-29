@@ -32,6 +32,8 @@ public class SpigotConfigLoader implements ConfigLoader {
         config.setSameMessageFilterConfig(loadSameMessageFilterConfig());
         config.setSimilarityFilterConfig(loadSimilarityFilterConfig());
         config.setTooManyViolationsFilterConfig(loadTooManyViolationsFilterConfig());
+        System.out.println("Loaded config:");
+        System.out.println(config);
     }
 
     private ChatFilterConfig.DatabaseConfig loadDatabaseConfig() {
@@ -90,7 +92,7 @@ public class SpigotConfigLoader implements ConfigLoader {
                 .name(filterCfg.getString("similarityFilter.name"))
                 .enabled(filterCfg.getBoolean("similarityFilter.enabled"))
                 .priority(filterCfg.getInt("similarityFilter.priority"))
-                .maxSimilarity(filterCfg.getInt("similarityFilter.maxSimilarity"))
+                .maxSimilarity(filterCfg.getDouble("similarityFilter.maxSimilarity"))
                 .reason(filterCfg.getString("similarityFilter.reason"))
                 .build();
     }
@@ -106,7 +108,7 @@ public class SpigotConfigLoader implements ConfigLoader {
     }
 
     private List<String> loadBlockedPatterns() {
-        return blockedPatternsCfg.getStringList("blocked-patterns");
+        return blockedPatternsCfg.getStringList("blockedpatterns");
     }
 
 

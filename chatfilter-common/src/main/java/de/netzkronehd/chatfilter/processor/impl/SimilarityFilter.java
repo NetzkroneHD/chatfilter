@@ -32,7 +32,6 @@ public class SimilarityFilter implements FilterProcessor {
         if(player.getChatMetrics().getLastMessage() == null) {
             return allowed(message, this, reason);
         }
-
         final double similarity = getSimilarity(player.getChatMetrics().getLastMessage().toLowerCase().trim(), message.toLowerCase().trim());
         if(exceedsMaxSimilarity(similarity)) {
             return blocked(message, this, reason);

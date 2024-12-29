@@ -74,7 +74,7 @@ public class ChatFilterConfig {
     public static class MaxUpperCaseFilterConfig {
         private String name;
         private int priority;
-        private int maxUpperCase;
+        private double maxUpperCase;
         private int minMessageLength;
         private boolean enabled;
         private String reason;
@@ -106,7 +106,7 @@ public class ChatFilterConfig {
     public static class SimilarityFilterConfig {
         private String name;
         private int priority;
-        private int maxSimilarity;
+        private double maxSimilarity;
         private boolean enabled;
         private String reason;
 
@@ -146,9 +146,8 @@ public class ChatFilterConfig {
         public Database createDatabase() {
             return switch (driver.toLowerCase()) {
                 case "mysql" -> new MySQLDriver();
-                case "sqlite" -> new SqlLiteDriver();
                 case "postgresql" -> new PostgresDriver();
-                default -> throw new IllegalArgumentException("Unknown database driver: " + driver);
+                default -> new SqlLiteDriver();
             };
         }
 

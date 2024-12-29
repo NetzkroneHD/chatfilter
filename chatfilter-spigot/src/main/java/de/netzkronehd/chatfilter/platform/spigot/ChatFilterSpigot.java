@@ -17,12 +17,15 @@ import de.netzkronehd.chatfilter.plugin.command.impl.ViolationsCommand;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 import de.netzkronehd.chatfilter.plugin.listener.ChatFilterListener;
+import de.netzkronehd.translation.exception.UnknownLocaleException;
 import de.netzkronehd.translation.sender.spigot.SpigotSenderFactory;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -60,9 +63,11 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
         try {
             getLogger().info("Reading config and connecting to database...");
             reload();
-        } catch (SQLException e) {
+        } catch (SQLException | UnknownLocaleException | IOException e) {
             throw new RuntimeException(e);
         }
+
+        getLogger().info("Using Database: " + database.getClass().getSimpleName());
 
         registerCommands();
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
@@ -146,4 +151,10 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
     public void setDatabase(Database database) {
         this.database = database;
     }
+
+    @Override
+    public Path getPluginDataFolder() {
+        return Path.of(getDataFolder().getPath());
+    }
+
 }

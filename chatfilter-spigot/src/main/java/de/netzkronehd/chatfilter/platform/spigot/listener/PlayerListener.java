@@ -8,14 +8,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
+import java.sql.SQLException;
+
 @RequiredArgsConstructor
 public class PlayerListener implements Listener {
 
     private final ChatFilterSpigot plugin;
 
     @EventHandler
-    public void onJoin(PlayerJoinEvent e) {
+    public void onJoin(PlayerJoinEvent e) throws SQLException {
         plugin.getPlayerCache().put(e.getPlayer().getUniqueId(), new ChatFilterPlayer(plugin.getSenderFactory().wrap(e.getPlayer())));
+        plugin.getDatabase().insertOrUpdatePlayer(e.getPlayer().getUniqueId(), e.getPlayer().getName());
     }
 
     @EventHandler

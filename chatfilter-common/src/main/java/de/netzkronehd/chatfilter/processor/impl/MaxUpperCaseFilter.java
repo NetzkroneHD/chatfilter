@@ -16,10 +16,10 @@ public class MaxUpperCaseFilter implements FilterProcessor {
     private final String name;
     private final int priority;
     private final int minLength;
-    private final float maxUpperCase;
+    private final double maxUpperCase;
     private final String reason;
 
-    public MaxUpperCaseFilter(String name, int priority, int minLength, float maxUpperCase, String reason) {
+    public MaxUpperCaseFilter(String name, int priority, int minLength, double maxUpperCase, String reason) {
         this.name = name;
         this.priority = priority;
         this.minLength = minLength;

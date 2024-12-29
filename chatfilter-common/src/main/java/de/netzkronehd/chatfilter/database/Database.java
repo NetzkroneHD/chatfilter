@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public abstract class Database {
 
-    private Connection connection;
+    protected Connection connection;
 
     public void connect(ChatFilterConfig.DatabaseConfig config) throws SQLException {
         connect(config.getHost(), config.getPort(), config.getDatabase(), config.getUsername(), config.getPassword());
@@ -60,11 +60,29 @@ public abstract class Database {
         return ps.executeUpdate();
     }
 
-    public void setName(UUID playerUniqueId, String playerName) throws SQLException {
+    public int insertOrUpdatePlayer(UUID playerUniqueId, String playerName) throws SQLException {
+        if (playerExists(playerUniqueId)) {
+            return setName(playerUniqueId, playerName);
+        } else {
+            return insertPlayer(playerUniqueId, playerName);
+        }
+    }
+
+    public boolean playerExists(UUID playerUniqueId) throws SQLException {
+        final PreparedStatement ps = connection.prepareStatement("""
+                SELECT player_uniqueId
+                FROM chatfilter_players
+                WHERE player_uniqueId = ?
+                """);
+        ps.setString(1, playerUniqueId.toString());
+        return ps.executeQuery().next();
+    }
+
+    public int setName(UUID playerUniqueId, String playerName) throws SQLException {
         final PreparedStatement ps = connection.prepareStatement("UPDATE chatfilter_players SET player_name = ? WHERE player_uniqueId = ?");
         ps.setString(1, playerName);
         ps.setString(2, playerUniqueId.toString());
-        ps.executeUpdate();
+        return ps.executeUpdate();
     }
 
     public Optional<UuidAndName> getUuid(String playerName) throws SQLException {
@@ -86,9 +104,10 @@ public abstract class Database {
         ps.setString(4, state.name());
         ps.setLong(5, messageTime);
         ps.executeUpdate();
-        ps.getGeneratedKeys().next();
 
-        final int id = ps.getGeneratedKeys().getInt(1);
+        final ResultSet generatedKeys = ps.getGeneratedKeys();
+        generatedKeys.next();
+        final int id = generatedKeys.getInt(1);
         return new FilterViolation(id, playerUniqueId, filterName, state, messageText, messageTime);
     }
 

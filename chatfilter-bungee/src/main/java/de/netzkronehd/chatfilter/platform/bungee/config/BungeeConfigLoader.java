@@ -76,7 +76,7 @@ public class BungeeConfigLoader implements ConfigLoader {
                 .name(filterCfg.getString("maxUpperCaseFilter.name"))
                 .enabled(filterCfg.getBoolean("maxUpperCaseFilter.enabled"))
                 .priority(filterCfg.getInt("maxUpperCaseFilter.priority"))
-                .maxUpperCase(filterCfg.getInt("maxUpperCaseFilter.maxUpperCase"))
+                .maxUpperCase(filterCfg.getDouble("maxUpperCaseFilter.maxUpperCase"))
                 .minMessageLength(filterCfg.getInt("maxUpperCaseFilter.minMessageLength"))
                 .reason(filterCfg.getString("maxUpperCaseFilter.reason"))
                 .build();
@@ -97,7 +97,7 @@ public class BungeeConfigLoader implements ConfigLoader {
                 .name(filterCfg.getString("similarityFilter.name"))
                 .enabled(filterCfg.getBoolean("similarityFilter.enabled"))
                 .priority(filterCfg.getInt("similarityFilter.priority"))
-                .maxSimilarity(filterCfg.getInt("similarityFilter.maxSimilarity"))
+                .maxSimilarity(filterCfg.getDouble("similarityFilter.maxSimilarity"))
                 .reason(filterCfg.getString("similarityFilter.reason"))
                 .build();
     }
