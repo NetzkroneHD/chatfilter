@@ -1,9 +1,9 @@
 package de.netzkronehd.chatfilter.config;
 
 import de.netzkronehd.chatfilter.database.Database;
-import de.netzkronehd.chatfilter.database.driver.impl.MySQLDriver;
-import de.netzkronehd.chatfilter.database.driver.impl.PostgresDriver;
-import de.netzkronehd.chatfilter.database.driver.impl.SqlLiteDriver;
+import de.netzkronehd.chatfilter.database.impl.MySQLDriver;
+import de.netzkronehd.chatfilter.database.impl.PostgresDriver;
+import de.netzkronehd.chatfilter.database.impl.SqlLiteDriver;
 import de.netzkronehd.chatfilter.processor.impl.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

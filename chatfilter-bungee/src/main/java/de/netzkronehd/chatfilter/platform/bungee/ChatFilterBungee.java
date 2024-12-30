@@ -48,7 +48,7 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
         saveResource("database.yml", false);
         saveResource("chatfilter.db", false);
 
-        getLogger().info("Loading config files...");
+
 
         try {
             configLoader = new BungeeConfigLoader(
@@ -65,7 +65,7 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
         } catch (SQLException | UnknownLocaleException | IOException e) {
             throw new RuntimeException(e);
         }
-        getLogger().info("Using Database: " + database.getClass().getSimpleName());
+
         registerCommands();
 
         getProxy().getPluginManager().registerListener(this, new PlayerListener(this));
@@ -128,7 +128,7 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
         this.database = database;
     }
 
-    private void saveResource(@NotNull String resourcePath, boolean replace) {
+    public void saveResource(@NotNull String resourcePath, boolean replace) {
         if (resourcePath.isEmpty()) {
             throw new IllegalArgumentException("ResourcePath cannot be null or empty");
         }
@@ -157,8 +157,6 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
                 }
                 out.close();
                 in.close();
-            } else {
-                getLogger().log(Level.WARNING, "Could not save " + outFile.getName() + " to " + outFile + " because " + outFile.getName() + " already exists.");
             }
         } catch (IOException ex) {
             getLogger().log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, ex);

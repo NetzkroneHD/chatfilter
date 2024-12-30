@@ -17,20 +17,48 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 public interface FilterPlugin {
 
     void registerCommands();
 
-    default void reload() throws SQLException, UnknownLocaleException, IOException {
-        getConfigLoader().load(getFilterConfig());
-        getFilterChain().loadFilters(getFilterConfig());
-        setDatabase(getFilterConfig().getDatabaseConfig().createDatabase());
-        getDatabase().connect(getFilterConfig().getDatabaseConfig());
-        getDatabase().createTables();
-        getFilterConfig().setDatabaseConfig(null);
-        Messages.TRANSLATION_MANAGER.loadFromFileSystem(getPluginDataFolder());
+    default void loadConfig() {
+        getLogger().info("Loading config...");
+        final ChatFilterConfig config = getFilterConfig();
+        getConfigLoader().load(config);
+        getFilterChain().loadFilters(config);
+        getLogger().info("Loaded config. FilterChain has "+getFilterChain().getProcessors().size()+" processors.");
     }
+
+    default void loadDatabase() throws SQLException {
+        final Database database = getFilterConfig().getDatabaseConfig().createDatabase();
+        getLogger().info("Connecting to database using driver: "+database.getName()+"...");
+        database.connect(getFilterConfig().getDatabaseConfig());
+        getLogger().info("Creating tables...");
+        database.createTables();
+        setDatabase(database);
+        getFilterConfig().setDatabaseConfig(null);
+    }
+
+    default void reload() throws SQLException, UnknownLocaleException, IOException {
+        loadConfig();
+        loadDatabase();
+        Messages.TRANSLATION_MANAGER.reload();
+        Messages.TRANSLATION_MANAGER.loadFromFileSystem(getPluginDataFolder());
+        Messages.TRANSLATION_MANAGER.getInstalled().forEach((locale) -> getLogger().info("Loaded locale: "+locale));
+    }
+
+    default void saveConfigsFromResources() {
+        saveResource("blocked-patterns.yml", false);
+        saveResource("filter.yml", false);
+        saveResource("database.yml", false);
+        saveResource("chatfilter.db", false);
+        saveResource("chatfilter_de.properties", false);
+        saveResource("chatfilter_en.properties", false);
+    }
+
+    void saveResource(String resource, boolean replace);
 
     void runSync(Runnable runnable);
     void runAsync(Runnable runnable);
@@ -49,5 +77,5 @@ public interface FilterPlugin {
     Optional<ChatFilterPlayer> getPlayer(String name);
     Collection<ChatFilterPlayer> getPlayers();
     Path getPluginDataFolder();
-
+    Logger getLogger();
 }

@@ -1,13 +1,12 @@
-package de.netzkronehd.chatfilter.database.driver.impl;
+package de.netzkronehd.chatfilter.database.impl;
 
 import de.netzkronehd.chatfilter.database.Database;
-import de.netzkronehd.chatfilter.database.driver.DatabaseDriver;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class PostgresDriver extends Database implements DatabaseDriver {
+public class PostgresDriver extends Database {
 
     @Override
     public Connection createConnection(String host, int port, String database, String user, String password) throws SQLException {

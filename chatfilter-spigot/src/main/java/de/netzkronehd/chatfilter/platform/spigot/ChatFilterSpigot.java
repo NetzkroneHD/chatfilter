@@ -4,6 +4,7 @@ import de.netzkronehd.chatfilter.chain.FilterChain;
 import de.netzkronehd.chatfilter.config.ChatFilterConfig;
 import de.netzkronehd.chatfilter.database.Database;
 import de.netzkronehd.chatfilter.exception.NoFilterChainException;
+import de.netzkronehd.chatfilter.locale.Messages;
 import de.netzkronehd.chatfilter.platform.spigot.command.ChatFilterCommand;
 import de.netzkronehd.chatfilter.platform.spigot.config.SpigotConfigLoader;
 import de.netzkronehd.chatfilter.platform.spigot.listener.ChatListener;
@@ -54,7 +55,9 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
         saveResource("database.yml", false);
         saveResource("chatfilter.db", false);
 
-        getLogger().info("Loading config files...");
+        saveConfigsFromResources();
+
+
         configLoader = new SpigotConfigLoader(
                 new File(getDataFolder(), "blocked-patterns.yml"),
                 new File(getDataFolder(), "filter.yml"),
@@ -67,7 +70,7 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
             throw new RuntimeException(e);
         }
 
-        getLogger().info("Using Database: " + database.getClass().getSimpleName());
+
 
         registerCommands();
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
@@ -85,6 +88,8 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
 
         getCommand("netzchatfilter").setExecutor(new ChatFilterCommand(this, baseCommand));
         getCommand("netzchatfilter").setAliases(List.of("chatfilter", "ncf", "cf"));
+
+        Messages.NO_PERMISSION.send(senderFactory.wrap(getServer().getConsoleSender()));
 
     }
 

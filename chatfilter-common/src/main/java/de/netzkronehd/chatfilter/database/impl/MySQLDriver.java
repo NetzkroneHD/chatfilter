@@ -1,13 +1,12 @@
-package de.netzkronehd.chatfilter.database.driver.impl;
+package de.netzkronehd.chatfilter.database.impl;
 
 import de.netzkronehd.chatfilter.database.Database;
-import de.netzkronehd.chatfilter.database.driver.DatabaseDriver;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class MySQLDriver extends Database implements DatabaseDriver {
+public class MySQLDriver extends Database {
 
     public MySQLDriver() {
     }

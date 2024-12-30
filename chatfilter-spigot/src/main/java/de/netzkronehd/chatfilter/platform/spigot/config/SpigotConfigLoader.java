@@ -32,8 +32,6 @@ public class SpigotConfigLoader implements ConfigLoader {
         config.setSameMessageFilterConfig(loadSameMessageFilterConfig());
         config.setSimilarityFilterConfig(loadSimilarityFilterConfig());
         config.setTooManyViolationsFilterConfig(loadTooManyViolationsFilterConfig());
-        System.out.println("Loaded config:");
-        System.out.println(config);
     }
 
     private ChatFilterConfig.DatabaseConfig loadDatabaseConfig() {

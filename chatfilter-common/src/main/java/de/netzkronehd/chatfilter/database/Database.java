@@ -206,4 +206,7 @@ public abstract class Database {
         );
     }
 
+    public abstract String getName();
+    public abstract String getClassName();
+
 }
