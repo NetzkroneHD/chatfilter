@@ -21,6 +21,7 @@ import de.netzkronehd.chatfilter.plugin.listener.ChatFilterListener;
 import de.netzkronehd.translation.exception.UnknownLocaleException;
 import de.netzkronehd.translation.sender.spigot.SpigotSenderFactory;
 import lombok.Getter;
+import net.kyori.adventure.translation.GlobalTranslator;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -70,11 +71,13 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
             throw new RuntimeException(e);
         }
 
-
-
         registerCommands();
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
+
+        Messages.NO_PERMISSION.send(senderFactory.wrap(getServer().getConsoleSender()));
+        GlobalTranslator.translator().sources().forEach((source) -> getLogger().info("Loaded translation source: "+source));
+
     }
 
     @Override
@@ -88,8 +91,6 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
 
         getCommand("netzchatfilter").setExecutor(new ChatFilterCommand(this, baseCommand));
         getCommand("netzchatfilter").setAliases(List.of("chatfilter", "ncf", "cf"));
-
-        Messages.NO_PERMISSION.send(senderFactory.wrap(getServer().getConsoleSender()));
 
     }
 

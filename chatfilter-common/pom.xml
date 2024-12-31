@@ -113,7 +113,7 @@
                                         <include>de/netzkronehd/chatfilter/**</include>
                                         <include>*.yml</include>
                                         <include>*.json</include>
-                                        <include>chatfilter_*.properties</include>
+                                        <include>locales/**</include>
                                         <include>chatfilter.db</include>
                                     </includes>
                                 </filter>

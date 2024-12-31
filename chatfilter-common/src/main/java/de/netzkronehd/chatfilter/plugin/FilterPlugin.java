@@ -45,7 +45,9 @@ public interface FilterPlugin {
         loadConfig();
         loadDatabase();
         Messages.TRANSLATION_MANAGER.reload();
-        Messages.TRANSLATION_MANAGER.loadFromFileSystem(getPluginDataFolder());
+        Messages.TRANSLATION_MANAGER.loadFromFileSystem(getPluginDataFolder().resolve("locales/"), (path) -> {
+            getLogger().info("Loading locale: "+path);
+        });
         Messages.TRANSLATION_MANAGER.getInstalled().forEach((locale) -> getLogger().info("Loaded locale: "+locale));
     }
 
@@ -54,8 +56,7 @@ public interface FilterPlugin {
         saveResource("filter.yml", false);
         saveResource("database.yml", false);
         saveResource("chatfilter.db", false);
-        saveResource("chatfilter_de.properties", false);
-        saveResource("chatfilter_en.properties", false);
+        saveResource("locales/en_PT.properties", false);
     }
 
     void saveResource(String resource, boolean replace);

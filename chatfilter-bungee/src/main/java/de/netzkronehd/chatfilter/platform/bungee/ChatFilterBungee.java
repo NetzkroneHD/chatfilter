@@ -15,6 +15,9 @@ import de.netzkronehd.chatfilter.plugin.listener.ChatFilterListener;
 import de.netzkronehd.translation.exception.UnknownLocaleException;
 import de.netzkronehd.translation.sender.bungee.BungeeSenderFactory;
 import lombok.Getter;
+import net.kyori.adventure.key.Key;
+import net.kyori.adventure.translation.GlobalTranslator;
+import net.kyori.adventure.translation.TranslationRegistry;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
@@ -43,12 +46,7 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
         getLogger().info("ChatFilter is loading...");
         this.senderFactory = new BungeeSenderFactory(this);
         this.chatFilterListener = new ChatFilterListener(this);
-        saveResource("blocked-patterns.yml", false);
-        saveResource("filter.yml", false);
-        saveResource("database.yml", false);
-        saveResource("chatfilter.db", false);
-
-
+        saveConfigsFromResources();
 
         try {
             configLoader = new BungeeConfigLoader(
