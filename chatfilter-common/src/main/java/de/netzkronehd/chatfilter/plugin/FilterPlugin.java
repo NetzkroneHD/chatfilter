@@ -4,7 +4,7 @@ import de.netzkronehd.chatfilter.chain.FilterChain;
 import de.netzkronehd.chatfilter.config.ChatFilterConfig;
 import de.netzkronehd.chatfilter.database.Database;
 import de.netzkronehd.chatfilter.exception.NoFilterChainException;
-import de.netzkronehd.chatfilter.locale.Messages;
+import de.netzkronehd.chatfilter.locale.MessagesProvider;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
@@ -44,11 +44,9 @@ public interface FilterPlugin {
     default void reload() throws SQLException, UnknownLocaleException, IOException {
         loadConfig();
         loadDatabase();
-        Messages.TRANSLATION_MANAGER.reload();
-        Messages.TRANSLATION_MANAGER.loadFromFileSystem(getPluginDataFolder().resolve("locales/"), (path) -> {
-            getLogger().info("Loading locale: "+path);
-        });
-        Messages.TRANSLATION_MANAGER.getInstalled().forEach((locale) -> getLogger().info("Loaded locale: "+locale));
+        MessagesProvider.clear();
+        MessagesProvider.loadFromFilePath(getPluginDataFolder().resolve("locales/"));
+        getLogger().info("Locales: "+MessagesProvider.getLocales());
     }
 
     default void saveConfigsFromResources() {
@@ -56,7 +54,7 @@ public interface FilterPlugin {
         saveResource("filter.yml", false);
         saveResource("database.yml", false);
         saveResource("chatfilter.db", false);
-        saveResource("locales/en_PT.properties", false);
+        saveResource("locales/en.properties", false);
     }
 
     void saveResource(String resource, boolean replace);

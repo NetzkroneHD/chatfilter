@@ -51,13 +51,7 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
         getLogger().info("ChatFilter is loading...");
         this.senderFactory = new SpigotSenderFactory(this);
         this.chatFilterListener = new ChatFilterListener(this);
-        saveResource("blocked-patterns.yml", false);
-        saveResource("filter.yml", false);
-        saveResource("database.yml", false);
-        saveResource("chatfilter.db", false);
-
         saveConfigsFromResources();
-
 
         configLoader = new SpigotConfigLoader(
                 new File(getDataFolder(), "blocked-patterns.yml"),

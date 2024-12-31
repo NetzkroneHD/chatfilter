@@ -5,55 +5,31 @@ import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.processor.FilterProcessorResult;
 import de.netzkronehd.chatfilter.violation.FilterViolation;
 import de.netzkronehd.translation.args.Args;
-import de.netzkronehd.translation.manager.TranslationManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import static de.netzkronehd.translation.Message.formatBoolean;
+import static de.netzkronehd.chatfilter.locale.MessagesProvider.translate;
 import static de.netzkronehd.translation.Message.formatContext;
 import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
-import static net.kyori.adventure.text.format.TextDecoration.BOLD;
+import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.date;
+import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 
 public interface Messages {
 
-    TranslationManager TRANSLATION_MANAGER = new TranslationManager("netzchatfilter", "main");
-
-    SimpleDateFormat DATE_TIME_FORMATTER = new SimpleDateFormat("HH:mm:ss dd.MM.yyyy");
-    TextComponent FULL_STOP = text('.');
-    TextComponent ARROW_RIGHT = text("»");
-    TextComponent ARROW_LEFT = text("«");
-
-    Component PREFIX_COMPONENT = text()
-            .color(GRAY)
-            .append(text('[').color(DARK_GRAY))
-            .append(text()
-                    .decoration(BOLD, true)
-                    .append(text('N', AQUA))
-                    .append(text('C', BLUE))
-                    .append(text('F', BLUE))
-            )
-            .append(text(']').color(DARK_GRAY))
-            .append(space())
-            .append(ARROW_RIGHT)
-            .build();
-
     static TextComponent prefixed(ComponentLike component) {
         return text()
-                .append(PREFIX_COMPONENT)
+                .append(deserialize(translate("chatfilter.prefix")))
                 .append(space())
                 .append(component)
                 .build();
-    }
-
-    static TextComponent formatTime(long time) {
-        return text(DATE_TIME_FORMATTER.format(new Date(time)));
     }
 
     static TextComponent formatMessageState(MessageState state) {
@@ -81,106 +57,116 @@ public interface Messages {
 
 
 
-    Args.Args0 NO_PERMISSION = () -> prefixed(translatable()
+    Args.Args0 NO_PERMISSION = () -> prefixed(
             // "&cYou do not have permission to use this command."
-            .key("chatfilter.command.no-permission")
+            deserialize(translate("chatfilter.command.no-permission"))
             .color(RED)
-            .append(FULL_STOP)
     );
 
-    Args.Args0 RELOADING = () -> prefixed(translatable()
+    Args.Args0 RELOADING = () -> prefixed(
             // "&7Reloading..."
-            .key("chatfilter.command.reloading")
+            deserialize(translate("chatfilter.command.reloading"))
             .color(GRAY)
     );
 
-    Args.Args1<Long> RELOAD_COMPLETE = (time) -> prefixed(translatable()
-            // "&aReloaded after &e{0}ms"
-            .key("chatfilter.command.reload-complete")
+    Args.Args1<Long> RELOAD_COMPLETE = (time) -> prefixed(
+            // "&aReloaded after &e<time>ms"
+            deserialize(
+                    translate("chatfilter.command.reload-complete"),
+                    component("time", text(time).color(YELLOW))
+            )
             .color(GREEN)
-            .arguments(text(time).color(YELLOW))
-            .append(FULL_STOP)
     );
 
-    Args.Args0 PARSE_USAGE = () -> prefixed(translatable()
+    Args.Args0 PARSE_USAGE = () -> prefixed(
             // "&cUsage: &e/chatfilter parse <filter> <message>"
-            .key("chatfilter.command.parse.usage")
+            deserialize(translate("chatfilter.command.parse.usage"))
             .color(RED)
     );
 
-    Args.Args0 BASE_USAGE = () -> prefixed(translatable()
+    Args.Args0 BASE_USAGE = () -> prefixed(
             // "&eparse <filter> <message>&8 -&7 Parses a message through the filter chain\n"
             // "&eviolations <player> [options]&8 -&7 Lists the violations of a player\n"
             // "&ereload&8 -&7 Reloads the plugin\"
             // "&cUsage: &e/chatfilter <subcommand> [options]"
-            .key("chatfilter.command.base.usage")
+            deserialize(translate("chatfilter.command.base.usage"))
             .color(RED)
     );
 
-    Args.Args0 VIOLATIONS_USAGE = () -> prefixed(translatable()
+    Args.Args0 VIOLATIONS_USAGE = () -> prefixed(
             // &cOptions: &e-f <from> &e-t <to> &e-n <filterName>\n
             // "&cUsage: &e/chatfilter violations <player> [options]
-            .key("chatfilter.command.violations.usage")
+            deserialize(translate("chatfilter.command.violations.usage"))
             .color(RED)
     );
 
-    Args.Args1<String> BLOCKED = (reason) -> prefixed(translatable()
+    Args.Args1<String> BLOCKED = (reason) -> prefixed(
             // "&cMessage blocked: &e{0}"
-            .key("chatfilter.blocked")
+            deserialize(
+                    translate("chatfilter.blocked"),
+                    component("reason", text(reason).color(YELLOW))
+            )
             .color(RED)
-            .arguments(text(reason).color(YELLOW))
     );
 
-    Args.Args1<Exception> ERROR = (ex) -> prefixed(translatable()
+    Args.Args1<Exception> ERROR = (ex) -> prefixed(
             // "&cAn error occurred: &e{0}"
-            .key("chatfilter.error")
+            deserialize(
+                    translate("chatfilter.error"),
+                    component("error", text(ex.getMessage()).color(YELLOW))
+            )
             .color(RED)
-            .arguments(text(ex.getMessage()).color(YELLOW))
     );
 
-    Args.Args1<String> PLAYER_NOT_FOUND = (player) -> prefixed(translatable()
+    Args.Args1<String> PLAYER_NOT_FOUND = (player) -> prefixed(
             // "&cPlayer &e{0}&c not found."
-            .key("chatfilter.player-not-found")
+            deserialize(
+                    translate("chatfilter.player-not-found"),
+                    component("player", text(player).color(YELLOW))
+            )
             .color(RED)
-            .arguments(text(player).color(YELLOW))
-            .append(FULL_STOP)
     );
 
-    Args.Args1<String> FILTER_NOT_FOUND = (filter) -> prefixed(translatable()
+    Args.Args1<String> FILTER_NOT_FOUND = (filter) -> prefixed(
             // "&cFilter &e{0}&c not found."
-            .key("chatfilter.command.filter-not-found")
+            deserialize(
+                    translate("chatfilter.command.filter-not-found"),
+                    component("filter", text(filter).color(YELLOW))
+            )
             .color(RED)
-            .arguments(text(filter).color(YELLOW))
-            .append(FULL_STOP)
     );
 
-    Args.Args1<FilterChainResult> PARSE_RESULT = (result) -> prefixed(translatable()
+    Args.Args1<FilterChainResult> PARSE_RESULT = (result) -> prefixed(
             // "&3allowed&7: {0} &3filtered&7: {1} &3blocked&7: {2}\n
             // &3Filters&7:\n
-            // {3}"
-            .key("chatfilter.command.parse.result")
+            // <filters>"
+            deserialize(
+                    translate("chatfilter.command.parse.result"),
+                    component("allowed", text(result.isAllowed()).color(DARK_AQUA)),
+                    component("filtered", text(result.isFiltered()).color(DARK_AQUA)),
+                    component("blocked", text(result.isBlocked()).color(DARK_AQUA)),
+                    component("filters", formatProcessorResult(result.getResults()))
+            )
             .color(GRAY)
-            .arguments(
-                    formatBoolean(result.isAllowed()),
-                    formatBoolean(result.isFiltered()),
-                    formatBoolean(result.isBlocked()),
-                    newline().append(formatProcessorResult(result.getResults()))
-            ).append(FULL_STOP)
     );
 
-    Args.Args2<FilterViolation, String> FILTER_VIOLATION = (violation, playerName) -> prefixed(translatable()
-            // "&3{0}&7: &e{0} &7({1}) &7- {2} &7- ({3}) {4}"
+    Args.Args2<FilterViolation, String> FILTER_VIOLATION = (violation, playerName) -> prefixed(
+            // "&3<id>&7: &e<player> &7(<filter>) &7- <state> &7- (<date:'yyyy-MM-dd HH:mm:ss'>) <message>"
             // &31&7: &eNetzkroneHD &7(MaxSimilarityFilter) &7- &cBLOCKED &7- (12:00:00 05.06.2002) Hello World"
-            .key("chatfilter.command.violations.violation")
-            .color(GRAY)
-            .arguments(
-                    text(violation.id()).color(DARK_AQUA),
-                    text(playerName).color(YELLOW),
-                    text(violation.filterName()).color(DARK_AQUA),
-                    formatMessageState(violation.state()),
-                    formatTime(violation.messageTime()).color(GRAY),
-                    text(violation.message()).color(GRAY)
+            deserialize(
+                    translate("chatfilter.command.violations.violation"),
+                    component("id", text(violation.id()).color(DARK_AQUA)),
+                    component("player", text(playerName).color(YELLOW)),
+                    component("filter", text(violation.filterName()).color(DARK_AQUA)),
+                    component("state", formatMessageState(violation.state())),
+                    date("date", new Date(violation.messageTime()).toInstant()),
+                    component("message", text(violation.message()).color(GRAY))
             )
+            .color(GRAY)
     );
+
+    private static Component deserialize(String message, TagResolver... tagResolvers) {
+        return miniMessage().deserialize(message, tagResolvers);
+    }
 
 }
