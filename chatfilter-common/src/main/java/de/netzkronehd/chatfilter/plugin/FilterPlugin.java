@@ -48,8 +48,6 @@ public interface FilterPlugin {
         MessagesProvider.clear();
         MessagesProvider.loadFromFilePath(getPluginDataFolder().resolve("locales/"));
         MessagesProvider.setCurrentLocale(new Locale(getFilterConfig().getLocale()));
-        getLogger().info("Locales: "+MessagesProvider.getLocales());
-        getLogger().info("Processors: "+getFilterChain().getProcessors());
     }
 
     default void saveConfigsFromResources() {
