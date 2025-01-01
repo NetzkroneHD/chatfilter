@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.Collection;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -46,13 +47,15 @@ public interface FilterPlugin {
         loadDatabase();
         MessagesProvider.clear();
         MessagesProvider.loadFromFilePath(getPluginDataFolder().resolve("locales/"));
+        MessagesProvider.setCurrentLocale(new Locale(getFilterConfig().getLocale()));
         getLogger().info("Locales: "+MessagesProvider.getLocales());
+        getLogger().info("Processors: "+getFilterChain().getProcessors());
     }
 
     default void saveConfigsFromResources() {
         saveResource("blocked-patterns.yml", false);
         saveResource("filter.yml", false);
-        saveResource("database.yml", false);
+        saveResource("config.yml", false);
         saveResource("chatfilter.db", false);
         saveResource("locales/en.properties", false);
     }

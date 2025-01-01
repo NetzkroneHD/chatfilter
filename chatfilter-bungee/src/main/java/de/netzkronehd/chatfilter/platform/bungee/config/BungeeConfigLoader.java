@@ -16,17 +16,18 @@ public class BungeeConfigLoader implements ConfigLoader {
     private final File dataFolder;
     private final Configuration blockedPatternsCfg;
     private final Configuration filterCfg;
-    private final Configuration databaseCfg;
+    private final Configuration baseCfg;
 
-    public BungeeConfigLoader(File blockedPatternsFile, File filterFile, File databaseFile) throws IOException {
-        this.dataFolder = databaseFile.getParentFile();
+    public BungeeConfigLoader(File blockedPatternsFile, File filterFile, File baseFile) throws IOException {
+        this.dataFolder = baseFile.getParentFile();
         this.blockedPatternsCfg = loadConfiguration(blockedPatternsFile);
         this.filterCfg = loadConfiguration(filterFile);
-        this.databaseCfg = loadConfiguration(databaseFile);
+        this.baseCfg = loadConfiguration(baseFile);
     }
 
     @Override
     public void load(ChatFilterConfig config) {
+        config.setLocale(filterCfg.getString("locale", "en"));
         config.setStopOnBlock(filterCfg.getBoolean("stop-on-block", true));
         config.setDatabaseConfig(loadDatabaseConfig());
         config.setBlockedPatternFilterConfig(loadBlockedPatternFilterConfig());
@@ -39,12 +40,12 @@ public class BungeeConfigLoader implements ConfigLoader {
 
     private ChatFilterConfig.DatabaseConfig loadDatabaseConfig() {
         ChatFilterConfig.DatabaseConfig config = ChatFilterConfig.DatabaseConfig.builder()
-                .driver(databaseCfg.getString("driver"))
-                .host(databaseCfg.getString("host"))
-                .port(databaseCfg.getInt("port"))
-                .database(databaseCfg.getString("database"))
-                .username(databaseCfg.getString("username"))
-                .password(databaseCfg.getString("password"))
+                .driver(baseCfg.getString("database.driver"))
+                .host(baseCfg.getString("database.host"))
+                .port(baseCfg.getInt("database.port"))
+                .database(baseCfg.getString("database.database"))
+                .username(baseCfg.getString("database.username"))
+                .password(baseCfg.getString("database.password"))
                 .build();
         if(config.getDriver().equalsIgnoreCase("sqlite")) {
             config.setDatabase(dataFolder.getAbsolutePath() + "/chatfilter.db");

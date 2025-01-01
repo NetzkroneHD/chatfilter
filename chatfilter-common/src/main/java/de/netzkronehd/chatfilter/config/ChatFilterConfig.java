@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 @NoArgsConstructor
 public class ChatFilterConfig {
 
+    private String locale;
     private boolean stopOnBlock;
 
     private DatabaseConfig databaseConfig;

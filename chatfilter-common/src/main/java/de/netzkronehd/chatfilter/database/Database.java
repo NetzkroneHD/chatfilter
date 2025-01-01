@@ -156,9 +156,9 @@ public abstract class Database {
     }
 
     public List<FilterViolation> listViolations(UUID playerUniqueId, String filterName, long fromTime, long toTime) throws SQLException {
-        final PreparedStatement ps = connection.prepareStatement("SELECT * FROM chatfilter_violations WHERE player_uniqueId = ? AND filter_name = ? AND message_time >= ? AND message_time <= ?");
+        final PreparedStatement ps = connection.prepareStatement("SELECT * FROM chatfilter_violations WHERE player_uniqueId = ? AND lower(filter_name) = ? AND message_time >= ? AND message_time <= ?");
         ps.setString(1, playerUniqueId.toString());
-        ps.setString(2, filterName);
+        ps.setString(2, filterName.toLowerCase());
         ps.setLong(3, fromTime);
         ps.setLong(4, toTime);
         final ResultSet rs = ps.executeQuery();
@@ -185,6 +185,28 @@ public abstract class Database {
         return ps.executeUpdate();
     }
 
+    public int deleteViolations(UUID playerUniqueId) throws SQLException {
+        final PreparedStatement ps = connection.prepareStatement("DELETE FROM chatfilter_violations WHERE player_uniqueId = ?");
+        ps.setString(1, playerUniqueId.toString());
+        return ps.executeUpdate();
+    }
+
+    public int deleteViolations(UUID playerUniqueId, long fromTime, long toTime) throws SQLException {
+        final PreparedStatement ps = connection.prepareStatement("DELETE FROM chatfilter_violations WHERE player_uniqueId = ? AND message_time >= ? AND message_time <= ?");
+        ps.setString(1, playerUniqueId.toString());
+        ps.setLong(2, fromTime);
+        ps.setLong(3, toTime);
+        return ps.executeUpdate();
+    }
+
+    public int deleteViolations(UUID playerUniqueId, String filterName, long fromTime, long toTime) throws SQLException {
+        final PreparedStatement ps = connection.prepareStatement("DELETE FROM chatfilter_violations WHERE player_uniqueId = ? AND lower(filter_name) = ? AND message_time >= ? AND message_time <= ?");
+        ps.setString(1, playerUniqueId.toString());
+        ps.setString(2, filterName.toLowerCase());
+        ps.setLong(3, fromTime);
+        ps.setLong(4, toTime);
+        return ps.executeUpdate();
+    }
 
     public boolean isConnected() throws SQLException {
         return connection != null && !connection.isClosed();

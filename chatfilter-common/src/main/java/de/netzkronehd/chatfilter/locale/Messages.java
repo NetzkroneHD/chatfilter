@@ -11,18 +11,20 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 import static de.netzkronehd.chatfilter.locale.MessagesProvider.translate;
-import static de.netzkronehd.translation.Message.formatContext;
+import static de.netzkronehd.translation.Message.formatBoolean;
 import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
-import static net.kyori.adventure.text.minimessage.tag.resolver.Formatter.date;
 import static net.kyori.adventure.text.minimessage.tag.resolver.Placeholder.component;
 
 public interface Messages {
+
+    SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
 
     static TextComponent prefixed(ComponentLike component) {
         return text()
@@ -32,6 +34,10 @@ public interface Messages {
                 .build();
     }
 
+    static TextComponent formatTime(long time) {
+        return text(DATE_FORMAT.format(new Date(time)));
+    }
+
     static TextComponent formatMessageState(MessageState state) {
         if(state.isAllowed()) return text("ALLOWED", NamedTextColor.GREEN);
         if(state.isFiltered()) return text("FILTERED", GOLD);
@@ -39,12 +45,14 @@ public interface Messages {
         return text("UNKNOWN", LIGHT_PURPLE);
     }
 
-    static TextComponent formatProcessorResult(FilterProcessorResult result) {
-        return text("- ").color(GRAY)
-                .append(formatContext("filteredMessage", result.filteredMessage().orElse("null")))
-                .append(formatContext("state", formatMessageState(result.state())))
-                .append(formatContext("processor", result.processor().getName()))
-                .append(formatContext("reason", result.reason()));
+    static Component formatProcessorResult(FilterProcessorResult result) {
+        return deserialize(
+                translate("chatfilter.processor-result"),
+                component("filtered_message", text(result.filteredMessage().orElse("null"))),
+                component("state", formatMessageState(result.state())),
+                component("processor", text(result.processor().getName())),
+                component("reason", text(result.reason()))
+        );
     }
 
     static TextComponent formatProcessorResult(List<FilterProcessorResult> result) {
@@ -65,15 +73,15 @@ public interface Messages {
 
     Args.Args0 RELOADING = () -> prefixed(
             // "&7Reloading..."
-            deserialize(translate("chatfilter.command.reloading"))
+            deserialize(translate("chatfilter.command.reload.reloading"))
             .color(GRAY)
     );
 
     Args.Args1<Long> RELOAD_COMPLETE = (time) -> prefixed(
             // "&aReloaded after &e<time>ms"
             deserialize(
-                    translate("chatfilter.command.reload-complete"),
-                    component("time", text(time).color(YELLOW))
+                    translate("chatfilter.command.reload.complete"),
+                    component("time", text(time))
             )
             .color(GREEN)
     );
@@ -104,7 +112,7 @@ public interface Messages {
             // "&cMessage blocked: &e{0}"
             deserialize(
                     translate("chatfilter.blocked"),
-                    component("reason", text(reason).color(YELLOW))
+                    component("reason", text(reason))
             )
             .color(RED)
     );
@@ -113,7 +121,7 @@ public interface Messages {
             // "&cAn error occurred: &e{0}"
             deserialize(
                     translate("chatfilter.error"),
-                    component("error", text(ex.getMessage()).color(YELLOW))
+                    component("error", text(ex.getMessage()))
             )
             .color(RED)
     );
@@ -122,7 +130,7 @@ public interface Messages {
             // "&cPlayer &e{0}&c not found."
             deserialize(
                     translate("chatfilter.player-not-found"),
-                    component("player", text(player).color(YELLOW))
+                    component("player", text(player))
             )
             .color(RED)
     );
@@ -131,7 +139,7 @@ public interface Messages {
             // "&cFilter &e{0}&c not found."
             deserialize(
                     translate("chatfilter.command.filter-not-found"),
-                    component("filter", text(filter).color(YELLOW))
+                    component("filter", text(filter))
             )
             .color(RED)
     );
@@ -142,28 +150,49 @@ public interface Messages {
             // <filters>"
             deserialize(
                     translate("chatfilter.command.parse.result"),
-                    component("allowed", text(result.isAllowed()).color(DARK_AQUA)),
-                    component("filtered", text(result.isFiltered()).color(DARK_AQUA)),
-                    component("blocked", text(result.isBlocked()).color(DARK_AQUA)),
+                    component("allowed", formatBoolean(result.isAllowed())),
+                    component("filtered", formatBoolean(result.isFiltered())),
+                    component("blocked", formatBoolean(result.isBlocked())),
                     component("filters", formatProcessorResult(result.getResults()))
             )
             .color(GRAY)
     );
 
-    Args.Args2<FilterViolation, String> FILTER_VIOLATION = (violation, playerName) -> prefixed(
-            // "&3<id>&7: &e<player> &7(<filter>) &7- <state> &7- (<date:'yyyy-MM-dd HH:mm:ss'>) <message>"
-            // &31&7: &eNetzkroneHD &7(MaxSimilarityFilter) &7- &cBLOCKED &7- (12:00:00 05.06.2002) Hello World"
+    Args.Args2<String, Integer> CLEARED = (player, count) -> prefixed(
+            // "&7Cleared &e{0}&7 violations."
             deserialize(
-                    translate("chatfilter.command.violations.violation"),
-                    component("id", text(violation.id()).color(DARK_AQUA)),
-                    component("player", text(playerName).color(YELLOW)),
-                    component("filter", text(violation.filterName()).color(DARK_AQUA)),
-                    component("state", formatMessageState(violation.state())),
-                    date("date", new Date(violation.messageTime()).toInstant()),
-                    component("message", text(violation.message()).color(GRAY))
+                    translate("chatfilter.command.violations.cleared"),
+                    component("player", text(player)),
+                    component("count", text(count))
             )
             .color(GRAY)
     );
+
+    Args.Args2<FilterViolation, String> FILTER_VIOLATION = (violation, playerName) ->
+            // "&3<id>&7: &e<player> &7(<filter>) &7- <state> &7- (<datetime:'yyyy-MM-dd HH:mm:ss'>) <message>"
+            // &31&7: &eNetzkroneHD &7(MaxSimilarityFilter) &7- &cBLOCKED &7- (12:00:00 05.06.2002) Hello World"
+            deserialize(
+                    translate("chatfilter.command.violations.violation"),
+                    component("id", text(violation.id())),
+                    component("player", text(playerName)),
+                    component("filter", text(violation.filterName())),
+                    component("state", formatMessageState(violation.state())),
+                    component("datetime", formatTime(violation.messageTime())),
+                    component("message", text(violation.message()))
+            )
+            .color(GRAY);
+
+    Args.Args2<List<FilterViolation>, String> VIOLATIONS = (violations, playerName) -> {
+        final TextComponent.Builder builder = text();
+        violations.forEach(violation -> builder.append(FILTER_VIOLATION.build(violation, playerName)).append(newline()));
+
+        final Component text = deserialize(
+                translate("chatfilter.command.violations.violations"),
+                component("player", text(playerName)),
+                component("violations", builder)
+        );
+        return prefixed(text);
+    };
 
     private static Component deserialize(String message, TagResolver... tagResolvers) {
         return miniMessage().deserialize(message, tagResolvers);

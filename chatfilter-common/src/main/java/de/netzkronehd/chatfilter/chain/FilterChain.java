@@ -38,6 +38,7 @@ public class FilterChain {
         if(config.getTooManyViolationsFilterConfig().isEnabled()) {
             processors.add(config.getTooManyViolationsFilterConfig().createProcessor());
         }
+        sortProcessors();
     }
 
     /**

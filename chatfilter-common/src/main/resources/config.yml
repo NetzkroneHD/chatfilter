@@ -1,0 +1,13 @@
+# This option is used to configure the language of the plugin.
+# Supported are: 'en'
+# If you want to add a new language, you have to create a new language file in the 'locales' folder.
+# With the name of the language code (e.g. 'fr.properties' for French).
+locale: 'en'
+database:
+  # Can be 'SQLite', 'MySQL' or 'PostgreSQL'
+  driver: 'SQLite'
+  host: '127.0.0.1'
+  port: 3306
+  database: 'chatfilter'
+  username: 'username'
+  password: 'password'

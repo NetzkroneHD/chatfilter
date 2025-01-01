@@ -14,16 +14,17 @@ public class SpigotConfigLoader implements ConfigLoader {
 
     private final YamlConfiguration blockedPatternsCfg;
     private final YamlConfiguration filterCfg;
-    private final YamlConfiguration databaseCfg;
+    private final YamlConfiguration baseCfg;
 
-    public SpigotConfigLoader(File blockedPatternsFile, File filterFile, File databaseFile) {
+    public SpigotConfigLoader(File blockedPatternsFile, File filterFile, File baseFile) {
         this.blockedPatternsCfg = loadConfiguration(blockedPatternsFile);
         this.filterCfg = loadConfiguration(filterFile);
-        this.databaseCfg = loadConfiguration(databaseFile);
+        this.baseCfg = loadConfiguration(baseFile);
     }
 
     @Override
     public void load(ChatFilterConfig config) {
+        config.setLocale(filterCfg.getString("locale", "en"));
         config.setStopOnBlock(filterCfg.getBoolean("stop-on-block", true));
         config.setDatabaseConfig(loadDatabaseConfig());
         config.setBlockedPatternFilterConfig(loadBlockedPatternFilterConfig());
@@ -36,12 +37,12 @@ public class SpigotConfigLoader implements ConfigLoader {
 
     private ChatFilterConfig.DatabaseConfig loadDatabaseConfig() {
         return ChatFilterConfig.DatabaseConfig.builder()
-                .driver(databaseCfg.getString("driver"))
-                .host(databaseCfg.getString("host"))
-                .port(databaseCfg.getInt("port"))
-                .database(databaseCfg.getString("database"))
-                .username(databaseCfg.getString("username"))
-                .password(databaseCfg.getString("password"))
+                .driver(baseCfg.getString("database.driver"))
+                .host(baseCfg.getString("database.host"))
+                .port(baseCfg.getInt("database.port"))
+                .database(baseCfg.getString("database.database"))
+                .username(baseCfg.getString("database.username"))
+                .password(baseCfg.getString("database.password"))
                 .build();
     }
 

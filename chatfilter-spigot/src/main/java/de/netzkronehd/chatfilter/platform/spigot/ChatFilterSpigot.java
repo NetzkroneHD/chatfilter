@@ -56,7 +56,7 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
         configLoader = new SpigotConfigLoader(
                 new File(getDataFolder(), "blocked-patterns.yml"),
                 new File(getDataFolder(), "filter.yml"),
-                new File(getDataFolder(), "database.yml")
+                new File(getDataFolder(), "config.yml")
         );
         try {
             getLogger().info("Reading config and connecting to database...");

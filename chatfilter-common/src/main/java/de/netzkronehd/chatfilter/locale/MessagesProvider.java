@@ -28,12 +28,10 @@ public class MessagesProvider {
     public static String translate(Locale locale, String key) {
         final Map<String, String> messages = LOCALES.get(locale);
         if (messages == null) {
-            System.out.println("No messages for locale " + locale);
             return key;
         }
         final String message = messages.get(key);
         if (message == null) {
-            System.out.println("No message for key " + key + " in locale " + locale);
             return key;
         }
         return message;

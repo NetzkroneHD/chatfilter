@@ -4,6 +4,7 @@ import de.netzkronehd.chatfilter.database.model.UuidAndName;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.FilterPlugin;
 import de.netzkronehd.chatfilter.plugin.command.FilterCommand;
+import de.netzkronehd.chatfilter.processor.FilterProcessor;
 import de.netzkronehd.chatfilter.violation.FilterViolation;
 import org.apache.commons.cli.*;
 
@@ -12,6 +13,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 
 import static de.netzkronehd.chatfilter.locale.Messages.*;
 import static org.apache.commons.cli.Option.builder;
@@ -31,7 +33,7 @@ public class ViolationsCommand implements FilterCommand {
                 .addOption(builder().option("f").longOpt("from").hasArg().optionalArg(true).build())
                 .addOption(builder().option("t").longOpt("to").hasArg().optionalArg(true).build())
                 .addOption(builder().option("n").longOpt("filterName").hasArg().optionalArg(true).build());
-        this.dateFormat = new SimpleDateFormat("dd.MM.yyyy-HH:mm:ss");
+        this.dateFormat = new SimpleDateFormat("HH:mm:ss_dd-MM-yyyy");
     }
 
     @Override
@@ -44,8 +46,9 @@ public class ViolationsCommand implements FilterCommand {
             VIOLATIONS_USAGE.send(chatFilterPlayer.getSender());
             return;
         }
+
         try {
-            final String playerName = args[0];
+            final String playerName = args[1];
             final CommandLine parsed = parser.parse(options, args);
             final String filterName = parsed.getOptionValue("n");
             final String from = parsed.getOptionValue("f");
@@ -55,11 +58,18 @@ public class ViolationsCommand implements FilterCommand {
             filterPlugin.runAsync(() -> {
                 try {
                     final UuidAndName uuid = filterPlugin.getDatabase().getUuid(playerName).orElse(null);
-                    if(uuid == null) {
+                    if (uuid == null) {
                         PLAYER_NOT_FOUND.send(chatFilterPlayer.getSender(), playerName);
                         return;
                     }
-                    sendViolations(chatFilterPlayer, uuid, filterName, fromTime, toTime);
+                    if (args[0].equalsIgnoreCase("show")) {
+                        handleShow(chatFilterPlayer, uuid, filterName, fromTime, toTime);
+                    } else if (args[0].equalsIgnoreCase("clear")) {
+                        handleClear(chatFilterPlayer, uuid, filterName, fromTime, toTime);
+                    } else {
+                        VIOLATIONS_USAGE.send(chatFilterPlayer.getSender());
+                    }
+
                 } catch (SQLException e) {
                     ERROR.send(chatFilterPlayer.getSender(), e);
                     throw new RuntimeException(e);
@@ -70,25 +80,52 @@ public class ViolationsCommand implements FilterCommand {
         }
     }
 
+    private void handleClear(ChatFilterPlayer player, UuidAndName uuidAndName, String filterName, long fromTime, long toTime) throws SQLException {
+        final int violations;
+        if (filterName == null) {
+            violations = filterPlugin.getDatabase().deleteViolations(uuidAndName.uuid(), fromTime, toTime);
+        } else {
+            violations = filterPlugin.getDatabase().deleteViolations(uuidAndName.uuid(), filterName, fromTime, toTime);
+        }
+        CLEARED.send(player.getSender(), uuidAndName.name(), violations);
+    }
+
+    private void handleShow(ChatFilterPlayer player, UuidAndName uuidAndName, String filterName, long fromTime, long toTime) throws SQLException {
+        final List<FilterViolation> violations;
+        if (filterName == null) {
+            violations = filterPlugin.getDatabase().listViolations(uuidAndName.uuid(), fromTime, toTime);
+        } else {
+            violations = filterPlugin.getDatabase().listViolations(uuidAndName.uuid(), filterName, fromTime, toTime);
+        }
+        VIOLATIONS.send(player.getSender(), violations, uuidAndName.name());
+    }
+
     @Override
     public List<String> tabComplete(ChatFilterPlayer chatFilterPlayer, String[] args) {
         if(!hasPermission(chatFilterPlayer) || args.length < 1) {
             return Collections.emptyList();
         }
         if (args.length == 1) {
-            final String prefix = args[0].toLowerCase();
+            return List.of("show", "clear");
+        }
+        if (args.length == 2) {
+            final String prefix = args[1].toLowerCase();
 
             return filterPlugin.getPlayers().stream()
-                    .map(player -> player.getSender().getName().toLowerCase())
-                    .filter(name -> name.startsWith(prefix)).toList();
+                    .map(player -> player.getSender().getName())
+                    .filter(name -> name.toLowerCase().startsWith(prefix)).toList();
         }
         final List<String> tabs = new ArrayList<>();
-        final String lastArg = args[args.length - 1].toLowerCase();
+        final String lastArg = args[args.length - 2].toLowerCase();
         switch (lastArg) {
             case "-f", "-t" -> tabs.add(dateFormat.format(System.currentTimeMillis()));
-            case "-n" -> tabs.addAll(filterPlugin.getFilterChain().getProcessors().stream()
-                    .map(processor -> processor.getName().toLowerCase())
+            case "-n" -> {
+                final String prefix = args[args.length - 1].toLowerCase();
+                tabs.addAll(filterPlugin.getFilterChain().getProcessors().stream()
+                    .map(FilterProcessor::getName)
+                    .filter(name -> name.toLowerCase().startsWith(prefix))
                     .toList());
+            }
             default -> {
                 tabs.add("-f");
                 tabs.add("-t");
@@ -102,16 +139,6 @@ public class ViolationsCommand implements FilterCommand {
     @Override
     public String getName() {
         return "violations";
-    }
-
-    private void sendViolations(ChatFilterPlayer chatFilterPlayer, UuidAndName uuidAndName, String filterName, long fromTime, long toTime) throws SQLException {
-        final List<FilterViolation> violations;
-        if(filterName == null) {
-             violations = filterPlugin.getDatabase().listViolations(uuidAndName.uuid(), fromTime, toTime);
-        } else {
-            violations = filterPlugin.getDatabase().listViolations(uuidAndName.uuid(), filterName, fromTime, toTime);
-        }
-        violations.forEach(violation -> FILTER_VIOLATION.send(chatFilterPlayer.getSender(), violation, uuidAndName.name()));
     }
 
 }

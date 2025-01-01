@@ -3,7 +3,7 @@
 stopOnBlock: true
 
 lastMessageTimeFilter:
-  name: LastMessageTimeFilter
+  name: LastMessageTime
   # Whether to enable the processor
   enabled: true
   # The higher the priority, the earlier the processor will be executed.
@@ -13,12 +13,12 @@ lastMessageTimeFilter:
   # The error message
   reason: "Please wait for 2 seconds before sending the next message."
 sameMessageFilter:
-  name: SameMessageFilter
+  name: SameMessage
   enabled: true
   priority: 900
   reason: "The message is the same as the previous one."
 maxUpperCaseFilter:
-  name: MaxUpperCaseFilter
+  name: MaxUpperCase
   enabled: true
   priority: 800
   # The maximum percentage of uppercase letters allowed in the message
@@ -27,7 +27,7 @@ maxUpperCaseFilter:
   minMessageLength: 10
   reason: "The number of uppercase letters in the message exceeds the limit."
 tooManyViolationsFilter:
-  name: TooManyViolationsFilter
+  name: TooManyViolations
   enabled: true
   priority: 700
   # The maximum percentage of violations allowed
@@ -35,7 +35,7 @@ tooManyViolationsFilter:
   maxViolations: 0.7
   reason: "You have violated the filter too many times."
 similarityFilter:
-  name: SimilarityFilter
+  name: Similarity
   enabled: true
   priority: 600
   # The maximum similarity percentage
@@ -43,7 +43,7 @@ similarityFilter:
   maxSimilarity: 0.8
   reason: "The message is too similar to the previous one."
 blockedPatternFilter:
-  name: BlockedPatternFilter
+  name: BlockedPattern
   enabled: true
   priority: 500
   reason: "The message contains blocked patterns."

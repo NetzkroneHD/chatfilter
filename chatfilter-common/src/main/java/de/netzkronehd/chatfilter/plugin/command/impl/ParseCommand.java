@@ -41,6 +41,8 @@ public class ParseCommand implements FilterCommand {
                 result = filterPlugin.getFilterChain().process(chatFilterPlayer, message, filterName);
             }
             PARSE_RESULT.send(chatFilterPlayer.getSender(), result);
+            chatFilterPlayer.getChatMetrics().setLastMessage(message);
+            chatFilterPlayer.getChatMetrics().setLastMessageTime(System.currentTimeMillis());
         } catch (FilterNotFoundException ex) {
             FILTER_NOT_FOUND.send(chatFilterPlayer.getSender(), filterName);
         }
