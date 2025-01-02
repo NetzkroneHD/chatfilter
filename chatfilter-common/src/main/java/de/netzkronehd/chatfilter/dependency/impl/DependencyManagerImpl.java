@@ -1,9 +1,9 @@
 package de.netzkronehd.chatfilter.dependency.impl;
 
 import de.netzkronehd.chatfilter.dependency.Dependency;
-import de.netzkronehd.chatfilter.dependency.DependencyDownloadException;
 import de.netzkronehd.chatfilter.dependency.DependencyManager;
-import de.netzkronehd.chatfilter.dependency.DependencyNotDownloadedException;
+import de.netzkronehd.chatfilter.dependency.exception.DependencyDownloadException;
+import de.netzkronehd.chatfilter.dependency.exception.DependencyNotDownloadedException;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,19 +21,23 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class DependencyManagerImpl implements DependencyManager {
 
     private static final String MAVEN_CENTRAL_URL = "https://repo1.maven.org/maven2/";
 
     private final Path dependenciesFolder;
-    private final Map<Dependency, URLClassLoader> loadedDependencies;
+    private final Map<Dependency, Class<?>> loadedDependencies;
     private final HttpClient httpClient;
 
     public DependencyManagerImpl(Path dependenciesFolder) {
         this.dependenciesFolder = dependenciesFolder;
         this.loadedDependencies = new HashMap<>();
         this.httpClient = HttpClient.newHttpClient();
+        if (!Files.exists(dependenciesFolder)) {
+            dependenciesFolder.toFile().mkdirs();
+        }
     }
 
     public URI getUri(Dependency dependency) {
@@ -41,9 +45,28 @@ public class DependencyManagerImpl implements DependencyManager {
     }
 
     @Override
-    public void loadDependency(Dependency dependency) throws DependencyNotDownloadedException, MalformedURLException, ClassNotFoundException {
+    public Optional<Class<?>> getClassLoader(Dependency dependency) {
+        return Optional.ofNullable(loadedDependencies.get(dependency));
+    }
+
+    @Override
+    public void downloadAllDependencies() throws DependencyDownloadException, IOException, InterruptedException {
+        for (Dependency dependency : Dependency.values()) {
+            downloadDependency(dependency);
+        }
+    }
+
+    @Override
+    public void loadAllDependencies() throws IOException, DependencyNotDownloadedException, ClassNotFoundException {
+        for (Dependency dependency : Dependency.values()) {
+            loadDependency(dependency);
+        }
+    }
+
+    @Override
+    public Class<?> loadDependency(Dependency dependency) throws DependencyNotDownloadedException, MalformedURLException, ClassNotFoundException {
         if(isLoaded(dependency)) {
-            return;
+            return this.loadedDependencies.get(dependency);
         }
         final File dependencyFile = getDependencyPath(dependency).toFile();
         if(!dependencyFile.exists()) {
@@ -53,12 +76,13 @@ public class DependencyManagerImpl implements DependencyManager {
         final URLClassLoader loader = new URLClassLoader(urls, this.getClass().getClassLoader());
 
         if (dependency.getInitialClassDriver() == null) {
-            return;
+            this.loadedDependencies.put(dependency, null);
+            return null;
         }
-        final Class<?> initialClassClass = loader.loadClass(dependency.getInitialClassDriver());
-        Class.forName(dependency.getInitialClassDriver(), true, loader);
-
-
+        loader.loadClass(dependency.getInitialClassDriver());
+        final Class<?> clazz = Class.forName(dependency.getInitialClassDriver(), true, loader);
+        this.loadedDependencies.put(dependency, clazz);
+        return clazz;
     }
 
     @Override

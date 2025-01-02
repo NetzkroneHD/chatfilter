@@ -8,21 +8,6 @@ import java.util.Base64;
 @Getter
 public enum Dependency {
 
-    // Libraries
-    COMMONS_CLI(
-            "commons-cli",
-            "commons-cli",
-            "1.9.0",
-            "09Uw0PKP0Pu//isLM49w6MuW8WBVeeLjq9TbKcrCTmk=",
-            null),
-
-    GSON(
-            "com.google.code.gson",
-            "gson",
-            "2.11.0",
-            "V5KNblpu3rKr03cKj5W6RNzkXzsjt6ncKzCcWBVSp4s=",
-            null),
-
     // Remote databases
     MYSQL(
             "com{}mysql",

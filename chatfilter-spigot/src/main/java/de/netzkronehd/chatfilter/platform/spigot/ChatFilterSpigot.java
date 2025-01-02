@@ -3,6 +3,10 @@ package de.netzkronehd.chatfilter.platform.spigot;
 import de.netzkronehd.chatfilter.chain.FilterChain;
 import de.netzkronehd.chatfilter.config.ChatFilterConfig;
 import de.netzkronehd.chatfilter.database.Database;
+import de.netzkronehd.chatfilter.dependency.DependencyManager;
+import de.netzkronehd.chatfilter.dependency.exception.DependencyDownloadException;
+import de.netzkronehd.chatfilter.dependency.exception.DependencyNotDownloadedException;
+import de.netzkronehd.chatfilter.dependency.impl.DependencyManagerImpl;
 import de.netzkronehd.chatfilter.exception.NoFilterChainException;
 import de.netzkronehd.chatfilter.locale.Messages;
 import de.netzkronehd.chatfilter.platform.spigot.command.ChatFilterCommand;
@@ -42,6 +46,7 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
     private final FilterChain filterChain = new FilterChain();
     private final ChatFilterConfig filterConfig = new ChatFilterConfig();
 
+    private DependencyManager dependencyManager;
     private ConfigLoader configLoader;
     private ChatFilterListener chatFilterListener;
     private Database database;
@@ -49,6 +54,7 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
     @Override
     public void onEnable() {
         getLogger().info("ChatFilter is loading...");
+        this.dependencyManager = new DependencyManagerImpl(getPluginDataFolder().resolve("libs"));
         this.senderFactory = new SpigotSenderFactory(this);
         this.chatFilterListener = new ChatFilterListener(this);
         saveConfigsFromResources();
@@ -58,6 +64,13 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
                 new File(getDataFolder(), "filter.yml"),
                 new File(getDataFolder(), "config.yml")
         );
+
+        try {
+            loadDependencies();
+        } catch (DependencyDownloadException | IOException | InterruptedException | DependencyNotDownloadedException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
         try {
             getLogger().info("Reading config and connecting to database...");
             reload();

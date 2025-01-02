@@ -2,6 +2,8 @@ package de.netzkronehd.chatfilter.database;
 
 import de.netzkronehd.chatfilter.config.ChatFilterConfig;
 import de.netzkronehd.chatfilter.database.model.UuidAndName;
+import de.netzkronehd.chatfilter.dependency.Dependency;
+import de.netzkronehd.chatfilter.dependency.DependencyManager;
 import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.violation.FilterViolation;
 
@@ -18,8 +20,13 @@ public abstract class Database {
 
     protected Connection connection;
 
-    public void searchDriverClass() throws ClassNotFoundException {
-        Class.forName(getClassName());
+    protected Class<?> driverClass;
+
+    public void loadDriverClass(DependencyManager dependencyManager) {
+        dependencyManager.getClassLoader(getDependency()).ifPresentOrElse(
+                driverClass -> this.driverClass = driverClass,
+                () -> {throw new RuntimeException("Dependency not loaded: " + getDependency().name());}
+        );
     }
 
     public void connect(ChatFilterConfig.DatabaseConfig config) throws SQLException {
@@ -234,5 +241,6 @@ public abstract class Database {
 
     public abstract String getName();
     public abstract String getClassName();
+    public abstract Dependency getDependency();
 
 }

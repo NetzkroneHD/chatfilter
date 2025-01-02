@@ -1,10 +1,14 @@
 package de.netzkronehd.chatfilter.database.impl;
 
 import de.netzkronehd.chatfilter.database.Database;
+import de.netzkronehd.chatfilter.dependency.Dependency;
+import org.sqlite.JDBC;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 public class SqlLiteDriver extends Database {
 
@@ -13,7 +17,17 @@ public class SqlLiteDriver extends Database {
 
     @Override
     public Connection createConnection(String host, int port, String database, String user, String password) throws SQLException {
-        return DriverManager.getConnection("jdbc:sqlite:" + database);
+        if(driverClass == null) {
+            throw new IllegalStateException("ClassLoader is not set.");
+        }
+        try {
+            final Method createConnection = driverClass.getMethod("createConnection", String.class, Properties.class);
+            createConnection.setAccessible(true);
+            return (Connection) createConnection.invoke(driverClass, JDBC.PREFIX+database, new Properties());
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        }
+        //return JDBC.createConnection(JDBC.PREFIX+database, new Properties());
     }
 
     @Override
@@ -46,6 +60,11 @@ public class SqlLiteDriver extends Database {
 
     @Override
     public String getClassName() {
-        return "de.netzkronehd.chatfilter.lib.org.sqlite.JDBC";
+        return "org.sqlite.JDBC";
+    }
+
+    @Override
+    public Dependency getDependency() {
+        return Dependency.SQLITE;
     }
 }

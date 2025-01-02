@@ -1,4 +1,4 @@
-package de.netzkronehd.chatfilter.dependency;
+package de.netzkronehd.chatfilter.dependency.exception;
 
 public class DependencyDownloadException extends Exception {
 

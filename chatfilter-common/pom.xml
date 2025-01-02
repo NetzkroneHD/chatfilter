@@ -90,7 +90,7 @@
                             <relocations>
                                 <relocation>
                                     <pattern>org.apache.commons.cli</pattern>
-                                    <shadedPattern>de.netzkronehd.chatfilter.lib.org.sqlite</shadedPattern>
+                                    <shadedPattern>de.netzkronehd.chatfilter.lib.org.apache.commons.cli</shadedPattern>
                                 </relocation>
                             </relocations>
                         </configuration>

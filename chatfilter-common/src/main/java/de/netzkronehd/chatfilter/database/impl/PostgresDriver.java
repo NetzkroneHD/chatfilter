@@ -1,6 +1,7 @@
 package de.netzkronehd.chatfilter.database.impl;
 
 import de.netzkronehd.chatfilter.database.Database;
+import de.netzkronehd.chatfilter.dependency.Dependency;
 import org.postgresql.ds.PGSimpleDataSource;
 
 import java.sql.Connection;
@@ -27,6 +28,11 @@ public class PostgresDriver extends Database {
 
     @Override
     public String getClassName() {
-        return "de.netzkronehd.chatfilter.lib.org.postgresql.Driver";
+        return "org.postgresql.Driver";
+    }
+
+    @Override
+    public Dependency getDependency() {
+        return Dependency.POSTGRESQL;
     }
 }

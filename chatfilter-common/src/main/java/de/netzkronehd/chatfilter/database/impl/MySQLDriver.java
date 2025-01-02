@@ -1,6 +1,7 @@
 package de.netzkronehd.chatfilter.database.impl;
 
 import de.netzkronehd.chatfilter.database.Database;
+import de.netzkronehd.chatfilter.dependency.Dependency;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -23,6 +24,11 @@ public class MySQLDriver extends Database {
 
     @Override
     public String getClassName() {
-        return "de.netzkronehd.chatfilter.lib.com.mysql.cj.jdbc.Driver";
+        return "com.mysql.cj.jdbc.Driver";
+    }
+
+    @Override
+    public Dependency getDependency() {
+        return Dependency.MYSQL;
     }
 }

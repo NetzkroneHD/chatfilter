@@ -3,6 +3,10 @@ package de.netzkronehd.chatfilter.platform.bungee;
 import de.netzkronehd.chatfilter.chain.FilterChain;
 import de.netzkronehd.chatfilter.config.ChatFilterConfig;
 import de.netzkronehd.chatfilter.database.Database;
+import de.netzkronehd.chatfilter.dependency.DependencyManager;
+import de.netzkronehd.chatfilter.dependency.exception.DependencyDownloadException;
+import de.netzkronehd.chatfilter.dependency.exception.DependencyNotDownloadedException;
+import de.netzkronehd.chatfilter.dependency.impl.DependencyManagerImpl;
 import de.netzkronehd.chatfilter.exception.NoFilterChainException;
 import de.netzkronehd.chatfilter.platform.bungee.config.BungeeConfigLoader;
 import de.netzkronehd.chatfilter.platform.bungee.listener.ChatListener;
@@ -34,6 +38,7 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
     private final FilterChain filterChain = new FilterChain();
     private final ChatFilterConfig filterConfig = new ChatFilterConfig();
 
+    private DependencyManager dependencyManager;
     private ConfigLoader configLoader;
     private ChatFilterListener chatFilterListener;
     private Database database;
@@ -43,6 +48,7 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
         getLogger().info("ChatFilter is loading...");
         this.senderFactory = new BungeeSenderFactory(this);
         this.chatFilterListener = new ChatFilterListener(this);
+        this.dependencyManager = new DependencyManagerImpl(getPluginDataFolder().resolve("libs"));
         saveConfigsFromResources();
 
         try {
@@ -54,6 +60,13 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        try {
+            loadDependencies();
+        } catch (DependencyDownloadException | IOException | InterruptedException | DependencyNotDownloadedException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
         try {
             getLogger().info("Reading config and connecting to database...");
             reload();
