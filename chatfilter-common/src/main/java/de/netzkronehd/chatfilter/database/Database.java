@@ -18,6 +18,10 @@ public abstract class Database {
 
     protected Connection connection;
 
+    public void searchDriverClass() throws ClassNotFoundException {
+        Class.forName(getClassName());
+    }
+
     public void connect(ChatFilterConfig.DatabaseConfig config) throws SQLException {
         connect(config.getHost(), config.getPort(), config.getDatabase(), config.getUsername(), config.getPassword());
     }

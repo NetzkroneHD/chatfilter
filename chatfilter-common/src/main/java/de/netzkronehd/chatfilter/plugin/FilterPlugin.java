@@ -32,8 +32,9 @@ public interface FilterPlugin {
         getLogger().info("Loaded config. FilterChain has "+getFilterChain().getProcessors().size()+" processors.");
     }
 
-    default void loadDatabase() throws SQLException {
+    default void loadDatabase() throws SQLException, ClassNotFoundException {
         final Database database = getFilterConfig().getDatabaseConfig().createDatabase();
+        database.searchDriverClass();
         getLogger().info("Connecting to database using driver: "+database.getName()+"...");
         database.connect(getFilterConfig().getDatabaseConfig());
         getLogger().info("Creating tables...");
@@ -42,7 +43,7 @@ public interface FilterPlugin {
         getFilterConfig().setDatabaseConfig(null);
     }
 
-    default void reload() throws SQLException, UnknownLocaleException, IOException {
+    default void reload() throws SQLException, UnknownLocaleException, IOException, ClassNotFoundException {
         loadConfig();
         loadDatabase();
         MessagesProvider.clear();

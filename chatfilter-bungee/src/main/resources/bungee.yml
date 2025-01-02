@@ -1,4 +1,4 @@
-name: chatfilter-bungee
+name: NetzChatFilter
 version: '1.0-SNAPSHOT'
 main: de.netzkronehd.chatfilter.platform.bungee.ChatFilterBungee
 author: NetzkroneHD

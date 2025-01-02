@@ -61,7 +61,7 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
         try {
             getLogger().info("Reading config and connecting to database...");
             reload();
-        } catch (SQLException | UnknownLocaleException | IOException e) {
+        } catch (SQLException | UnknownLocaleException | IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
 
