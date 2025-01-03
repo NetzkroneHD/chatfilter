@@ -16,18 +16,13 @@ public class SqlLiteDriver extends Database {
     }
 
     @Override
-    public Connection createConnection(String host, int port, String database, String user, String password) throws SQLException {
+    public Connection createConnection(String host, int port, String database, String user, String password) throws SQLException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         if(driverClass == null) {
             throw new IllegalStateException("ClassLoader is not set.");
         }
-        try {
-            final Method createConnection = driverClass.getMethod("createConnection", String.class, Properties.class);
-            createConnection.setAccessible(true);
-            return (Connection) createConnection.invoke(driverClass, JDBC.PREFIX+database, new Properties());
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        }
-        //return JDBC.createConnection(JDBC.PREFIX+database, new Properties());
+        final Method createConnection = driverClass.getMethod("createConnection", String.class, Properties.class);
+        createConnection.setAccessible(true);
+        return (Connection) createConnection.invoke(driverClass, JDBC.PREFIX+database, new Properties());
     }
 
     @Override

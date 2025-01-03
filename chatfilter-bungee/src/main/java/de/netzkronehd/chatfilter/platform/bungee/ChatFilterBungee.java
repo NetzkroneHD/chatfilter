@@ -24,6 +24,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.*;
@@ -70,7 +71,8 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
         try {
             getLogger().info("Reading config and connecting to database...");
             reload();
-        } catch (SQLException | UnknownLocaleException | IOException | ClassNotFoundException e) {
+        } catch (SQLException | UnknownLocaleException | IOException | ClassNotFoundException |
+                 InvocationTargetException | NoSuchMethodException | IllegalAccessException | InstantiationException e) {
             throw new RuntimeException(e);
         }
 

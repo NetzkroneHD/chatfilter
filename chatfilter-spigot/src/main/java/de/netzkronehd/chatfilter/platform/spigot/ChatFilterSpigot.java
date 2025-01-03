@@ -31,6 +31,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.*;
@@ -74,7 +75,8 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
         try {
             getLogger().info("Reading config and connecting to database...");
             reload();
-        } catch (SQLException | UnknownLocaleException | IOException | ClassNotFoundException e) {
+        } catch (SQLException | UnknownLocaleException | IOException | ClassNotFoundException |
+                 InvocationTargetException | NoSuchMethodException | IllegalAccessException | InstantiationException e) {
             throw new RuntimeException(e);
         }
 

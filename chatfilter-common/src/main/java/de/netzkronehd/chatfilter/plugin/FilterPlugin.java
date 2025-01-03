@@ -16,6 +16,7 @@ import de.netzkronehd.translation.exception.UnknownLocaleException;
 import de.netzkronehd.translation.sender.SenderFactory;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -36,7 +37,7 @@ public interface FilterPlugin {
         getLogger().info("Loaded config. FilterChain has "+getFilterChain().getProcessors().size()+" processors.");
     }
 
-    default void loadDatabase() throws SQLException {
+    default void loadDatabase() throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         final Database database = getFilterConfig().getDatabaseConfig().createDatabase();
         database.loadDriverClass(getDependencyManager());
         getLogger().info("Connecting to database using driver: "+database.getName()+"...");
@@ -57,7 +58,7 @@ public interface FilterPlugin {
         getLogger().info("Loaded dependencies.");
     }
 
-    default void reload() throws SQLException, UnknownLocaleException, IOException, ClassNotFoundException {
+    default void reload() throws SQLException, UnknownLocaleException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         loadConfig();
         loadDatabase();
         MessagesProvider.clear();

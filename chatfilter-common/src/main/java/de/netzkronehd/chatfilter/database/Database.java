@@ -7,6 +7,7 @@ import de.netzkronehd.chatfilter.dependency.DependencyManager;
 import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.violation.FilterViolation;
 
+import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,15 +30,15 @@ public abstract class Database {
         );
     }
 
-    public void connect(ChatFilterConfig.DatabaseConfig config) throws SQLException {
+    public void connect(ChatFilterConfig.DatabaseConfig config) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         connect(config.getHost(), config.getPort(), config.getDatabase(), config.getUsername(), config.getPassword());
     }
 
-    public void connect(String host, int port, String database, String user, String password) throws SQLException {
+    public void connect(String host, int port, String database, String user, String password) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         connection = createConnection(host, port, database, user, password);
     }
 
-    public abstract Connection createConnection(String host, int port, String database, String user, String password) throws SQLException;
+    public abstract Connection createConnection(String host, int port, String database, String user, String password) throws SQLException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException;
 
     public void createTables() throws SQLException {
         connection.prepareStatement("""

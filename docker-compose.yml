@@ -13,6 +13,25 @@ services:
     networks:
       - minecraft
 
+  postgres:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: chatfilter
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./docker-compose/postgres/data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 1s
+      timeout: 1s
+      retries: 500
+    networks:
+      - minecraft
+
   cache:
     image: redis
     restart: no
@@ -35,6 +54,7 @@ services:
     depends_on:
       - database
       - cache
+      - postgres
     volumes:
       - ./docker-compose/paper:/data
     networks:
@@ -50,6 +70,7 @@ services:
     depends_on:
       - database
       - cache
+      - postgres
     ports:
       - "25578:25577"
     volumes:
