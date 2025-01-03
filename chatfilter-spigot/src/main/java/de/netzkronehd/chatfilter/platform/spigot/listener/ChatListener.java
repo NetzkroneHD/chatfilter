@@ -13,7 +13,7 @@ public class ChatListener implements Listener {
 
     private final ChatFilterSpigot plugin;
 
-    @EventHandler
+    @EventHandler(ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent e) {
         if(plugin.getFilterChain() == null) {
             plugin.getLogger().warning("FilterProcessorChain is null, ignoring chat event.");

@@ -8,11 +8,16 @@ import de.netzkronehd.chatfilter.dependency.exception.DependencyDownloadExceptio
 import de.netzkronehd.chatfilter.dependency.exception.DependencyNotDownloadedException;
 import de.netzkronehd.chatfilter.dependency.impl.DependencyManagerImpl;
 import de.netzkronehd.chatfilter.exception.NoFilterChainException;
+import de.netzkronehd.chatfilter.platform.bungee.command.ChatFilterCommand;
 import de.netzkronehd.chatfilter.platform.bungee.config.BungeeConfigLoader;
 import de.netzkronehd.chatfilter.platform.bungee.listener.ChatListener;
 import de.netzkronehd.chatfilter.platform.bungee.listener.PlayerListener;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.FilterPlugin;
+import de.netzkronehd.chatfilter.plugin.command.impl.BaseCommand;
+import de.netzkronehd.chatfilter.plugin.command.impl.ParseCommand;
+import de.netzkronehd.chatfilter.plugin.command.impl.ReloadCommand;
+import de.netzkronehd.chatfilter.plugin.command.impl.ViolationsCommand;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 import de.netzkronehd.chatfilter.plugin.listener.ChatFilterListener;
@@ -29,6 +34,8 @@ import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
+
+import static de.netzkronehd.chatfilter.plugin.command.FilterCommand.registerCommand;
 
 @Getter
 public final class ChatFilterBungee extends Plugin implements FilterPlugin {
@@ -85,7 +92,14 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
 
     @Override
     public void registerCommands() {
+        final BaseCommand baseCommand = new BaseCommand();
 
+        registerCommand(baseCommand);
+        registerCommand(new ParseCommand(this));
+        registerCommand(new ReloadCommand(this));
+        registerCommand(new ViolationsCommand(this));
+
+        getProxy().getPluginManager().registerCommand(this, new ChatFilterCommand(this, new BaseCommand()));
     }
 
     @Override

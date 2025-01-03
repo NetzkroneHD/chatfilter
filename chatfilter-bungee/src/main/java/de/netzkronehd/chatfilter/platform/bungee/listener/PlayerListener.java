@@ -7,6 +7,8 @@ import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.plugin.Listener;
 import net.md_5.bungee.event.EventHandler;
 
+import java.sql.SQLException;
+
 public class PlayerListener implements Listener {
 
     private final ChatFilterBungee plugin;
@@ -16,8 +18,9 @@ public class PlayerListener implements Listener {
     }
 
     @EventHandler
-    public void onPostLogin(PostLoginEvent e) {
+    public void onPostLogin(PostLoginEvent e) throws SQLException {
         plugin.getPlayerCache().put(e.getPlayer().getUniqueId(), new ChatFilterPlayer(plugin.getSenderFactory().wrap(e.getPlayer())));
+        plugin.getDatabase().insertOrUpdatePlayer(e.getPlayer().getUniqueId(), e.getPlayer().getName());
     }
 
     @EventHandler

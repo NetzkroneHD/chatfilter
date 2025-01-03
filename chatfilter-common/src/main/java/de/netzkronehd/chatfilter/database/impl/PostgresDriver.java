@@ -25,6 +25,29 @@ public class PostgresDriver extends Database {
     }
 
     @Override
+    public void createTables() throws SQLException {
+        connection.prepareStatement("""
+                CREATE TABLE IF NOT EXISTS chatfilter_players
+                (
+                    player_uniqueId VARCHAR(36) PRIMARY KEY,
+                    player_name     VARCHAR(16) NOT NULL
+                )
+                """).executeUpdate();
+        connection.prepareStatement("""
+                CREATE TABLE IF NOT EXISTS chatfilter_violations
+                (
+                     id              SERIAL PRIMARY KEY,
+                     player_uniqueId VARCHAR(36),
+                     filter_name     TEXT NOT NULL,
+                     message_text    TEXT NOT NULL,
+                     message_state   VARCHAR(8),
+                     message_time    BIGINT,
+                     FOREIGN KEY (player_uniqueId) REFERENCES chatfilter_players(player_uniqueId)
+                 )
+                """).executeUpdate();
+    }
+
+    @Override
     public String getName() {
         return "PostgreSQL";
     }

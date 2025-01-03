@@ -19,6 +19,7 @@
         <module>chatfilter-common</module>
         <module>chatfilter-spigot</module>
         <module>chatfilter-bungee</module>
+        <module>chatfilter-velocity</module>
         <module>chatfilter-bundle</module>
         <module>chatfilter-combined</module>
     </modules>

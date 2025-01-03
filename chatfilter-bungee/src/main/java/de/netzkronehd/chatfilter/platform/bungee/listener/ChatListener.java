@@ -18,6 +18,8 @@ public class ChatListener implements Listener {
 
     @EventHandler
     public void onChat(ChatEvent e) {
+        if(e.isCommand()) return;
+        if(e.isCancelled()) return;
         if(plugin.getFilterChain() == null) {
             plugin.getLogger().warning("FilterProcessorChain is null, ignoring chat event.");
             return;
