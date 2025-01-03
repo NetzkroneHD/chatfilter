@@ -42,12 +42,12 @@ public class ChatFilterConfig {
     public static class BlockedPatternFilterConfig {
         private String name;
         private int priority;
-        private List<Pattern> patterns;
+        private List<String> patterns;
         private boolean enabled;
         private String reason;
 
         public BlockedPatternFilter createProcessor() {
-            return new BlockedPatternFilter(name, priority, patterns, reason);
+            return new BlockedPatternFilter(name, priority, patterns.stream().map(Pattern::compile).toList(), reason);
         }
 
     }

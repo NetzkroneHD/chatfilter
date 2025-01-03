@@ -21,7 +21,6 @@
         <module>chatfilter-bungee</module>
         <module>chatfilter-velocity</module>
         <module>chatfilter-bundle</module>
-        <module>chatfilter-combined</module>
     </modules>
 
 </project>

@@ -4,8 +4,6 @@ import de.netzkronehd.chatfilter.chain.FilterChain;
 import de.netzkronehd.chatfilter.config.ChatFilterConfig;
 import de.netzkronehd.chatfilter.database.Database;
 import de.netzkronehd.chatfilter.dependency.DependencyManager;
-import de.netzkronehd.chatfilter.dependency.exception.DependencyDownloadException;
-import de.netzkronehd.chatfilter.dependency.exception.DependencyNotDownloadedException;
 import de.netzkronehd.chatfilter.dependency.impl.DependencyManagerImpl;
 import de.netzkronehd.chatfilter.exception.NoFilterChainException;
 import de.netzkronehd.chatfilter.platform.bungee.command.ChatFilterCommand;
@@ -21,7 +19,6 @@ import de.netzkronehd.chatfilter.plugin.command.impl.ViolationsCommand;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 import de.netzkronehd.chatfilter.plugin.listener.ChatFilterListener;
-import de.netzkronehd.translation.exception.UnknownLocaleException;
 import de.netzkronehd.translation.sender.bungee.BungeeSenderFactory;
 import lombok.Getter;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -29,9 +26,7 @@ import net.md_5.bungee.api.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
-import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 
@@ -71,15 +66,14 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
 
         try {
             loadDependencies();
-        } catch (DependencyDownloadException | IOException | InterruptedException | DependencyNotDownloadedException | ClassNotFoundException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 
         try {
             getLogger().info("Reading config and connecting to database...");
             reload();
-        } catch (SQLException | UnknownLocaleException | IOException | ClassNotFoundException |
-                 InvocationTargetException | NoSuchMethodException | IllegalAccessException | InstantiationException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 

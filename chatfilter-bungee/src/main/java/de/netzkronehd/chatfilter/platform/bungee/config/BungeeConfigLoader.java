@@ -9,7 +9,6 @@ import net.md_5.bungee.config.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class BungeeConfigLoader implements ConfigLoader {
 
@@ -109,7 +108,7 @@ public class BungeeConfigLoader implements ConfigLoader {
                 .enabled(filterCfg.getBoolean("blockedPatternFilter.enabled"))
                 .priority(filterCfg.getInt("blockedPatternFilter.priority"))
                 .reason(filterCfg.getString("blockedPatternFilter.reason"))
-                .patterns(loadBlockedPatterns().stream().map(Pattern::compile).toList())
+                .patterns(loadBlockedPatterns())
                 .build();
     }
 

@@ -10,6 +10,8 @@ import net.md_5.bungee.event.EventHandler;
 
 public class ChatListener implements Listener {
 
+    private static final int MINECRAFT_1_19_1_PROTOCOL = 760;
+
     private final ChatFilterBungee plugin;
 
     public ChatListener(ChatFilterBungee plugin) {
@@ -33,11 +35,19 @@ public class ChatListener implements Listener {
                 final PlatformChatEvent event = new PlatformChatEvent(player, e.getMessage());
                 plugin.callChatEvent(event);
                 if(event.isCancelled()) {
-                    e.setCancelled(true);
+                    if(MINECRAFT_1_19_1_PROTOCOL <= proxiedPlayer.getPendingConnection().getVersion()) {
+                        e.setCancelled(true);
+                    } else {
+                        plugin.getLogger().warning("Player "+proxiedPlayer.getName()+" send a message that was detected as 'blocked' but due to his client version being above 1.19.1 we can't block it. Please consider using the spigot plugin.");
+                    }
                     return;
                 }
                 if(event.getFilteredMessage() != null) {
-                    e.setMessage(event.getFilteredMessage());
+                    if(MINECRAFT_1_19_1_PROTOCOL <= proxiedPlayer.getPendingConnection().getVersion()) {
+                        e.setMessage(event.getFilteredMessage());
+                    } else {
+                        plugin.getLogger().warning("Player "+proxiedPlayer.getName()+" send a message that was detected as 'filtered' but due to his client version being above 1.19.1 we can't filter it. Please consider using the spigot plugin.");
+                    }
                 }
             } catch (NoFilterChainException ex) {
                 throw new RuntimeException(ex);

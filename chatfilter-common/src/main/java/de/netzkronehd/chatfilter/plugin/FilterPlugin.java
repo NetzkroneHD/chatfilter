@@ -29,7 +29,7 @@ public interface FilterPlugin {
 
     void registerCommands();
 
-    default void loadConfig() {
+    default void loadConfig() throws IOException {
         getLogger().info("Loading config...");
         final ChatFilterConfig config = getFilterConfig();
         getConfigLoader().load(config);

@@ -23,6 +23,12 @@
             <artifactId>chatfilter-bungee</artifactId>
             <version>${project.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>de.netzkronehd.chatfilter</groupId>
+            <artifactId>chatfilter-velocity</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>

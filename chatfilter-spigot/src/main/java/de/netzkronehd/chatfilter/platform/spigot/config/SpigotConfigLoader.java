@@ -6,7 +6,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static org.bukkit.configuration.file.YamlConfiguration.loadConfiguration;
 
@@ -102,7 +101,7 @@ public class SpigotConfigLoader implements ConfigLoader {
                 .enabled(filterCfg.getBoolean("blockedPatternFilter.enabled"))
                 .priority(filterCfg.getInt("blockedPatternFilter.priority"))
                 .reason(filterCfg.getString("blockedPatternFilter.reason"))
-                .patterns(loadBlockedPatterns().stream().map(Pattern::compile).toList())
+                .patterns(loadBlockedPatterns())
                 .build();
     }
 
