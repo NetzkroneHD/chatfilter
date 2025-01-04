@@ -23,12 +23,11 @@ import de.netzkronehd.translation.sender.bungee.BungeeSenderFactory;
 import lombok.Getter;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
-import org.jetbrains.annotations.NotNull;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
-import java.util.logging.Level;
 
 import static de.netzkronehd.chatfilter.plugin.command.FilterCommand.registerCommand;
 
@@ -144,41 +143,6 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
     @Override
     public void setDatabase(Database database) {
         this.database = database;
-    }
-
-    public void saveResource(@NotNull String resourcePath, boolean replace) {
-        if (resourcePath.isEmpty()) {
-            throw new IllegalArgumentException("ResourcePath cannot be null or empty");
-        }
-
-        resourcePath = resourcePath.replace('\\', '/');
-        final InputStream in = getResourceAsStream(resourcePath);
-        if (in == null) {
-            throw new IllegalArgumentException("The embedded resource '" + resourcePath + "' cannot be found in " + getFile());
-        }
-
-        final File outFile = new File(getDataFolder(), resourcePath);
-        final int lastIndex = resourcePath.lastIndexOf('/');
-        final File outDir = new File(getDataFolder(), resourcePath.substring(0, Math.max(lastIndex, 0)));
-
-        if (!outDir.exists()) {
-            outDir.mkdirs();
-        }
-
-        try {
-            if (!outFile.exists() || replace) {
-                final OutputStream out = new FileOutputStream(outFile);
-                final byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                out.close();
-                in.close();
-            }
-        } catch (IOException ex) {
-            getLogger().log(Level.SEVERE, "Could not save " + outFile.getName() + " to " + outFile, ex);
-        }
     }
 
 }

@@ -32,7 +32,6 @@ import de.netzkronehd.translation.sender.velocity.VelocitySenderFactory;
 import lombok.Getter;
 import org.slf4j.Logger;
 
-import java.io.*;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -126,42 +125,6 @@ public class ChatFilterVelocity implements FilterPlugin {
     }
 
     @Override
-    public void saveResource(String resourcePath, boolean replace) {
-        if (resourcePath.isEmpty()) {
-            throw new IllegalArgumentException("ResourcePath cannot be null or empty");
-        }
-
-        resourcePath = resourcePath.replace('\\', '/');
-        final InputStream in = getClass().getClassLoader().getResourceAsStream(resourcePath);
-        if (in == null) {
-            throw new IllegalArgumentException("The embedded resource '" + resourcePath + "' cannot be found in the jar file");
-        }
-
-        final File outFile = new File(dataDirectory.toFile(), resourcePath);
-        final int lastIndex = resourcePath.lastIndexOf('/');
-        final File outDir = new File(dataDirectory.toFile(), resourcePath.substring(0, Math.max(lastIndex, 0)));
-
-        if (!outDir.exists()) {
-            outDir.mkdirs();
-        }
-
-        try {
-            if (!outFile.exists() || replace) {
-                final OutputStream out = new FileOutputStream(outFile);
-                final byte[] buf = new byte[1024];
-                int len;
-                while ((len = in.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-                out.close();
-                in.close();
-            }
-        } catch (IOException ex) {
-            getPluginLogger().error("Could not save {} to {}", outFile.getName(), outFile, ex);
-        }
-    }
-
-    @Override
     public void runSync(Runnable runnable) {
         throw new UnsupportedOperationException("Not implemented yet");
     }
@@ -180,9 +143,9 @@ public class ChatFilterVelocity implements FilterPlugin {
 
     @Override
     public void saveConfigsFromResources() {
-        saveResource("config.json", false);
-        saveResource("database.json", false);
-        saveResource("filter.json", false);
+        savePluginResource("config.json", false);
+        savePluginResource("database.json", false);
+        savePluginResource("filter.json", false);
     }
 
 

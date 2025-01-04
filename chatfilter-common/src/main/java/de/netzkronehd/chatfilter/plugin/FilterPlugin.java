@@ -15,7 +15,7 @@ import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 import de.netzkronehd.translation.exception.UnknownLocaleException;
 import de.netzkronehd.translation.sender.SenderFactory;
 
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.sql.SQLException;
@@ -58,7 +58,7 @@ public interface FilterPlugin {
         getLogger().info("Loaded dependencies.");
     }
 
-    default void reload() throws SQLException, UnknownLocaleException, IOException, ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+    default void reload() throws SQLException, UnknownLocaleException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         loadConfig();
         loadDatabase();
         MessagesProvider.clear();
@@ -67,14 +67,43 @@ public interface FilterPlugin {
     }
 
     default void saveConfigsFromResources() {
-        saveResource("blocked-patterns.yml", false);
-        saveResource("filter.yml", false);
-        saveResource("config.yml", false);
-        saveResource("chatfilter.db", false);
-        saveResource("locales/en.properties", false);
+        savePluginResource("blocked-patterns.yml", false);
+        savePluginResource("filter.yml", false);
+        savePluginResource("config.yml", false);
+        savePluginResource("chatfilter.db", false);
+        savePluginResource("locales/en.properties", false);
     }
 
-    void saveResource(String resource, boolean replace);
+    default void savePluginResource(String resourcePath, boolean replace) {
+        resourcePath = resourcePath.replace('\\', '/');
+        final InputStream in = getClass().getClassLoader().getResourceAsStream(resourcePath);
+        if (in == null) {
+            throw new IllegalArgumentException("The embedded resource '" + resourcePath + "' cannot be found in the jar file");
+        }
+
+        final File outFile = new File(getPluginDataFolder().toFile(), resourcePath);
+        final int lastIndex = resourcePath.lastIndexOf('/');
+        final File outDir = new File(getPluginDataFolder().toFile(), resourcePath.substring(0, Math.max(lastIndex, 0)));
+
+        if (!outDir.exists()) {
+            outDir.mkdirs();
+        }
+
+        try {
+            if (!outFile.exists() || replace) {
+                final OutputStream out = new FileOutputStream(outFile);
+                final byte[] buf = new byte[1024];
+                int len;
+                while ((len = in.read(buf)) > 0) {
+                    out.write(buf, 0, len);
+                }
+                out.close();
+                in.close();
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException("Could not save "+outFile.getName()+" to "+outFile, ex);
+        }
+    }
 
     void runSync(Runnable runnable);
     void runAsync(Runnable runnable);
