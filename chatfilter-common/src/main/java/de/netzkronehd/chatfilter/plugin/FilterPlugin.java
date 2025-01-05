@@ -75,15 +75,15 @@ public interface FilterPlugin {
     }
 
     default void savePluginResource(String resourcePath, boolean replace) {
-        resourcePath = resourcePath.replace('\\', '/');
         final InputStream in = getClass().getClassLoader().getResourceAsStream(resourcePath);
         if (in == null) {
             throw new IllegalArgumentException("The embedded resource '" + resourcePath + "' cannot be found in the jar file");
         }
 
-        final File outFile = new File(getPluginDataFolder().toFile(), resourcePath);
+        final File pluginDataFolder = getPluginDataFolder().toFile();
+        final File outFile = new File(pluginDataFolder, resourcePath);
         final int lastIndex = resourcePath.lastIndexOf('/');
-        final File outDir = new File(getPluginDataFolder().toFile(), resourcePath.substring(0, Math.max(lastIndex, 0)));
+        final File outDir = new File(pluginDataFolder, resourcePath.substring(0, Math.max(lastIndex, 0)));
 
         if (!outDir.exists()) {
             outDir.mkdirs();

@@ -1,20 +1,75 @@
 {
-  "blockedPatternFilterConfig": {
-
-  },
   "lastMessageTimeFilterConfig": {
-
-  },
-  "maxUpperCaseFilterConfig": {
-
+    "name": "LastMessageTime",
+    "enabled": true,
+    "priority": 1000,
+    "delay": 2000,
+    "reason": "Please wait for 2 seconds before sending the next message."
   },
   "sameMessageFilterConfig": {
-
+    "name": "SameMessage",
+    "enabled": true,
+    "priority": 900,
+    "reason": "The message is the same as the previous one."
   },
-  "similarityFilterConfig": {
-
+  "maxUpperCaseFilterConfig": {
+    "name": "MaxUpperCase",
+    "enabled": true,
+    "priority": 800,
+    "maxUpperCase": 0.4,
+    "minMessageLength": 10,
+    "reason": "The number of uppercase letters in the message exceeds the limit."
   },
   "tooManyViolationsFilterConfig": {
-
+    "name": "TooManyViolations",
+    "enabled": true,
+    "priority": 700,
+    "maxViolations": 0.7,
+    "reason": "You have violated the filter too many times."
+  },
+  "similarityFilterConfig": {
+    "name": "Similarity",
+    "enabled": true,
+    "priority": 600,
+    "maxSimilarity": 0.8,
+    "reason": "The message is too similar to the previous one."
+  },
+  "blockedPatternFilterConfig": {
+    "name": "BlockedPattern",
+    "enabled": true,
+    "priority": 500,
+    "reason": "The message contains blocked patterns.",
+    "patterns": [
+        "cunt",
+        "motherfucker",
+        "nigger",
+        "nigga",
+        "faggot",
+        "whore",
+        "retard",
+        "cocksucker",
+        "pussy",
+        "dickhead",
+        "fuckface",
+        "shithead",
+        "dumb",
+        "asshole",
+        "scumbag",
+        "douchebag",
+        "bastard",
+        "shit",
+        "fuck",
+        "bitch",
+        "arsch",
+        "verpiss",
+        "wichser",
+        "fick",
+        "schlampe",
+        "hure",
+        "idiot",
+        "arsch",
+        "fotze",
+        "scheiß"
+    ]
   }
 }
