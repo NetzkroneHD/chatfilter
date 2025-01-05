@@ -26,6 +26,8 @@ public class ChatFilterConfig {
 
     private String locale;
     private boolean stopOnBlock;
+    private boolean broadcastBlockedMessages;
+    private boolean broadcastFilteredMessages;
 
     private DatabaseConfig databaseConfig;
     private BlockedPatternFilterConfig blockedPatternFilterConfig;

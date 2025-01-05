@@ -3,6 +3,11 @@
 # If you want to add a new language, you have to create a new language file in the 'locales' folder.
 # With the name of the language code (e.g. 'fr.properties' for French).
 locale: 'en'
+# Enable this option to send a message to all players when a broadcast violation is triggered.
+# This message will be sent to all players with the permission 'chatfilter.broadcast.blocked' or for filtered messages 'chatfilter.broadcast.filtered'.
+broadcast:
+  filtered: true
+  blocked: true
 database:
   # Can be 'SQLite', 'MySQL' or 'PostgreSQL'
   driver: 'SQLite'

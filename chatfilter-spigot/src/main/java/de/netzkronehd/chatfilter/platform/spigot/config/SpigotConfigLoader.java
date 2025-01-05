@@ -25,6 +25,8 @@ public class SpigotConfigLoader implements ConfigLoader {
     public void load(ChatFilterConfig config) {
         config.setLocale(filterCfg.getString("locale", "en"));
         config.setStopOnBlock(filterCfg.getBoolean("stop-on-block", true));
+        config.setBroadcastBlockedMessages(filterCfg.getBoolean("broadcast.blocked", true));
+        config.setBroadcastFilteredMessages(filterCfg.getBoolean("broadcast.filtered", true));
         config.setDatabaseConfig(loadDatabaseConfig());
         config.setBlockedPatternFilterConfig(loadBlockedPatternFilterConfig());
         config.setLastMessageTimeFilterConfig(loadLastMessageTimeFilterConfig());

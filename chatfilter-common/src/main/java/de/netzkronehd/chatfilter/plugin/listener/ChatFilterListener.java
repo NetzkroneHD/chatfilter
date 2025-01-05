@@ -2,12 +2,14 @@ package de.netzkronehd.chatfilter.plugin.listener;
 
 import de.netzkronehd.chatfilter.chain.FilterChainResult;
 import de.netzkronehd.chatfilter.exception.NoFilterChainException;
-import de.netzkronehd.chatfilter.locale.Messages;
 import de.netzkronehd.chatfilter.message.MessageState;
+import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.FilterPlugin;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 
 import java.sql.SQLException;
+
+import static de.netzkronehd.chatfilter.locale.Messages.*;
 
 public class ChatFilterListener {
 
@@ -35,7 +37,15 @@ public class ChatFilterListener {
         }
         if(result.isBlocked()) {
             event.setCancelled(true);
-            result.getReason().ifPresent(reason -> Messages.BLOCKED.send(event.getPlayer().getSender(), reason));
+            result.getReason().ifPresent(reason -> {
+                BLOCKED.send(event.getPlayer().getSender(), reason);
+                sendBlockedBroadcastMessage(
+                        event.getPlayer(),
+                        result.blockedBy().map(processor -> processor.processor().getName()).orElse("Unknown"),
+                        reason,
+                        event.getMessage()
+                );
+            });
             event.getPlayer().getChatMetrics().incrementBlockedMessageCount();
             filterPlugin.runAsync(() -> {
                 try {
@@ -55,7 +65,14 @@ public class ChatFilterListener {
         if(result.isFiltered()) {
             event.getPlayer().getChatMetrics().incrementFilteredMessageCount();
             result.getFilteredMessage().ifPresentOrElse(
-                    filtered -> event.getPlayer().getChatMetrics().setLastMessage(filtered),
+                    filtered -> {
+                        event.getPlayer().getChatMetrics().setLastMessage(filtered);
+                        sendFilteredBroadcastMessage(
+                                event.getPlayer(),
+                                result.filteredBy().map(processor -> processor.processor().getName()).orElse("Unknown"),
+                                result.getReason().orElse("Unknown"), event.getMessage()
+                        );
+                    },
                     () -> event.getPlayer().getChatMetrics().setLastMessage(event.getMessage())
             );
             event.getPlayer().getChatMetrics().setLastMessageTime(messageTime);
@@ -75,6 +92,28 @@ public class ChatFilterListener {
         }
 
     }
+
+    private void sendBlockedBroadcastMessage(ChatFilterPlayer player, String filter, String reason, String message) {
+        if(!filterPlugin.getFilterConfig().isBroadcastBlockedMessages()) return;
+
+        filterPlugin.getPlayers().forEach(p -> {
+            if(p.getSender().hasPermission("chatfilter.broadcast.blocked") || p.getSender().hasPermission("chatfilter.*")) {
+                BROADCAST_BLOCKED.send(p.getSender(), player.getSender().getName(), filter, reason, message);
+            }
+        });
+    }
+
+    private void sendFilteredBroadcastMessage(ChatFilterPlayer player, String filter, String reason, String message) {
+        if(!filterPlugin.getFilterConfig().isBroadcastFilteredMessages()) return;
+
+        filterPlugin.getPlayers().forEach(p -> {
+            if(p.getSender().hasPermission("chatfilter.broadcast.filtered") || p.getSender().hasPermission("chatfilter.*")) {
+                BROADCAST_FILTERED.send(p.getSender(), player.getSender().getName(), filter, reason, message);
+            }
+        });
+    }
+
+
 
 
 }
