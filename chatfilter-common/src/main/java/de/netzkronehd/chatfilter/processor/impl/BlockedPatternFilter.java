@@ -49,14 +49,14 @@ public class BlockedPatternFilter implements FilterProcessor {
         String filteredMessage = message;
         for(Pattern p : patterns) {
             final Matcher matcher = p.matcher(filteredLowerCaseMessage);
-            if (!matcher.find()) continue;
-            filtered = true;
-            final int start = matcher.start();
-            final int end = matcher.end();
-            filteredMessage = filteredMessage.substring(0, start) + String.valueOf(this.replaceBlockedPatternWith).repeat(end-start) + filteredMessage.substring(end);
-            filteredLowerCaseMessage = matcher.replaceAll(String.valueOf(this.replaceBlockedPatternWith));
+            while (matcher.find()) {
+                filtered = true;
+                final int start = matcher.start();
+                final int end = matcher.end();
+                filteredMessage = filteredMessage.substring(0, start) + String.valueOf(this.replaceBlockedPatternWith).repeat(end - start) + filteredMessage.substring(end);
+                filteredLowerCaseMessage = filteredLowerCaseMessage.substring(0, start) + String.valueOf(this.replaceBlockedPatternWith).repeat(end - start) + filteredLowerCaseMessage.substring(end);
+            }
         }
-        //TODO: testing
 
         if (filtered) {
             return FilterProcessorResult.filtered(message, filteredMessage, this, reason);

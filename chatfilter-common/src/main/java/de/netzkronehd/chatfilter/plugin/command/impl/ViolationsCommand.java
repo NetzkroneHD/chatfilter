@@ -98,10 +98,11 @@ public class ViolationsCommand implements FilterCommand {
     private void handleShow(ChatFilterPlayer player, UuidAndName uuidAndName, String filterName, long fromTime, long toTime, int page) throws SQLException {
         final List<FilterViolation> violations;
         if (filterName == null) {
-            violations = filterPlugin.getDatabase().listViolations(uuidAndName.uuid(), fromTime, toTime).reversed();
+            violations = filterPlugin.getDatabase().listViolations(uuidAndName.uuid(), fromTime, toTime);
         } else {
-            violations = filterPlugin.getDatabase().listViolations(uuidAndName.uuid(), filterName, fromTime, toTime).reversed();
+            violations = filterPlugin.getDatabase().listViolations(uuidAndName.uuid(), filterName, fromTime, toTime);
         }
+        Collections.reverse(violations);
         final int maxPages = Utils.getPages(violations.size(), PAGE_SIZE);
         VIOLATIONS.send(player.getSender(), Utils.getPage(violations, page, PAGE_SIZE), uuidAndName.name(), page, maxPages);
     }
