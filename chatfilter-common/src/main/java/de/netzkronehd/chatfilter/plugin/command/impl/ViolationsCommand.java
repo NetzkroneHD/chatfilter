@@ -5,6 +5,7 @@ import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.FilterPlugin;
 import de.netzkronehd.chatfilter.plugin.command.FilterCommand;
 import de.netzkronehd.chatfilter.processor.FilterProcessor;
+import de.netzkronehd.chatfilter.utils.Utils;
 import de.netzkronehd.chatfilter.violation.FilterViolation;
 import org.apache.commons.cli.*;
 
@@ -20,6 +21,8 @@ import static org.apache.commons.cli.Option.builder;
 
 public class ViolationsCommand implements FilterCommand {
 
+    private static final int PAGE_SIZE = 8;
+
     private final FilterPlugin filterPlugin;
     private final CommandLineParser parser;
     private final Options options;
@@ -32,6 +35,7 @@ public class ViolationsCommand implements FilterCommand {
         this.options = new Options()
                 .addOption(builder().option("f").longOpt("from").hasArg().optionalArg(true).build())
                 .addOption(builder().option("t").longOpt("to").hasArg().optionalArg(true).build())
+                .addOption(builder().option("p").longOpt("page").hasArg().optionalArg(true).build())
                 .addOption(builder().option("n").longOpt("filterName").hasArg().optionalArg(true).build());
         this.dateFormat = new SimpleDateFormat("HH:mm:ss_dd-MM-yyyy");
     }
@@ -55,6 +59,7 @@ public class ViolationsCommand implements FilterCommand {
             final String to = parsed.getOptionValue("t");
             final long fromTime = (from == null) ? 0 : dateFormat.parse(from).getTime();
             final long toTime = (to == null) ? System.currentTimeMillis() : dateFormat.parse(to).getTime();
+            final int page = Integer.parseInt(parsed.getOptionValue("p", "1"));
             filterPlugin.runAsync(() -> {
                 try {
                     final UuidAndName uuid = filterPlugin.getDatabase().getUuid(playerName).orElse(null);
@@ -63,7 +68,7 @@ public class ViolationsCommand implements FilterCommand {
                         return;
                     }
                     if (args[0].equalsIgnoreCase("show")) {
-                        handleShow(chatFilterPlayer, uuid, filterName, fromTime, toTime);
+                        handleShow(chatFilterPlayer, uuid, filterName, fromTime, toTime, page);
                     } else if (args[0].equalsIgnoreCase("clear")) {
                         handleClear(chatFilterPlayer, uuid, filterName, fromTime, toTime);
                     } else {
@@ -90,14 +95,15 @@ public class ViolationsCommand implements FilterCommand {
         CLEARED.send(player.getSender(), uuidAndName.name(), violations);
     }
 
-    private void handleShow(ChatFilterPlayer player, UuidAndName uuidAndName, String filterName, long fromTime, long toTime) throws SQLException {
+    private void handleShow(ChatFilterPlayer player, UuidAndName uuidAndName, String filterName, long fromTime, long toTime, int page) throws SQLException {
         final List<FilterViolation> violations;
         if (filterName == null) {
-            violations = filterPlugin.getDatabase().listViolations(uuidAndName.uuid(), fromTime, toTime);
+            violations = filterPlugin.getDatabase().listViolations(uuidAndName.uuid(), fromTime, toTime).reversed();
         } else {
-            violations = filterPlugin.getDatabase().listViolations(uuidAndName.uuid(), filterName, fromTime, toTime);
+            violations = filterPlugin.getDatabase().listViolations(uuidAndName.uuid(), filterName, fromTime, toTime).reversed();
         }
-        VIOLATIONS.send(player.getSender(), violations, uuidAndName.name());
+        final int maxPages = Utils.getPages(violations.size(), PAGE_SIZE);
+        VIOLATIONS.send(player.getSender(), Utils.getPage(violations, page, PAGE_SIZE), uuidAndName.name(), page, maxPages);
     }
 
     @Override
@@ -118,6 +124,7 @@ public class ViolationsCommand implements FilterCommand {
         final List<String> tabs = new ArrayList<>();
         final String lastArg = args[args.length - 2].toLowerCase();
         switch (lastArg) {
+            case "-p" -> tabs.addAll(List.of("1", "2", "3"));
             case "-f", "-t" -> tabs.add(dateFormat.format(System.currentTimeMillis()));
             case "-n" -> {
                 final String prefix = args[args.length - 1].toLowerCase();
@@ -130,6 +137,7 @@ public class ViolationsCommand implements FilterCommand {
                 tabs.add("-f");
                 tabs.add("-t");
                 tabs.add("-n");
+                tabs.add("-p");
             }
         }
         return tabs;
