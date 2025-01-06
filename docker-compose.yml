@@ -43,23 +43,6 @@ services:
     networks:
       - minecraft
 
-  paper:
-    image: itzg/minecraft-server
-    restart: no
-    environment:
-      EULA: "TRUE"
-      ONLINE_MODE: "FALSE"
-      TYPE: "PAPER"
-      VERSION: "1.20.2"
-    depends_on:
-      - database
-      - cache
-      - postgres
-    volumes:
-      - ./docker-compose/paper:/data
-    networks:
-      - minecraft
-
   proxy:
     image: itzg/mc-proxy
     restart: no
@@ -68,9 +51,12 @@ services:
       CFG_MOTD: Powered by Docker
       REPLACE_ENV_VARIABLES: "true"
     depends_on:
-      - database
-      - cache
-      - postgres
+      database:
+        condition: service_started
+      cache:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     ports:
       - "25578:25577"
     volumes:
@@ -87,13 +73,36 @@ services:
       CFG_MOTD: Powered by Docker
       REPLACE_ENV_VARIABLES: "true"
     depends_on:
-      - database
-      - cache
-      - postgres
+      database:
+        condition: service_started
+      cache:
+        condition: service_started
+      postgres:
+        condition: service_healthy
     ports:
       - "25579:25565"
     volumes:
       - ./docker-compose/velocity/server:/server
+    networks:
+      - minecraft
+
+  paper:
+    image: itzg/minecraft-server
+    restart: no
+    environment:
+      EULA: "TRUE"
+      ONLINE_MODE: "FALSE"
+      TYPE: "PAPER"
+      VERSION: "1.20.2"
+    depends_on:
+      database:
+        condition: service_started
+      cache:
+        condition: service_started
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./docker-compose/paper:/data
     networks:
       - minecraft
 

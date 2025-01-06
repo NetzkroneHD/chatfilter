@@ -10,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -146,11 +147,11 @@ public class ChatFilterConfig {
         private String username;
         private String password;
 
-        public Database createDatabase() {
+        public Database createDatabase(Path sqlitePath) {
             return switch (driver.toLowerCase()) {
                 case "mysql" -> new MySQLDriver();
                 case "postgresql" -> new PostgresDriver();
-                default -> new SqlLiteDriver();
+                default -> new SqlLiteDriver(sqlitePath);
             };
         }
 

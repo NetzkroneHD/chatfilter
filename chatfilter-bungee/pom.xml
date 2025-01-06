@@ -10,6 +10,9 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <kyori-bungeecord.version>4.3.4</kyori-bungeecord.version>
+    </properties>
 
     <artifactId>chatfilter-bungee</artifactId>
 
@@ -34,12 +37,6 @@
             <version>${project.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>de.netzkronehd.translation</groupId>
-            <artifactId>translation-bungee</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -47,6 +44,14 @@
             <version>${lombok.version}</version>
             <scope>provided</scope>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/net.kyori/adventure-platform-bungeecord -->
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-platform-bungeecord</artifactId>
+            <version>${kyori-bungeecord.version}</version>
+        </dependency>
+
 
     </dependencies>
 
@@ -75,15 +80,7 @@
                         </goals>
                         <configuration>
                             <relocations>
-                                <relocation>
-                                    <pattern>de.netzkronehd.translation</pattern>
-                                    <shadedPattern>de.netzkronehd.chatfilter.lib.de.netzkronehd.translation</shadedPattern>
-                                </relocation>
 
-                                <relocation>
-                                    <pattern>net.kyori</pattern>
-                                    <shadedPattern>de.netzkronehd.chatfilter.lib.net.kyori</shadedPattern>
-                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
@@ -104,11 +101,13 @@
                                         <include>*.yml</include>
                                         <include>locales/**</include>
                                         <include>chatfilter.db</include>
+                                        <include>net/kyori/**</include>
                                     </includes>
                                 </filter>
                             </filters>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
                             </transformers>
                         </configuration>
                     </execution>

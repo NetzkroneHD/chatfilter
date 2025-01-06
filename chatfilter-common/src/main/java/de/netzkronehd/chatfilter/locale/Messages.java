@@ -3,8 +3,8 @@ package de.netzkronehd.chatfilter.locale;
 import de.netzkronehd.chatfilter.chain.FilterChainResult;
 import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.processor.FilterProcessorResult;
+import de.netzkronehd.chatfilter.translation.args.Args;
 import de.netzkronehd.chatfilter.violation.FilterViolation;
-import de.netzkronehd.translation.args.Args;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import static de.netzkronehd.chatfilter.locale.MessagesProvider.translate;
-import static de.netzkronehd.translation.Message.formatBoolean;
+import static de.netzkronehd.chatfilter.translation.Message.formatBoolean;
 import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
@@ -219,17 +219,18 @@ public interface Messages {
             )
             .color(GRAY);
 
-    Args.Args2<List<FilterViolation>, String> VIOLATIONS = (violations, playerName) -> {
+    Args.Args4<List<FilterViolation>, String, Integer, Integer> VIOLATIONS = (violations, playerName, currentPage, maxPage) -> {
         final TextComponent.Builder builder = text();
         violations.forEach(violation -> builder.append(FILTER_VIOLATION.build(violation, playerName)).append(newline()));
 
-        final Component text = deserialize(
+        return deserialize(
                 translate("chatfilter.command.violations.violations"),
                 component("prefix", prefix()),
                 component("player", text(playerName)),
+                component("from", text(currentPage)),
+                component("to", text(maxPage)),
                 component("violations", builder)
         );
-        return prefixed(text);
     };
 
     private static Component deserialize(String message, TagResolver... tagResolvers) {

@@ -19,12 +19,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>de.netzkronehd.translation</groupId>
-            <artifactId>translation-core</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
         <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -59,6 +53,27 @@
             <groupId>commons-cli</groupId>
             <artifactId>commons-cli</artifactId>
             <version>${commons-cli.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/net.kyori/adventure-api -->
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-api</artifactId>
+            <version>${kyori.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/net.kyori/adventure-text-serializer-legacy -->
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-serializer-legacy</artifactId>
+            <version>${kyori.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/net.kyori/adventure-text-minimessage -->
+        <dependency>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-text-minimessage</artifactId>
+            <version>${kyori.version}</version>
         </dependency>
 
 
@@ -115,6 +130,7 @@
                                         <include>*.json</include>
                                         <include>locales/**</include>
                                         <include>chatfilter.db</include>
+                                        <include>net/kyori/**</include>
                                     </includes>
                                 </filter>
                             </filters>

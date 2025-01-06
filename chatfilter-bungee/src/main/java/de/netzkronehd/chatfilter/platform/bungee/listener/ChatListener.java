@@ -35,7 +35,7 @@ public class ChatListener implements Listener {
                 final PlatformChatEvent event = new PlatformChatEvent(player, e.getMessage());
                 plugin.callChatEvent(event);
                 if(event.isCancelled()) {
-                    if(MINECRAFT_1_19_1_PROTOCOL <= proxiedPlayer.getPendingConnection().getVersion()) {
+                    if(isChatMutationAllowed(proxiedPlayer)) {
                         e.setCancelled(true);
                     } else {
                         plugin.getLogger().warning("Player "+proxiedPlayer.getName()+" send a message that was detected as 'blocked' but due to his client version being above 1.19.1 we can't block it. Please consider using the spigot plugin.");
@@ -43,7 +43,7 @@ public class ChatListener implements Listener {
                     return;
                 }
                 if(event.getFilteredMessage() != null) {
-                    if(MINECRAFT_1_19_1_PROTOCOL <= proxiedPlayer.getPendingConnection().getVersion()) {
+                    if(isChatMutationAllowed(proxiedPlayer)) {
                         e.setMessage(event.getFilteredMessage());
                     } else {
                         plugin.getLogger().warning("Player "+proxiedPlayer.getName()+" send a message that was detected as 'filtered' but due to his client version being above 1.19.1 we can't filter it. Please consider using the spigot plugin.");
@@ -53,6 +53,10 @@ public class ChatListener implements Listener {
                 throw new RuntimeException(ex);
             }
         }, () -> plugin.getLogger().severe("Player not found in proxiedPlayer map."));
+    }
+
+    private boolean isChatMutationAllowed(ProxiedPlayer player) {
+        return MINECRAFT_1_19_1_PROTOCOL > player.getPendingConnection().getVersion();
     }
 
 

@@ -14,6 +14,7 @@
 
     <properties>
         <spigot.version>1.21.4-R0.1-SNAPSHOT</spigot.version>
+        <kyori-bukkit.version>4.3.4</kyori-bukkit.version>
     </properties>
 
     <repositories>
@@ -33,6 +34,7 @@
             <artifactId>spigot-api</artifactId>
             <version>${spigot.version}</version>
         </dependency>
+
         <dependency>
             <groupId>de.netzkronehd.chatfilter</groupId>
             <artifactId>chatfilter-common</artifactId>
@@ -47,10 +49,11 @@
             <scope>provided</scope>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/net.kyori/adventure-platform-bungeecord -->
         <dependency>
-            <groupId>de.netzkronehd.translation</groupId>
-            <artifactId>translation-spigot</artifactId>
-            <version>1.0-SNAPSHOT</version>
+            <groupId>net.kyori</groupId>
+            <artifactId>adventure-platform-bukkit</artifactId>
+            <version>${kyori-bukkit.version}</version>
         </dependency>
 
     </dependencies>
@@ -80,14 +83,7 @@
                         </goals>
                         <configuration>
                             <relocations>
-                                <relocation>
-                                    <pattern>de.netzkronehd.translation</pattern>
-                                    <shadedPattern>de.netzkronehd.chatfilter.lib.de.netzkronehd.translation</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>net.kyori</pattern>
-                                    <shadedPattern>de.netzkronehd.chatfilter.lib.net.kyori</shadedPattern>
-                                </relocation>
+
                             </relocations>
                         </configuration>
                     </execution>
@@ -108,11 +104,13 @@
                                         <include>*.yml</include>
                                         <include>locales/**</include>
                                         <include>chatfilter.db</include>
+                                        <include>net/kyori/**</include>
                                     </includes>
                                 </filter>
                             </filters>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
                             </transformers>
                         </configuration>
                     </execution>

@@ -1,7 +1,7 @@
 package de.netzkronehd.chatfilter.locale;
 
-import de.netzkronehd.translation.exception.UnknownLocaleException;
-import de.netzkronehd.translation.manager.TranslationManager;
+import de.netzkronehd.chatfilter.translation.exception.UnknownLocaleException;
+import de.netzkronehd.chatfilter.translation.manager.TranslationManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -10,12 +10,13 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static de.netzkronehd.translation.manager.TranslationManager.DEFAULT_LOCALE;
 
 public class MessagesProvider {
 
     private static final Map<Locale, Map<String, String>> LOCALES = new HashMap<>();
-    private static Locale currentLocale = DEFAULT_LOCALE;
+    private static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+
+    private static Locale CURRENT_LOCALE = DEFAULT_LOCALE;
 
     public static void addMessage(Locale locale, String key, String value) {
         LOCALES.computeIfAbsent(locale, k -> new HashMap<>()).put(key, value);
@@ -38,7 +39,7 @@ public class MessagesProvider {
     }
 
     public static String translate(String key) {
-        return translate(currentLocale, key);
+        return translate(CURRENT_LOCALE, key);
     }
 
     public static void addMessages(Locale locale, Properties properties) {
@@ -84,6 +85,6 @@ public class MessagesProvider {
 
     public static void setCurrentLocale(Locale currentLocale) {
         Objects.requireNonNull(currentLocale);
-        MessagesProvider.currentLocale = currentLocale;
+        MessagesProvider.CURRENT_LOCALE = currentLocale;
     }
 }

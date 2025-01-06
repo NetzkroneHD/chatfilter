@@ -95,7 +95,6 @@ public class ChatFilterListener {
 
     private void sendBlockedBroadcastMessage(ChatFilterPlayer player, String filter, String reason, String message) {
         if(!filterPlugin.getFilterConfig().isBroadcastBlockedMessages()) return;
-
         filterPlugin.getPlayers().forEach(p -> {
             if(p.getSender().hasPermission("chatfilter.broadcast.blocked") || p.getSender().hasPermission("chatfilter.*")) {
                 BROADCAST_BLOCKED.send(p.getSender(), player.getSender().getName(), filter, reason, message);
@@ -105,7 +104,6 @@ public class ChatFilterListener {
 
     private void sendFilteredBroadcastMessage(ChatFilterPlayer player, String filter, String reason, String message) {
         if(!filterPlugin.getFilterConfig().isBroadcastFilteredMessages()) return;
-
         filterPlugin.getPlayers().forEach(p -> {
             if(p.getSender().hasPermission("chatfilter.broadcast.filtered") || p.getSender().hasPermission("chatfilter.*")) {
                 BROADCAST_FILTERED.send(p.getSender(), player.getSender().getName(), filter, reason, message);

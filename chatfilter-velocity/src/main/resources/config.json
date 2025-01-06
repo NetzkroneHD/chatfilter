@@ -1,5 +1,6 @@
 {
   "locale": "en",
   "stopOnBlock": true,
-  "broadcastViolations": true
+  "broadcastBlockedMessages": true,
+  "broadcastFilteredMessages": true
 }

@@ -18,6 +18,7 @@ import de.netzkronehd.chatfilter.platform.velocity.command.ChatFilterCommand;
 import de.netzkronehd.chatfilter.platform.velocity.config.VelocityConfigLoader;
 import de.netzkronehd.chatfilter.platform.velocity.listener.ChatListener;
 import de.netzkronehd.chatfilter.platform.velocity.listener.PlayerListener;
+import de.netzkronehd.chatfilter.platform.velocity.translation.VelocitySenderFactory;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.FilterPlugin;
 import de.netzkronehd.chatfilter.plugin.command.impl.BaseCommand;
@@ -27,8 +28,7 @@ import de.netzkronehd.chatfilter.plugin.command.impl.ViolationsCommand;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 import de.netzkronehd.chatfilter.plugin.listener.ChatFilterListener;
-import de.netzkronehd.translation.sender.SenderFactory;
-import de.netzkronehd.translation.sender.velocity.VelocitySenderFactory;
+import de.netzkronehd.chatfilter.translation.sender.SenderFactory;
 import lombok.Getter;
 import org.slf4j.Logger;
 
@@ -146,6 +146,7 @@ public class ChatFilterVelocity implements FilterPlugin {
         savePluginResource("config.json", false);
         savePluginResource("database.json", false);
         savePluginResource("filter.json", false);
+        savePluginResource("locales/en.properties", false);
     }
 
 
@@ -191,7 +192,7 @@ public class ChatFilterVelocity implements FilterPlugin {
 
     @Override
     public Collection<ChatFilterPlayer> getPlayers() {
-        return List.of();
+        return playerCache.values();
     }
 
     @Override

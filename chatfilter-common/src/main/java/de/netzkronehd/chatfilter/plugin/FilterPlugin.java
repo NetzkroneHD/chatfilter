@@ -12,8 +12,8 @@ import de.netzkronehd.chatfilter.locale.MessagesProvider;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
-import de.netzkronehd.translation.exception.UnknownLocaleException;
-import de.netzkronehd.translation.sender.SenderFactory;
+import de.netzkronehd.chatfilter.translation.exception.UnknownLocaleException;
+import de.netzkronehd.chatfilter.translation.sender.SenderFactory;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -37,8 +37,8 @@ public interface FilterPlugin {
         getLogger().info("Loaded config. FilterChain has "+getFilterChain().getProcessors().size()+" processors.");
     }
 
-    default void loadDatabase() throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
-        final Database database = getFilterConfig().getDatabaseConfig().createDatabase();
+    default void loadDatabase() throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException, IOException {
+        final Database database = getFilterConfig().getDatabaseConfig().createDatabase(getPluginDataFolder().resolve("chatfilter.db"));
         database.loadDriverClass(getDependencyManager());
         getLogger().info("Connecting to database using driver: "+database.getName()+"...");
         database.connect(getFilterConfig().getDatabaseConfig());
@@ -58,7 +58,7 @@ public interface FilterPlugin {
         getLogger().info("Loaded dependencies.");
     }
 
-    default void reload() throws SQLException, UnknownLocaleException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+    default void reload() throws SQLException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException, UnknownLocaleException {
         loadConfig();
         loadDatabase();
         MessagesProvider.clear();

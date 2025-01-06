@@ -12,6 +12,7 @@
     <properties>
         <java.version>17</java.version>
         <lombok.version>1.18.34</lombok.version>
+        <kyori.version>4.17.0</kyori.version>
     </properties>
 
     <modules>

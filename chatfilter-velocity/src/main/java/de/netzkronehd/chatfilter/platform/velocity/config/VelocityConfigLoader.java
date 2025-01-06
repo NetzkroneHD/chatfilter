@@ -28,7 +28,10 @@ public class VelocityConfigLoader implements ConfigLoader {
         final ChatFilterConfig baseConfig = loadBaseConfig();
         config.setLocale(baseConfig.getLocale());
         config.setStopOnBlock(baseConfig.isStopOnBlock());
+        config.setBroadcastBlockedMessages(baseConfig.isBroadcastBlockedMessages());
+        config.setBroadcastFilteredMessages(baseConfig.isBroadcastFilteredMessages());
         config.setDatabaseConfig(loadDatabaseConfig());
+
         final ChatFilterConfig filterConfig = loadFilterConfig();
         config.setBlockedPatternFilterConfig(filterConfig.getBlockedPatternFilterConfig());
         config.setLastMessageTimeFilterConfig(filterConfig.getLastMessageTimeFilterConfig());

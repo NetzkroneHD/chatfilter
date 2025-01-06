@@ -7,6 +7,7 @@ import de.netzkronehd.chatfilter.dependency.DependencyManager;
 import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.violation.FilterViolation;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -30,15 +31,15 @@ public abstract class Database {
         );
     }
 
-    public void connect(ChatFilterConfig.DatabaseConfig config) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+    public void connect(ChatFilterConfig.DatabaseConfig config) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException, IOException {
         connect(config.getHost(), config.getPort(), config.getDatabase(), config.getUsername(), config.getPassword());
     }
 
-    public void connect(String host, int port, String database, String user, String password) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+    public void connect(String host, int port, String database, String user, String password) throws SQLException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException, IOException {
         connection = createConnection(host, port, database, user, password);
     }
 
-    public abstract Connection createConnection(String host, int port, String database, String user, String password) throws SQLException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException;
+    public abstract Connection createConnection(String host, int port, String database, String user, String password) throws SQLException, NoSuchMethodException, InvocationTargetException, IllegalAccessException, InstantiationException, IOException;
 
     public void createTables() throws SQLException {
         connection.prepareStatement("""
