@@ -1,6 +1,7 @@
 package de.netzkronehd.chatfilter.platform.bungee.config;
 
 import de.netzkronehd.chatfilter.config.ChatFilterConfig;
+import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import net.md_5.bungee.config.Configuration;
 import net.md_5.bungee.config.ConfigurationProvider;
@@ -110,6 +111,8 @@ public class BungeeConfigLoader implements ConfigLoader {
                 .enabled(filterCfg.getBoolean("blockedPatternFilter.enabled"))
                 .priority(filterCfg.getInt("blockedPatternFilter.priority"))
                 .reason(filterCfg.getString("blockedPatternFilter.reason"))
+                .messageAction(MessageState.valueOf(filterCfg.getString("blockedPatternFilter.messageAction", "BLOCKED")))
+                .replaceBlockedPatternWith(filterCfg.getString("blockedPatternFilter.replaceBlockedPatternWith", "*").charAt(0))
                 .patterns(loadBlockedPatterns())
                 .build();
     }

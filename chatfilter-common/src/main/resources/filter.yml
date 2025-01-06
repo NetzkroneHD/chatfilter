@@ -47,4 +47,11 @@ blockedPatternFilter:
   enabled: true
   priority: 500
   reason: "The message contains blocked patterns."
+  # The action to take when a blocked pattern is found.
+  # Can be 'BLOCKED' or 'FILTERED'
+  # BLOCKED: The message will be blocked
+  # FILTERED: The message will be filtered. Warning! This can cause a less accurate filter.
+  # The filtered message will be replaced with the value of 'replaceBlockedPatternWith'
+  messageAction: BLOCKED
+  replaceBlockedPatternWith: "*"
   # The blocked patterns can be found in blocked-patterns.yml

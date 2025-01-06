@@ -39,6 +39,8 @@
     "enabled": true,
     "priority": 500,
     "reason": "The message contains blocked patterns.",
+    "messageAction": "BLOCKED",
+    "replaceBlockedPatternWith": "*",
     "patterns": [
         "cunt",
         "motherfucker",

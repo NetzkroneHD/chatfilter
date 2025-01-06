@@ -4,6 +4,7 @@ import de.netzkronehd.chatfilter.database.Database;
 import de.netzkronehd.chatfilter.database.impl.MySQLDriver;
 import de.netzkronehd.chatfilter.database.impl.PostgresDriver;
 import de.netzkronehd.chatfilter.database.impl.SqlLiteDriver;
+import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.processor.impl.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -48,9 +49,11 @@ public class ChatFilterConfig {
         private List<String> patterns;
         private boolean enabled;
         private String reason;
+        private MessageState messageAction;
+        private char replaceBlockedPatternWith;
 
         public BlockedPatternFilter createProcessor() {
-            return new BlockedPatternFilter(name, priority, patterns.stream().map(Pattern::compile).toList(), reason);
+            return new BlockedPatternFilter(name, priority, patterns.stream().map(Pattern::compile).toList(), reason, messageAction, replaceBlockedPatternWith);
         }
 
     }
