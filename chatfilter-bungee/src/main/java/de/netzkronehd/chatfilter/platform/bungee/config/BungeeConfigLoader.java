@@ -13,20 +13,25 @@ import java.util.List;
 
 public class BungeeConfigLoader implements ConfigLoader {
 
-    private final File dataFolder;
-    private final Configuration blockedPatternsCfg;
-    private final Configuration filterCfg;
-    private final Configuration baseCfg;
+    private final File blockedPatternsFile;
+    private final File filterFile;
+    private final File baseFile;
+
+    private Configuration blockedPatternsCfg;
+    private Configuration filterCfg;
+    private Configuration baseCfg;
 
     public BungeeConfigLoader(File blockedPatternsFile, File filterFile, File baseFile) throws IOException {
-        this.dataFolder = baseFile.getParentFile();
-        this.blockedPatternsCfg = loadConfiguration(blockedPatternsFile);
-        this.filterCfg = loadConfiguration(filterFile);
-        this.baseCfg = loadConfiguration(baseFile);
+        this.blockedPatternsFile = blockedPatternsFile;
+        this.filterFile = filterFile;
+        this.baseFile = baseFile;
     }
 
     @Override
-    public void load(ChatFilterConfig config) {
+    public void load(ChatFilterConfig config) throws IOException {
+        this.blockedPatternsCfg = loadConfiguration(blockedPatternsFile);
+        this.filterCfg = loadConfiguration(filterFile);
+        this.baseCfg = loadConfiguration(baseFile);
         config.setLocale(filterCfg.getString("locale", "en"));
         config.setStopOnBlock(filterCfg.getBoolean("stop-on-block", true));
         config.setBroadcastBlockedMessages(filterCfg.getBoolean("broadcast.blocked", true));
@@ -41,7 +46,7 @@ public class BungeeConfigLoader implements ConfigLoader {
     }
 
     private ChatFilterConfig.DatabaseConfig loadDatabaseConfig() {
-        ChatFilterConfig.DatabaseConfig config = ChatFilterConfig.DatabaseConfig.builder()
+        return ChatFilterConfig.DatabaseConfig.builder()
                 .driver(baseCfg.getString("database.driver"))
                 .host(baseCfg.getString("database.host"))
                 .port(baseCfg.getInt("database.port"))
@@ -49,10 +54,6 @@ public class BungeeConfigLoader implements ConfigLoader {
                 .username(baseCfg.getString("database.username"))
                 .password(baseCfg.getString("database.password"))
                 .build();
-        if(config.getDriver().equalsIgnoreCase("sqlite")) {
-            config.setDatabase(dataFolder.getAbsolutePath() + "/chatfilter.db");
-        }
-        return config;
     }
 
     private ChatFilterConfig.LastMessageTimeFilterConfig loadLastMessageTimeFilterConfig() {

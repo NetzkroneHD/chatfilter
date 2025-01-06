@@ -59,7 +59,7 @@ public class ViolationsCommand implements FilterCommand {
             final String to = parsed.getOptionValue("t");
             final long fromTime = (from == null) ? 0 : dateFormat.parse(from).getTime();
             final long toTime = (to == null) ? System.currentTimeMillis() : dateFormat.parse(to).getTime();
-            final int page = Integer.parseInt(parsed.getOptionValue("p", "1"));
+
             filterPlugin.runAsync(() -> {
                 try {
                     final UuidAndName uuid = filterPlugin.getDatabase().getUuid(playerName).orElse(null);
@@ -68,6 +68,7 @@ public class ViolationsCommand implements FilterCommand {
                         return;
                     }
                     if (args[0].equalsIgnoreCase("show")) {
+                        final int page = Integer.parseInt(parsed.getOptionValue("p", "1"));
                         handleShow(chatFilterPlayer, uuid, filterName, fromTime, toTime, page);
                     } else if (args[0].equalsIgnoreCase("clear")) {
                         handleClear(chatFilterPlayer, uuid, filterName, fromTime, toTime);
@@ -138,7 +139,9 @@ public class ViolationsCommand implements FilterCommand {
                 tabs.add("-f");
                 tabs.add("-t");
                 tabs.add("-n");
-                tabs.add("-p");
+                if(args[0].equalsIgnoreCase("show")) {
+                    tabs.add("-p");
+                }
             }
         }
         return tabs;

@@ -4,18 +4,19 @@ import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.processor.FilterProcessor;
 import de.netzkronehd.chatfilter.processor.FilterProcessorResult;
+import lombok.ToString;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static de.netzkronehd.chatfilter.processor.FilterProcessorResult.allowed;
-import static de.netzkronehd.chatfilter.processor.FilterProcessorResult.blocked;
+import static de.netzkronehd.chatfilter.processor.FilterProcessorResult.*;
 
 /**
  * A filter that blocks messages that match a certain pattern.
  */
+@ToString
 public class BlockedPatternFilter implements FilterProcessor {
 
     private final String name;
@@ -59,7 +60,7 @@ public class BlockedPatternFilter implements FilterProcessor {
         }
 
         if (filtered) {
-            return FilterProcessorResult.filtered(message, filteredMessage, this, reason);
+            return filtered(message, filteredMessage, this, reason);
         }
         return allowed(message, this, reason);
     }

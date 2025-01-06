@@ -4,6 +4,8 @@ import de.netzkronehd.chatfilter.message.MessageState;
 
 import java.util.Optional;
 
+import static de.netzkronehd.chatfilter.message.MessageState.*;
+
 /**
  * Represents the result of a {@link FilterProcessor} processing a message.
  *
@@ -32,7 +34,7 @@ public record FilterProcessorResult(String message, Optional<String> filteredMes
      * @return a new {@link FilterProcessorResult} with the state {@link MessageState#ALLOWED}
      */
     public static FilterProcessorResult allowed(String message, FilterProcessor processor, String reason) {
-        return new FilterProcessorResult(message, Optional.empty(), MessageState.ALLOWED, processor, reason);
+        return new FilterProcessorResult(message, Optional.empty(), ALLOWED, processor, reason);
     }
 
     /**
@@ -43,7 +45,7 @@ public record FilterProcessorResult(String message, Optional<String> filteredMes
      * @return a new {@link FilterProcessorResult} with the state {@link MessageState#FILTERED}
      */
     public static FilterProcessorResult filtered(String message, String transformedMessage, FilterProcessor processor, String reason) {
-        return new FilterProcessorResult(message, Optional.of(transformedMessage), MessageState.FILTERED, processor, reason);
+        return new FilterProcessorResult(message, Optional.of(transformedMessage), FILTERED, processor, reason);
     }
 
     /**
@@ -53,7 +55,7 @@ public record FilterProcessorResult(String message, Optional<String> filteredMes
      * @return a new {@link FilterProcessorResult} with the state {@link MessageState#BLOCKED}
      */
     public static FilterProcessorResult blocked(String message, FilterProcessor processor, String reason) {
-        return new FilterProcessorResult(message, Optional.empty(), MessageState.BLOCKED, processor, reason);
+        return new FilterProcessorResult(message, Optional.empty(), BLOCKED, processor, reason);
     }
 
     /**
@@ -64,7 +66,7 @@ public record FilterProcessorResult(String message, Optional<String> filteredMes
      * @return a new {@link FilterProcessorResult} with the state {@link MessageState#BLOCKED}
      */
     public static FilterProcessorResult blocked(String message, String filteredMessage, FilterProcessor processor, String reason) {
-        return new FilterProcessorResult(message, Optional.of(filteredMessage), MessageState.BLOCKED, processor, reason);
+        return new FilterProcessorResult(message, Optional.of(filteredMessage), BLOCKED, processor, reason);
     }
 
     public boolean isAllowed() {

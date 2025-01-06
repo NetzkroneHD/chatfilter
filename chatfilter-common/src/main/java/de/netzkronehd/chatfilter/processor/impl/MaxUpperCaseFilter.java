@@ -3,6 +3,7 @@ package de.netzkronehd.chatfilter.processor.impl;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.processor.FilterProcessor;
 import de.netzkronehd.chatfilter.processor.FilterProcessorResult;
+import lombok.ToString;
 import org.jetbrains.annotations.Nullable;
 
 import static de.netzkronehd.chatfilter.processor.FilterProcessorResult.allowed;
@@ -11,6 +12,7 @@ import static de.netzkronehd.chatfilter.processor.FilterProcessorResult.blocked;
 /**
  * A filter that blocks messages that exceed a certain percentage of uppercase characters.
  */
+@ToString
 public class MaxUpperCaseFilter implements FilterProcessor {
 
     private final String name;

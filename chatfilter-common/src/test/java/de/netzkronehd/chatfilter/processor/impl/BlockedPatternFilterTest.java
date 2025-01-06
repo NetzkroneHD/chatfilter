@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class BlockedPatternFilterTest {
 
     @Test
-    void processWithBlockedMessageState() {
+    void testProcessWithBlockedMessageState() {
         // Arrange
         final String testMessage = "This is a message that contains the word replace.";
         final BlockedPatternFilter blockedPatternFilter = new BlockedPatternFilter(
@@ -30,7 +30,7 @@ class BlockedPatternFilterTest {
     }
 
     @Test
-    void processWithFilteredMessageState() {
+    void testProcessWithFilteredMessageState() {
         // Arrange
         final String testMessage = "This is a message that contains the word replace.";
         final BlockedPatternFilter blockedPatternFilter = new BlockedPatternFilter(
@@ -46,13 +46,14 @@ class BlockedPatternFilterTest {
         // Assert
         assertAll(
                 () -> assertTrue(result.isFiltered(), "Message is not filtered"),
+                () -> assertNotNull(result.filteredMessage(), "Filtered message is null"),
                 () -> assertTrue(result.filteredMessage().isPresent(), "Filtered message is not present"),
                 () -> assertEquals("This is a message that contains the word *******.", result.filteredMessage().get(), "Filtered message did not replace the word")
         );
     }
 
     @Test
-    void processWithFilteredMessageStateAndMultiplePatterns() {
+    void testProcessWithFilteredMessageStateAndMultiplePatterns() {
         // Arrange
         final String testMessage = "This is a message that contains the word replace and should replace this too.";
         final BlockedPatternFilter blockedPatternFilter = new BlockedPatternFilter(
@@ -68,6 +69,7 @@ class BlockedPatternFilterTest {
         // Assert
         assertAll(
                 () -> assertTrue(result.isFiltered(), "Message is not filtered"),
+                () -> assertNotNull(result.filteredMessage(), "Filtered message is null"),
                 () -> assertTrue(result.filteredMessage().isPresent(), "Filtered message is not present"),
                 () -> assertEquals("**** is a message that contains the word ******* and should ******* **** too.", result.filteredMessage().get(), "Filtered message did not replace the word")
         );

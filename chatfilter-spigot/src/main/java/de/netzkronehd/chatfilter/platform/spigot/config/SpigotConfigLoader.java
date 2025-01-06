@@ -12,18 +12,27 @@ import static org.bukkit.configuration.file.YamlConfiguration.loadConfiguration;
 
 public class SpigotConfigLoader implements ConfigLoader {
 
-    private final YamlConfiguration blockedPatternsCfg;
-    private final YamlConfiguration filterCfg;
-    private final YamlConfiguration baseCfg;
+    private final File blockedPatternsFile;
+    private final File filterFile;
+    private final File baseFile;
+
+    private YamlConfiguration blockedPatternsCfg;
+    private YamlConfiguration filterCfg;
+    private YamlConfiguration baseCfg;
 
     public SpigotConfigLoader(File blockedPatternsFile, File filterFile, File baseFile) {
-        this.blockedPatternsCfg = loadConfiguration(blockedPatternsFile);
-        this.filterCfg = loadConfiguration(filterFile);
-        this.baseCfg = loadConfiguration(baseFile);
+        this.blockedPatternsFile = blockedPatternsFile;
+        this.filterFile = filterFile;
+        this.baseFile = baseFile;
     }
 
     @Override
     public void load(ChatFilterConfig config) {
+
+        this.blockedPatternsCfg = loadConfiguration(blockedPatternsFile);
+        this.filterCfg = loadConfiguration(filterFile);
+        this.baseCfg = loadConfiguration(baseFile);
+
         config.setLocale(filterCfg.getString("locale", "en"));
         config.setStopOnBlock(filterCfg.getBoolean("stop-on-block", true));
         config.setBroadcastBlockedMessages(filterCfg.getBoolean("broadcast.blocked", true));
@@ -72,7 +81,7 @@ public class SpigotConfigLoader implements ConfigLoader {
                 .name(filterCfg.getString("maxUpperCaseFilter.name"))
                 .enabled(filterCfg.getBoolean("maxUpperCaseFilter.enabled"))
                 .priority(filterCfg.getInt("maxUpperCaseFilter.priority"))
-                .maxUpperCase(filterCfg.getInt("maxUpperCaseFilter.maxUpperCase"))
+                .maxUpperCase(filterCfg.getDouble("maxUpperCaseFilter.maxUpperCase"))
                 .minMessageLength(filterCfg.getInt("maxUpperCaseFilter.minMessageLength"))
                 .reason(filterCfg.getString("maxUpperCaseFilter.reason"))
                 .build();

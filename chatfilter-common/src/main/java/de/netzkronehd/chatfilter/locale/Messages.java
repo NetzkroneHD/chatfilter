@@ -145,6 +145,7 @@ public interface Messages {
             // "&cPlayer &e{0}&c not found."
             deserialize(
                     translate("chatfilter.player-not-found"),
+                    component("prefix", prefix()),
                     component("player", text(player))
             )
             .color(RED);

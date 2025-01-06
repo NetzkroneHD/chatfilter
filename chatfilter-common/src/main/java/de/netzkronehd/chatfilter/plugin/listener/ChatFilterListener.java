@@ -37,7 +37,7 @@ public class ChatFilterListener {
         }
         if(result.isBlocked()) {
             event.setCancelled(true);
-            result.getReason().ifPresent(reason -> {
+            result.getBlockedReason().ifPresent(reason -> {
                 BLOCKED.send(event.getPlayer().getSender(), reason);
                 sendBlockedBroadcastMessage(
                         event.getPlayer(),
@@ -67,10 +67,11 @@ public class ChatFilterListener {
             result.getFilteredMessage().ifPresentOrElse(
                     filtered -> {
                         event.getPlayer().getChatMetrics().setLastMessage(filtered);
+                        event.setFilteredMessage(filtered);
                         sendFilteredBroadcastMessage(
                                 event.getPlayer(),
                                 result.filteredBy().map(processor -> processor.processor().getName()).orElse("Unknown"),
-                                result.getReason().orElse("Unknown"), event.getMessage()
+                                result.getFilteredReason().orElse("Unknown"), event.getMessage()
                         );
                     },
                     () -> event.getPlayer().getChatMetrics().setLastMessage(event.getMessage())

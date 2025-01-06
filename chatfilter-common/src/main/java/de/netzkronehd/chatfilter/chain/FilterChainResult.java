@@ -56,9 +56,20 @@ public class FilterChainResult {
      * Returns the reason why the message was blocked by the filter chain.
      * @return the reason why the message was blocked by the filter chain
      */
-    public Optional<String> getReason() {
+    public Optional<String> getBlockedReason() {
         return results.stream()
                 .filter(FilterProcessorResult::isBlocked)
+                .map(FilterProcessorResult::reason)
+                .findFirst();
+    }
+
+    /**
+     * Returns the reason why the message was filtered by the filter chain.
+     * @return the reason why the message was filtered by the filter chain
+     */
+    public Optional<String> getFilteredReason() {
+        return results.stream()
+                .filter(FilterProcessorResult::isFiltered)
                 .map(FilterProcessorResult::reason)
                 .findFirst();
     }
