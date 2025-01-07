@@ -28,7 +28,7 @@ import de.netzkronehd.chatfilter.plugin.command.impl.ViolationsCommand;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 import de.netzkronehd.chatfilter.plugin.listener.ChatFilterListener;
-import de.netzkronehd.chatfilter.translation.sender.SenderFactory;
+import de.netzkronehd.chatfilter.locale.translation.sender.SenderFactory;
 import lombok.Getter;
 import org.slf4j.Logger;
 

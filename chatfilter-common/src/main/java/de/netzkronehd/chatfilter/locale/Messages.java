@@ -3,7 +3,7 @@ package de.netzkronehd.chatfilter.locale;
 import de.netzkronehd.chatfilter.chain.FilterChainResult;
 import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.processor.FilterProcessorResult;
-import de.netzkronehd.chatfilter.translation.args.Args;
+import de.netzkronehd.chatfilter.locale.translation.args.Args;
 import de.netzkronehd.chatfilter.violation.FilterViolation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
@@ -16,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import static de.netzkronehd.chatfilter.locale.MessagesProvider.translate;
-import static de.netzkronehd.chatfilter.translation.Message.formatBoolean;
+import static de.netzkronehd.chatfilter.locale.translation.Message.formatBoolean;
 import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;

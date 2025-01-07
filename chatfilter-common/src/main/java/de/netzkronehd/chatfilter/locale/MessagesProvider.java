@@ -1,7 +1,7 @@
 package de.netzkronehd.chatfilter.locale;
 
-import de.netzkronehd.chatfilter.translation.exception.UnknownLocaleException;
-import de.netzkronehd.chatfilter.translation.manager.TranslationManager;
+import de.netzkronehd.chatfilter.locale.translation.exception.UnknownLocaleException;
+import de.netzkronehd.chatfilter.locale.translation.manager.TranslationManager;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;

@@ -1,7 +1,7 @@
 package de.netzkronehd.chatfilter.platform.bungee.translation;
 
-import de.netzkronehd.chatfilter.translation.sender.Sender;
-import de.netzkronehd.chatfilter.translation.sender.SenderFactory;
+import de.netzkronehd.chatfilter.locale.translation.sender.Sender;
+import de.netzkronehd.chatfilter.locale.translation.sender.SenderFactory;
 import net.kyori.adventure.platform.bungeecord.BungeeAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;

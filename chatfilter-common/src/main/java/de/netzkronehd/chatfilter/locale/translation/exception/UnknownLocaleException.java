@@ -1,4 +1,4 @@
-package de.netzkronehd.chatfilter.translation.exception;
+package de.netzkronehd.chatfilter.locale.translation.exception;
 
 public class UnknownLocaleException extends Exception {
 

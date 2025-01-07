@@ -1,6 +1,6 @@
-package de.netzkronehd.chatfilter.translation.manager;
+package de.netzkronehd.chatfilter.locale.translation.manager;
 
-import de.netzkronehd.chatfilter.translation.exception.UnknownLocaleException;
+import de.netzkronehd.chatfilter.locale.translation.exception.UnknownLocaleException;
 import net.kyori.adventure.key.Key;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.translation.GlobalTranslator;

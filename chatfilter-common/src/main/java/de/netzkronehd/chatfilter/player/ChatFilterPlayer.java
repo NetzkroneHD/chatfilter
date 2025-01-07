@@ -1,6 +1,6 @@
 package de.netzkronehd.chatfilter.player;
 
-import de.netzkronehd.chatfilter.translation.sender.Sender;
+import de.netzkronehd.chatfilter.locale.translation.sender.Sender;
 import lombok.Getter;
 
 /**

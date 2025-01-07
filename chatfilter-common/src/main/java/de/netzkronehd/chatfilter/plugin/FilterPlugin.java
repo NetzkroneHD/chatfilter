@@ -12,8 +12,8 @@ import de.netzkronehd.chatfilter.locale.MessagesProvider;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
-import de.netzkronehd.chatfilter.translation.exception.UnknownLocaleException;
-import de.netzkronehd.chatfilter.translation.sender.SenderFactory;
+import de.netzkronehd.chatfilter.locale.translation.exception.UnknownLocaleException;
+import de.netzkronehd.chatfilter.locale.translation.sender.SenderFactory;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;

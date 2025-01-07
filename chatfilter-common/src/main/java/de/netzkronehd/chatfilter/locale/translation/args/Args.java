@@ -1,6 +1,6 @@
-package de.netzkronehd.chatfilter.translation.args;
+package de.netzkronehd.chatfilter.locale.translation.args;
 
-import de.netzkronehd.chatfilter.translation.sender.Sender;
+import de.netzkronehd.chatfilter.locale.translation.sender.Sender;
 import net.kyori.adventure.text.Component;
 
 public interface Args {

@@ -4,8 +4,8 @@ import com.velocitypowered.api.command.CommandSource;
 import com.velocitypowered.api.proxy.ConsoleCommandSource;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
-import de.netzkronehd.chatfilter.translation.sender.Sender;
-import de.netzkronehd.chatfilter.translation.sender.SenderFactory;
+import de.netzkronehd.chatfilter.locale.translation.sender.Sender;
+import de.netzkronehd.chatfilter.locale.translation.sender.SenderFactory;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 

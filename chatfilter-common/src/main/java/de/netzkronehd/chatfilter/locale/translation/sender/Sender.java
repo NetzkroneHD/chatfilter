@@ -1,4 +1,4 @@
-package de.netzkronehd.chatfilter.translation.sender;
+package de.netzkronehd.chatfilter.locale.translation.sender;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
