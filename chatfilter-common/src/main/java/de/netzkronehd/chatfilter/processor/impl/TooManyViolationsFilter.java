@@ -5,6 +5,9 @@ import de.netzkronehd.chatfilter.processor.FilterProcessor;
 import de.netzkronehd.chatfilter.processor.FilterProcessorResult;
 import org.jetbrains.annotations.Nullable;
 
+import static de.netzkronehd.chatfilter.processor.FilterProcessorResult.allowed;
+import static de.netzkronehd.chatfilter.processor.FilterProcessorResult.blocked;
+
 public class TooManyViolationsFilter implements FilterProcessor {
 
     private final String name;
@@ -23,9 +26,9 @@ public class TooManyViolationsFilter implements FilterProcessor {
     public FilterProcessorResult process(ChatFilterPlayer player, @Nullable FilterProcessorResult previousResult, String message) {
         final double violations = getPercentage(player.getChatMetrics().getViolations(), player.getChatMetrics().getTotalMessageCount());
         if(!exceedsMaxViolations(violations)) {
-            return FilterProcessorResult.allowed(message, this, reason);
+            return allowed(message, this, reason);
         }
-        return FilterProcessorResult.blocked(message, this, reason);
+        return blocked(message, this, reason);
     }
 
     @Override

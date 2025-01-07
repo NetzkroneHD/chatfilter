@@ -74,4 +74,67 @@ class BlockedPatternFilterTest {
                 () -> assertEquals("**** is a message that contains the word ******* and should ******* **** too.", result.filteredMessage().get(), "Filtered message did not replace the word")
         );
     }
+
+    @Test
+    void testProcessWithNullMessage() {
+        // Arrange
+        final String testMessage = "This is a message that contains the word replace and should replace this too.";
+        final BlockedPatternFilter blockedPatternFilter = new BlockedPatternFilter(
+                "name",
+                1,
+                List.of(compile("replace"), compile("this")),
+                "reason",
+                MessageState.FILTERED,
+                '*');
+
+        // Act
+        // Assert
+        assertThrows(NullPointerException.class, () -> blockedPatternFilter.process(null, null, null));
+    }
+
+    @Test
+    void testProcessWithNotFilteredMessage() {
+        // Arrange
+        final String testMessage = "This message should not be filtered.";
+        final BlockedPatternFilter blockedPatternFilter = new BlockedPatternFilter(
+                "name",
+                1,
+                List.of(compile("replace")),
+                "reason",
+                MessageState.FILTERED,
+                '*');
+
+        // Act
+        final FilterProcessorResult result = blockedPatternFilter.process(null, null, testMessage);
+
+        // Assert
+        assertAll(
+                () -> assertTrue(result.isAllowed(), "Message is not allowed"),
+                () -> assertNotNull(result.reason(), "Reason is null")
+        );
+    }
+
+    @Test
+    void testProcessWithNotBlockedMessage() {
+        // Arrange
+        final String testMessage = "This message should not be blocked.";
+        final BlockedPatternFilter blockedPatternFilter = new BlockedPatternFilter(
+                "name",
+                1,
+                List.of(compile("replace")),
+                "reason",
+                MessageState.BLOCKED,
+                '*');
+
+        // Act
+        final FilterProcessorResult result = blockedPatternFilter.process(null, null, testMessage);
+
+        // Assert
+        assertAll(
+                () -> assertTrue(result.isAllowed(), "Message is not allowed"),
+                () -> assertNotNull(result.reason(), "Reason is null")
+        );
+    }
+
+
 }
