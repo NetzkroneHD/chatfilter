@@ -40,9 +40,9 @@ similarityFilter:
   priority: 600
   # The algorithm to use for comparing the message with the previous one
   # Can be 'levenshtein' or 'cosine' or 'jaccard'.
+  # See more at https://github.com/NetzkroneHD/chatfilter/blob/develop/README.md#long-story-short
   stringComparator: levenshtein
   # The maximum similarity percentage
-  # The similarity is calculated by comparing the message with the previous one via the Levenshtein distance algorithm
   maxSimilarity: 0.8
   reason: "The message is too similar to the previous one."
 blockedPatternFilter:
