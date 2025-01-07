@@ -31,6 +31,7 @@
     "name": "Similarity",
     "enabled": true,
     "priority": 600,
+    "stringComparator": "levenshtein",
     "maxSimilarity": 0.8,
     "reason": "The message is too similar to the previous one."
   },

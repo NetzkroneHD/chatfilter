@@ -6,6 +6,10 @@ import de.netzkronehd.chatfilter.database.impl.PostgresDriver;
 import de.netzkronehd.chatfilter.database.impl.SqlLiteDriver;
 import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.processor.impl.*;
+import de.netzkronehd.chatfilter.stringcomparator.StringComparator;
+import de.netzkronehd.chatfilter.stringcomparator.impl.CosineSimilarity;
+import de.netzkronehd.chatfilter.stringcomparator.impl.JaccardIndex;
+import de.netzkronehd.chatfilter.stringcomparator.impl.LevenshteinDistance;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -116,9 +120,16 @@ public class ChatFilterConfig {
         private double maxSimilarity;
         private boolean enabled;
         private String reason;
+        private String stringComparator;
 
         public SimilarityFilter createProcessor() {
-            return new SimilarityFilter(name, priority, maxSimilarity, reason);
+            final StringComparator comparator = switch (stringComparator.toLowerCase()) {
+                case "cosine" -> new CosineSimilarity();
+                case "levenshtein" -> new LevenshteinDistance();
+                case "jaccard" -> new JaccardIndex();
+                default -> throw new IllegalArgumentException("Unknown string comparator: " + stringComparator);
+            };
+            return new SimilarityFilter(name, priority, maxSimilarity, reason, comparator);
         }
     }
 

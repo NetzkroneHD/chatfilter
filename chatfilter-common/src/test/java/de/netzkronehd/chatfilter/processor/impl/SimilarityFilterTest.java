@@ -3,6 +3,7 @@ package de.netzkronehd.chatfilter.processor.impl;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.player.ChatMetrics;
 import de.netzkronehd.chatfilter.processor.FilterProcessorResult;
+import de.netzkronehd.chatfilter.stringcomparator.impl.LevenshteinDistance;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,7 +15,7 @@ class SimilarityFilterTest {
     @Test
     void testProcessWithBlockedMessage() {
         // Arrange
-        final SimilarityFilter similarityFilter = new SimilarityFilter("name", 1, 0.8, "reason");
+        final SimilarityFilter similarityFilter = new SimilarityFilter("name", 1, 0.8, "reason", new LevenshteinDistance());
 
         final String lastMessage = "a".repeat(100);
         final String nextMessage = "a".repeat(81)+"b".repeat(19);
@@ -38,7 +39,7 @@ class SimilarityFilterTest {
     @Test
     void testProcessWithNullPlayer() {
         // Arrange
-        final SimilarityFilter similarityFilter = new SimilarityFilter("name", 1, 0.8, "reason");
+        final SimilarityFilter similarityFilter = new SimilarityFilter("name", 1, 0.8, "reason", new LevenshteinDistance());
 
         // Act
         // Assert
@@ -48,7 +49,7 @@ class SimilarityFilterTest {
     @Test
     void testProcessWithNullMessage() {
         // Arrange
-        final SimilarityFilter similarityFilter = new SimilarityFilter("name", 1, 0.8, "reason");
+        final SimilarityFilter similarityFilter = new SimilarityFilter("name", 1, 0.8, "reason", new LevenshteinDistance());
         final String previousMessage = "a".repeat(100);
         final ChatFilterPlayer player = mock(ChatFilterPlayer.class);
         final ChatMetrics chatMetrics = new ChatMetrics();
@@ -64,7 +65,7 @@ class SimilarityFilterTest {
     @Test
     void testProcessWithNullLastMessage() {
         // Arrange
-        final SimilarityFilter similarityFilter = new SimilarityFilter("name", 1, 0.8, "reason");
+        final SimilarityFilter similarityFilter = new SimilarityFilter("name", 1, 0.8, "reason", new LevenshteinDistance());
 
         final String nextMessage = "a".repeat(81)+"b".repeat(19);
         final ChatFilterPlayer player = mock(ChatFilterPlayer.class);

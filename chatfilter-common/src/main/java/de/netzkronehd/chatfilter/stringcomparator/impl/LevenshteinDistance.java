@@ -1,8 +1,23 @@
-package de.netzkronehd.chatfilter.utils;
+package de.netzkronehd.chatfilter.stringcomparator.impl;
 
-public class LevenshteinDistance {
+import de.netzkronehd.chatfilter.stringcomparator.StringComparator;
 
-    private static int unlimitedCompare(CharSequence left, CharSequence right) {
+/**
+ * An implementation of the Levenshtein distance to calculate the similarity between two strings.
+ * See <a href="https://en.wikipedia.org/wiki/Levenshtein_distance">Levenshtein distance</a> for more information.
+ */
+public class LevenshteinDistance implements StringComparator {
+
+    @Override
+    public double similarity(String s1, String s2) {
+        final double maxLength = Integer.max(s1.length(), s2.length());
+        if (maxLength > 0) {
+            return (maxLength - unlimitedCompare(s1, s2)) / maxLength;
+        }
+        return 1.0;
+    }
+
+    private int unlimitedCompare(CharSequence left, CharSequence right) {
         if (left == null || right == null) {
             throw new IllegalArgumentException("CharSequences must not be null");
         }
@@ -53,23 +68,6 @@ public class LevenshteinDistance {
         }
 
         return p[n];
-    }
-
-    public static Integer compare(final CharSequence left, final CharSequence right) {
-        return unlimitedCompare(left, right);
-    }
-
-    public static double getSimilarity(final String msg1, final String msg2) {
-        if (msg1 == null) return 0;
-        if (msg2 == null) return 0;
-        if (msg1.equalsIgnoreCase(msg2)) return 1.0;
-
-        final double maxLength = Integer.max(msg1.length(), msg2.length());
-
-        if (maxLength > 0) {
-            return (maxLength - compare(msg1.toLowerCase(), msg2.toLowerCase())) / maxLength;
-        }
-        return 1.0;
     }
 
 }

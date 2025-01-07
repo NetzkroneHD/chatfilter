@@ -66,7 +66,7 @@ public class BlockedPatternFilter implements FilterProcessor {
     }
 
     private FilterProcessorResult handleBlockAction(String message) {
-        final String textToCheck = message.trim().toLowerCase();
+        final String textToCheck = message.replaceAll("\\s+", "").toLowerCase();
         for(Pattern p : patterns) {
             final Matcher matcher = p.matcher(textToCheck);
             if (matcher.find()) {

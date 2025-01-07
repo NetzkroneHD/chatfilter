@@ -103,6 +103,7 @@ public class SpigotConfigLoader implements ConfigLoader {
                 .enabled(filterCfg.getBoolean("similarityFilter.enabled"))
                 .priority(filterCfg.getInt("similarityFilter.priority"))
                 .maxSimilarity(filterCfg.getDouble("similarityFilter.maxSimilarity"))
+                .stringComparator(filterCfg.getString("similarityFilter.stringComparator"))
                 .reason(filterCfg.getString("similarityFilter.reason"))
                 .build();
     }

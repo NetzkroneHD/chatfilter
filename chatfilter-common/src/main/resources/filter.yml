@@ -38,6 +38,9 @@ similarityFilter:
   name: Similarity
   enabled: true
   priority: 600
+  # The algorithm to use for comparing the message with the previous one
+  # Can be 'levenshtein' or 'cosine' or 'jaccard'.
+  stringComparator: levenshtein
   # The maximum similarity percentage
   # The similarity is calculated by comparing the message with the previous one via the Levenshtein distance algorithm
   maxSimilarity: 0.8
