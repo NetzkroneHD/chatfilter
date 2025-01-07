@@ -28,11 +28,54 @@ public class FilterChainResult {
      */
     private final boolean blocked;
 
+    /**
+     * Returns the reason why the message was blocked by the filter chain.
+     */
+    private final Optional<String> blockedReason;
+    /**
+     * Returns the reason why the message was filtered by the filter chain.
+     */
+    private final Optional<String> filteredReason;
+    /**
+     * Returns the first filtered message of the filter chain.
+     */
+    private final Optional<String> filteredMessage;
+    /**
+     * Returns the first filter processor that blocked the message.
+     */
+    private final Optional<FilterProcessorResult> blockedBy;
+    /**
+     * Returns the first filter processor that filtered the message.
+     */
+    private final Optional<FilterProcessorResult> filteredBy;
+
     public FilterChainResult(List<FilterProcessorResult> results) {
         this.results = Collections.unmodifiableList(results);
         this.allowed = results.stream().allMatch(FilterProcessorResult::isAllowed);
         this.filtered = results.stream().anyMatch(FilterProcessorResult::isFiltered);
         this.blocked = results.stream().anyMatch(FilterProcessorResult::isBlocked);
+
+        this.blockedReason = results.stream()
+                .filter(FilterProcessorResult::isBlocked)
+                .map(FilterProcessorResult::reason)
+                .findFirst();
+        this.filteredReason = results.stream()
+                .filter(FilterProcessorResult::isFiltered)
+                .map(FilterProcessorResult::reason)
+                .findFirst();
+        this.filteredMessage = results.stream()
+                .filter(FilterProcessorResult::isFiltered)
+                .map(FilterProcessorResult::filteredMessage)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst();
+        this.blockedBy = results.stream()
+                .filter(FilterProcessorResult::isBlocked)
+                .findFirst();
+
+        this.filteredBy = results.stream()
+                .filter(FilterProcessorResult::isFiltered)
+                .findFirst();
     }
 
     /**
@@ -49,62 +92,6 @@ public class FilterChainResult {
      */
     public FilterProcessorResult getFirstResult() {
         return results.get(0);
-    }
-
-
-    /**
-     * Returns the reason why the message was blocked by the filter chain.
-     * @return the reason why the message was blocked by the filter chain
-     */
-    public Optional<String> getBlockedReason() {
-        return results.stream()
-                .filter(FilterProcessorResult::isBlocked)
-                .map(FilterProcessorResult::reason)
-                .findFirst();
-    }
-
-    /**
-     * Returns the reason why the message was filtered by the filter chain.
-     * @return the reason why the message was filtered by the filter chain
-     */
-    public Optional<String> getFilteredReason() {
-        return results.stream()
-                .filter(FilterProcessorResult::isFiltered)
-                .map(FilterProcessorResult::reason)
-                .findFirst();
-    }
-
-    /**
-     * Returns the first filtered message of the filter chain.
-     * @return the first filtered message of the filter chain
-     */
-    public Optional<String> getFilteredMessage() {
-        return results.stream()
-                .filter(FilterProcessorResult::isFiltered)
-                .map(FilterProcessorResult::filteredMessage)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst();
-    }
-
-    /**
-     * Returns the first filter processor that blocked the message.
-     * @return the first filter processor that blocked the message
-     */
-    public Optional<FilterProcessorResult> blockedBy() {
-        return results.stream()
-                .filter(FilterProcessorResult::isBlocked)
-                .findFirst();
-    }
-
-    /**
-     * Returns the first filter processor that filtered the message.
-     * @return the first filter processor that filtered the message
-     */
-    public Optional<FilterProcessorResult> filteredBy() {
-        return results.stream()
-                .filter(FilterProcessorResult::isFiltered)
-                .findFirst();
     }
 
 

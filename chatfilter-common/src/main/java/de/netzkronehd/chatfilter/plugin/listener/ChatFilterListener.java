@@ -41,7 +41,7 @@ public class ChatFilterListener {
                 BLOCKED.send(event.getPlayer().getSender(), reason);
                 sendBlockedBroadcastMessage(
                         event.getPlayer(),
-                        result.blockedBy().map(processor -> processor.processor().getName()).orElse("Unknown"),
+                        result.getBlockedBy().map(processor -> processor.processor().getName()).orElse("Unknown"),
                         reason,
                         event.getMessage()
                 );
@@ -51,7 +51,7 @@ public class ChatFilterListener {
                 try {
                     filterPlugin.getDatabase().insertViolation(
                             event.getPlayer().getSender().getUniqueId(),
-                            result.blockedBy().map(processor -> processor.processor().getName()).orElse(""),
+                            result.getBlockedBy().map(processor -> processor.processor().getName()).orElse(""),
                             event.getMessage(),
                             MessageState.BLOCKED,
                             messageTime
@@ -70,7 +70,7 @@ public class ChatFilterListener {
                         event.setFilteredMessage(filtered);
                         sendFilteredBroadcastMessage(
                                 event.getPlayer(),
-                                result.filteredBy().map(processor -> processor.processor().getName()).orElse("Unknown"),
+                                result.getFilteredBy().map(processor -> processor.processor().getName()).orElse("Unknown"),
                                 result.getFilteredReason().orElse("Unknown"), event.getMessage()
                         );
                     },
@@ -81,7 +81,7 @@ public class ChatFilterListener {
                 try {
                     filterPlugin.getDatabase().insertViolation(
                             event.getPlayer().getSender().getUniqueId(),
-                            result.filteredBy().map(processor -> processor.processor().getName()).orElse(""),
+                            result.getFilteredBy().map(processor -> processor.processor().getName()).orElse(""),
                             event.getMessage(),
                             MessageState.FILTERED,
                             messageTime

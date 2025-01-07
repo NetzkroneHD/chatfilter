@@ -34,4 +34,28 @@ class TooManyViolationsFilterTest {
                 () -> assertTrue(result.isBlocked(), "Message is not blocked")
         );
     }
+
+    @Test
+    void testProcessWithAllowedMessage() {
+        // Arrange
+        final TooManyViolationsFilter tooManyViolationsFilter = new TooManyViolationsFilter("name", 1, "reason", 0.8);
+        final ChatFilterPlayer player = mock(ChatFilterPlayer.class);
+        final ChatMetrics chatMetrics = new ChatMetrics();
+
+        chatMetrics.setTotalMessageCount(100);
+        chatMetrics.setBlockedMessageCount(79);
+        chatMetrics.setAllowedMessageCount(21);
+
+        when(player.getChatMetrics()).thenReturn(chatMetrics);
+
+        // Act
+        final FilterProcessorResult result = tooManyViolationsFilter.process(player, null, "message");
+
+        // Assert
+        assertAll(
+                () -> assertNotNull(result, "Result is null"),
+                () -> assertNotNull(result.reason(), "Reason is null"),
+                () -> assertTrue(result.isAllowed(), "Message is not allowed")
+        );
+    }
 }
