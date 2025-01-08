@@ -18,7 +18,8 @@
     "priority": 800,
     "maxUpperCase": 0.4,
     "minMessageLength": 10,
-    "reason": "The number of uppercase letters in the message exceeds the limit."
+    "reason": "The number of uppercase letters in the message exceeds the limit.",
+    "messageAction": "BLOCKED"
   },
   "tooManyViolationsFilterConfig": {
     "name": "TooManyViolations",

@@ -24,7 +24,7 @@ public enum Dependency {
 
     // Local databases
     SQLITE(
-            "org.xerial",
+            "org{}xerial",
             "sqlite-jdbc",
             "3.47.1.0",
             "QWTZU0euq0K3VMq7eUW5PlTyndsu3tln2+l5tARctoU=",

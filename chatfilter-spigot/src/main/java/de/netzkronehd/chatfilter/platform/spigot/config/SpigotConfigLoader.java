@@ -83,6 +83,7 @@ public class SpigotConfigLoader implements ConfigLoader {
                 .priority(filterCfg.getInt("maxUpperCaseFilter.priority"))
                 .maxUpperCase(filterCfg.getDouble("maxUpperCaseFilter.maxUpperCase"))
                 .minMessageLength(filterCfg.getInt("maxUpperCaseFilter.minMessageLength"))
+                .messageAction(MessageState.valueOf(filterCfg.getString("maxUpperCaseFilter.messageAction", "BLOCKED")))
                 .reason(filterCfg.getString("maxUpperCaseFilter.reason"))
                 .build();
     }

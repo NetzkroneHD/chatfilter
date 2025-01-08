@@ -270,6 +270,7 @@ class FilterChainTest {
         config.setSimilarityFilterConfig(ChatFilterConfig.SimilarityFilterConfig.builder()
                 .name("similarityFilter")
                 .priority(5)
+                .stringComparator("jaccard")
                 .enabled(true)
                 .build()
         );

@@ -12,16 +12,12 @@ public class LevenshteinDistance implements StringComparator {
     public double similarity(String s1, String s2) {
         final double maxLength = Integer.max(s1.length(), s2.length());
         if (maxLength > 0) {
-            return (maxLength - unlimitedCompare(s1, s2)) / maxLength;
+            return (maxLength - calculateLevenshteinDistance(s1, s2)) / maxLength;
         }
         return 1.0;
     }
 
-    private int unlimitedCompare(CharSequence left, CharSequence right) {
-        if (left == null || right == null) {
-            throw new IllegalArgumentException("CharSequences must not be null");
-        }
-
+    private int calculateLevenshteinDistance(CharSequence left, CharSequence right) {
         int n = left.length();
         int m = right.length();
 

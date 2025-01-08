@@ -4,6 +4,7 @@ import de.netzkronehd.chatfilter.locale.translation.exception.UnknownLocaleExcep
 import de.netzkronehd.chatfilter.locale.translation.manager.TranslationManager;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -48,7 +49,7 @@ public class MessagesProvider {
 
     public static void loadFromFile(Locale locale, Path file) throws IOException {
         final Properties properties = new Properties();
-        try (final var reader = Files.newBufferedReader(file)) {
+        try (final BufferedReader reader = Files.newBufferedReader(file)) {
             properties.load(reader);
         }
         addMessages(locale, properties);
@@ -56,7 +57,7 @@ public class MessagesProvider {
 
     public static void loadFromFilePath(Path path) throws IOException, UnknownLocaleException {
         final List<Path> list;
-        try(Stream<@NotNull Path> fileStream = Files.list(path)) {
+        try(final Stream<@NotNull Path> fileStream = Files.list(path)) {
             list = fileStream.toList();
         }
         for (Path file : list) {

@@ -89,9 +89,10 @@ public class ChatFilterConfig {
         private int minMessageLength;
         private boolean enabled;
         private String reason;
+        private MessageState messageAction;
 
         public MaxUpperCaseFilter createProcessor() {
-            return new MaxUpperCaseFilter(name, priority, minMessageLength, maxUpperCase, reason);
+            return new MaxUpperCaseFilter(name, priority, minMessageLength, maxUpperCase, reason, messageAction);
         }
     }
 

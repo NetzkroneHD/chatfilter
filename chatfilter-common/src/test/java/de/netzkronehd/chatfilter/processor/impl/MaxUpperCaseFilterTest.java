@@ -1,5 +1,6 @@
 package de.netzkronehd.chatfilter.processor.impl;
 
+import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.processor.FilterProcessorResult;
 import org.junit.jupiter.api.Test;
 
@@ -11,7 +12,7 @@ class MaxUpperCaseFilterTest {
     void testProcessWithMaxUpperCase() {
         // Arrange
         final String testMessage = "A".repeat(40)+"a".repeat(60);
-        final MaxUpperCaseFilter maxUpperCaseFilter = new MaxUpperCaseFilter("name", 1, 10, 0.4, "reason");
+        final MaxUpperCaseFilter maxUpperCaseFilter = new MaxUpperCaseFilter("name", 1, 10, 0.4, "reason", MessageState.BLOCKED);
 
         // Act
         final FilterProcessorResult result = maxUpperCaseFilter.process(null, null, testMessage);
@@ -28,7 +29,7 @@ class MaxUpperCaseFilterTest {
     void testProcessWithNoMaxUpperCase() {
         // Arrange
         final String testMessage = "A".repeat(39)+"a".repeat(61);
-        final MaxUpperCaseFilter maxUpperCaseFilter = new MaxUpperCaseFilter("name", 1, 10, 0.4, "reason");
+        final MaxUpperCaseFilter maxUpperCaseFilter = new MaxUpperCaseFilter("name", 1, 10, 0.4, "reason", MessageState.BLOCKED);
 
         // Act
         final FilterProcessorResult result = maxUpperCaseFilter.process(null, null, testMessage);
@@ -45,7 +46,7 @@ class MaxUpperCaseFilterTest {
     @Test
     void testProcessWithNullMessage() {
         // Arrange
-        final MaxUpperCaseFilter maxUpperCaseFilter = new MaxUpperCaseFilter("name", 1, 10, 0.4, "reason");
+        final MaxUpperCaseFilter maxUpperCaseFilter = new MaxUpperCaseFilter("name", 1, 10, 0.4, "reason", MessageState.BLOCKED);
 
         // Act
         final FilterProcessorResult result = maxUpperCaseFilter.process(null, null, null);
@@ -62,7 +63,7 @@ class MaxUpperCaseFilterTest {
     void testProcessWithAllowedMessage() {
         // Arrange
         final String testMessage = "A".repeat(39)+"a".repeat(61);
-        final MaxUpperCaseFilter maxUpperCaseFilter = new MaxUpperCaseFilter("name", 1, 10, 0.4, "reason");
+        final MaxUpperCaseFilter maxUpperCaseFilter = new MaxUpperCaseFilter("name", 1, 10, 0.4, "reason", MessageState.BLOCKED);
 
         // Act
         final FilterProcessorResult result = maxUpperCaseFilter.process(null, null, testMessage);

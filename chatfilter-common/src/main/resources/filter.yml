@@ -26,6 +26,11 @@ maxUpperCaseFilter:
   # The minimum message length
   minMessageLength: 10
   reason: "The number of uppercase letters in the message exceeds the limit."
+  # The action to take when it exceeds the upper case limit.
+  # Can be 'BLOCKED' or 'FILTERED'
+  # BLOCKED: The message will be blocked
+  # FILTERED: The message will be filtered by replacing the uppercase letters with lowercase letters.
+  messageAction: BLOCKED
 tooManyViolationsFilter:
   name: TooManyViolations
   enabled: true

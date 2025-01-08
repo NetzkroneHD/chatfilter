@@ -59,14 +59,9 @@ public interface Message {
         }
     }
 
-    static TextComponent formatContext(String key, String value) {
+    static Component formatContext(String key, String value) {
         // "&3{}&7=&b{}"
-        return text()
-                .content(key)
-                .color(DARK_AQUA)
-                .append(text('=').color(GRAY))
-                .append(text(value, AQUA))
-                .build();
+        return formatContext(key, text(value));
     }
 
     static Component formatContext(String key, Component value) {

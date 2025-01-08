@@ -29,8 +29,10 @@ public class PostgresDriver extends Database {
         connection.prepareStatement("""
                 CREATE TABLE IF NOT EXISTS chatfilter_players
                 (
-                    player_uniqueId VARCHAR(36) PRIMARY KEY,
-                    player_name     VARCHAR(16) NOT NULL
+                    player_uniqueId    VARCHAR(36) PRIMARY KEY,
+                    player_name        VARCHAR(16) NOT NULL,
+                    blocked_broadcast  VARCHAR(8) NOT NULL DEFAULT 'DEFAULT',
+                    filtered_broadcast VARCHAR(8) NOT NULL DEFAULT 'DEFAULT'
                 )
                 """).executeUpdate();
         connection.prepareStatement("""

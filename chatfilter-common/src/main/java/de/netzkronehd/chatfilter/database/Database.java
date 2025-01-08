@@ -1,10 +1,12 @@
 package de.netzkronehd.chatfilter.database;
 
 import de.netzkronehd.chatfilter.config.ChatFilterConfig;
+import de.netzkronehd.chatfilter.database.model.BroadcastType;
 import de.netzkronehd.chatfilter.database.model.UuidAndName;
 import de.netzkronehd.chatfilter.dependency.Dependency;
 import de.netzkronehd.chatfilter.dependency.DependencyManager;
 import de.netzkronehd.chatfilter.message.MessageState;
+import de.netzkronehd.chatfilter.player.ReceiveBroadcastType;
 import de.netzkronehd.chatfilter.violation.FilterViolation;
 
 import java.io.IOException;
@@ -45,8 +47,10 @@ public abstract class Database {
         connection.prepareStatement("""
                 CREATE TABLE IF NOT EXISTS chatfilter_players
                 (
-                    player_uniqueId VARCHAR(36) PRIMARY KEY,
-                    player_name     VARCHAR(16) NOT NULL
+                    player_uniqueId    VARCHAR(36) PRIMARY KEY,
+                    player_name        VARCHAR(16) NOT NULL,
+                    blocked_broadcast  VARCHAR(8) NOT NULL DEFAULT 'DEFAULT',
+                    filtered_broadcast VARCHAR(8) NOT NULL DEFAULT 'DEFAULT'
                 )
                 """).executeUpdate();
         connection.prepareStatement("""
@@ -59,14 +63,14 @@ public abstract class Database {
                      message_state   VARCHAR(8),
                      message_time    LONG,
                      FOREIGN KEY (player_uniqueId) REFERENCES chatfilter_players(player_uniqueId)
-                 )
+                )
                 """).executeUpdate();
     }
 
     public int insertPlayer(UUID playerUniqueId, String playerName) throws SQLException {
         final PreparedStatement ps = connection.prepareStatement("""
-                INSERT INTO chatfilter_players (player_uniqueId, player_name)
-                VALUES (?, ?)
+                INSERT INTO chatfilter_players (player_uniqueId, player_name, blocked_broadcast, filtered_broadcast)
+                VALUES (?, ?, 'DEFAULT', 'DEFAULT')
                 """);
         ps.setString(1, playerUniqueId.toString());
         ps.setString(2, playerName);
@@ -122,6 +126,22 @@ public abstract class Database {
         generatedKeys.next();
         final int id = generatedKeys.getInt(1);
         return new FilterViolation(id, playerUniqueId, filterName, state, messageText, messageTime);
+    }
+
+    public Optional<BroadcastType> getBroadcastType(UUID playerUniqueId) throws SQLException {
+        final PreparedStatement ps = connection.prepareStatement("SELECT blocked_broadcast, filtered_broadcast FROM chatfilter_players WHERE player_uniqueId = ?");
+        ps.setString(1, playerUniqueId.toString());
+        final ResultSet rs = ps.executeQuery();
+        if (!rs.next()) return Optional.empty();
+        return Optional.of(new BroadcastType(ReceiveBroadcastType.valueOf(rs.getString("blocked_broadcast")), ReceiveBroadcastType.valueOf(rs.getString("filtered_broadcast"))));
+    }
+
+    public int updateBroadcastType(UUID playerUniqueId, BroadcastType type) throws SQLException {
+        final PreparedStatement ps = connection.prepareStatement("UPDATE chatfilter_players SET blocked_broadcast = ?, filtered_broadcast = ? WHERE player_uniqueId = ?");
+        ps.setString(1, type.blocked().name());
+        ps.setString(2, type.filtered().name());
+        ps.setString(3, playerUniqueId.toString());
+        return ps.executeUpdate();
     }
 
     public Optional<FilterViolation> getViolation(int id) throws SQLException {
