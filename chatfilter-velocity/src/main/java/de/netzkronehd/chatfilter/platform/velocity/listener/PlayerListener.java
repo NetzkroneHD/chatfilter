@@ -17,8 +17,9 @@ public class PlayerListener {
 
     @Subscribe
     public void onJoin(PostLoginEvent e) throws SQLException {
-        plugin.getPlayerCache().put(e.getPlayer().getUniqueId(), new ChatFilterPlayer(plugin.getSenderFactory().wrap(e.getPlayer())));
-        plugin.getDatabase().insertOrUpdatePlayer(e.getPlayer().getUniqueId(), e.getPlayer().getUsername());
+        final ChatFilterPlayer player = new ChatFilterPlayer(plugin.getSenderFactory().wrap(e.getPlayer()));
+        plugin.getPlayerCache().put(e.getPlayer().getUniqueId(), player);
+        plugin.callJoinEvent(player);
     }
 
     @Subscribe

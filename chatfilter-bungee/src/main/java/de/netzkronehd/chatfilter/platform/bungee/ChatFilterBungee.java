@@ -13,10 +13,6 @@ import de.netzkronehd.chatfilter.platform.bungee.listener.PlayerListener;
 import de.netzkronehd.chatfilter.platform.bungee.translation.BungeeSenderFactory;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.FilterPlugin;
-import de.netzkronehd.chatfilter.plugin.command.impl.BaseCommand;
-import de.netzkronehd.chatfilter.plugin.command.impl.ParseCommand;
-import de.netzkronehd.chatfilter.plugin.command.impl.ReloadCommand;
-import de.netzkronehd.chatfilter.plugin.command.impl.ViolationsCommand;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 import de.netzkronehd.chatfilter.plugin.listener.ChatFilterListener;
@@ -27,9 +23,8 @@ import net.md_5.bungee.api.plugin.Plugin;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.*;
-
-import static de.netzkronehd.chatfilter.plugin.command.FilterCommand.registerCommand;
 
 @Getter
 public final class ChatFilterBungee extends Plugin implements FilterPlugin {
@@ -76,23 +71,10 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
             throw new RuntimeException(e);
         }
 
-        registerCommands();
-
+        getProxy().getPluginManager().registerCommand(this, new ChatFilterCommand(this, registerCommands()));
         getProxy().getPluginManager().registerListener(this, new PlayerListener(this));
         getProxy().getPluginManager().registerListener(this, new ChatListener(this));
 
-    }
-
-    @Override
-    public void registerCommands() {
-        final BaseCommand baseCommand = new BaseCommand();
-
-        registerCommand(baseCommand);
-        registerCommand(new ParseCommand(this));
-        registerCommand(new ReloadCommand(this));
-        registerCommand(new ViolationsCommand(this));
-
-        getProxy().getPluginManager().registerCommand(this, new ChatFilterCommand(this, new BaseCommand()));
     }
 
     @Override
@@ -113,6 +95,11 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
     @Override
     public void callChatEvent(PlatformChatEvent event) throws NoFilterChainException {
         this.chatFilterListener.onChat(event);
+    }
+
+    @Override
+    public void callJoinEvent(ChatFilterPlayer player) throws SQLException {
+        this.chatFilterListener.onJoin(player);
     }
 
     @Override

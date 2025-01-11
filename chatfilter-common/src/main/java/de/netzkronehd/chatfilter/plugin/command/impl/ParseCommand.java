@@ -24,11 +24,11 @@ public class ParseCommand implements FilterCommand {
     @Override
     public void execute(ChatFilterPlayer chatFilterPlayer, String[] args) {
         if(!hasPermission(chatFilterPlayer)) {
-            NO_PERMISSION.send(chatFilterPlayer.getSender());
+            COMMAND_NO_PERMISSION.send(chatFilterPlayer.getSender());
             return;
         }
         if(args.length < 2) {
-            PARSE_USAGE.send(chatFilterPlayer.getSender());
+            COMMAND_PARSE_USAGE.send(chatFilterPlayer.getSender());
             return;
         }
         final String filterName = args[0];
@@ -40,11 +40,11 @@ public class ParseCommand implements FilterCommand {
             } else {
                 result = filterPlugin.getFilterChain().process(chatFilterPlayer, message, filterName);
             }
-            PARSE_RESULT.send(chatFilterPlayer.getSender(), result);
+            COMMAND_PARSE_RESULT.send(chatFilterPlayer.getSender(), result);
             chatFilterPlayer.getChatMetrics().setLastMessage(message);
             chatFilterPlayer.getChatMetrics().setLastMessageTime(System.currentTimeMillis());
         } catch (FilterNotFoundException ex) {
-            FILTER_NOT_FOUND.send(chatFilterPlayer.getSender(), filterName);
+            COMMAND_FILTER_NOT_FOUND.send(chatFilterPlayer.getSender(), filterName);
         }
 
     }

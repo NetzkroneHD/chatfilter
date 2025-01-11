@@ -16,7 +16,9 @@ public class ChatFilterPlayer {
     private final Sender sender;
 
     @Nullable
-    private ReceiveBroadcastType receiveBroadcastType;
+    private ReceiveBroadcastType filteredBroadcastType;
+    @Nullable
+    private ReceiveBroadcastType blockedBroadcastType;
 
     public ChatFilterPlayer(Sender sender) {
         this.chatMetrics = new ChatMetrics();

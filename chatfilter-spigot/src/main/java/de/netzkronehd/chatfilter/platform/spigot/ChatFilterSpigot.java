@@ -13,10 +13,6 @@ import de.netzkronehd.chatfilter.platform.spigot.listener.PlayerListener;
 import de.netzkronehd.chatfilter.platform.spigot.translation.SpigotSenderFactory;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.FilterPlugin;
-import de.netzkronehd.chatfilter.plugin.command.impl.BaseCommand;
-import de.netzkronehd.chatfilter.plugin.command.impl.ParseCommand;
-import de.netzkronehd.chatfilter.plugin.command.impl.ReloadCommand;
-import de.netzkronehd.chatfilter.plugin.command.impl.ViolationsCommand;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 import de.netzkronehd.chatfilter.plugin.listener.ChatFilterListener;
@@ -26,9 +22,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.*;
-
-import static de.netzkronehd.chatfilter.plugin.command.FilterCommand.registerCommand;
 
 @Getter
 public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
@@ -71,23 +66,10 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
             throw new RuntimeException(e);
         }
 
-        registerCommands();
+        getCommand("netzchatfilter").setExecutor(new ChatFilterCommand(this, registerCommands()));
+        getCommand("netzchatfilter").setAliases(List.of("chatfilter", "ncf", "cf"));
         getServer().getPluginManager().registerEvents(new PlayerListener(this), this);
         getServer().getPluginManager().registerEvents(new ChatListener(this), this);
-    }
-
-    @Override
-    public void registerCommands() {
-        final BaseCommand baseCommand = new BaseCommand();
-
-        registerCommand(baseCommand);
-        registerCommand(new ParseCommand(this));
-        registerCommand(new ReloadCommand(this));
-        registerCommand(new ViolationsCommand(this));
-
-        getCommand("netzchatfilter").setExecutor(new ChatFilterCommand(this, baseCommand));
-        getCommand("netzchatfilter").setAliases(List.of("chatfilter", "ncf", "cf"));
-
     }
 
     @Override
@@ -112,6 +94,11 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
     @Override
     public void callChatEvent(PlatformChatEvent event) throws NoFilterChainException {
         this.chatFilterListener.onChat(event);
+    }
+
+    @Override
+    public void callJoinEvent(ChatFilterPlayer player) throws SQLException {
+        this.chatFilterListener.onJoin(player);
     }
 
     @Override

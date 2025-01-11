@@ -4,6 +4,7 @@ import de.netzkronehd.chatfilter.chain.FilterChainResult;
 import de.netzkronehd.chatfilter.exception.NoFilterChainException;
 import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
+import de.netzkronehd.chatfilter.player.ReceiveBroadcastType;
 import de.netzkronehd.chatfilter.plugin.FilterPlugin;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 
@@ -13,21 +14,36 @@ import static de.netzkronehd.chatfilter.locale.Messages.*;
 
 public class ChatFilterListener {
 
-    private final FilterPlugin filterPlugin;
+    private final FilterPlugin plugin;
 
-    public ChatFilterListener(FilterPlugin filterPlugin) {
-        this.filterPlugin = filterPlugin;
+    public ChatFilterListener(FilterPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    public void onJoin(ChatFilterPlayer player) throws SQLException {
+        plugin.getDatabase().insertOrUpdatePlayer(player.getSender().getUniqueId(), player.getSender().getName());
+        plugin.getDatabase().getBroadcastType(player.getSender().getUniqueId()).ifPresentOrElse(
+                broadcastType -> {
+                    player.setFilteredBroadcastType(broadcastType.filtered());
+                    player.setBlockedBroadcastType(broadcastType.blocked());
+                },
+                () -> {
+                    plugin.getLogger().warning("No broadcast type found for player " + player.getSender().getName()+". Setting default values.");
+                    player.setFilteredBroadcastType(ReceiveBroadcastType.DEFAULT);
+                    player.setBlockedBroadcastType(ReceiveBroadcastType.DEFAULT);
+                }
+        );
     }
 
     public void onChat(PlatformChatEvent event) throws NoFilterChainException {
-        if(filterPlugin.getFilterChain() == null) {
+        if(plugin.getFilterChain() == null) {
             throw new NoFilterChainException("FilterProcessorChain is null");
         }
-//        if(event.getPlayer().getSender().hasPermission("chatfilter.bypass") || event.getPlayer().getSender().hasPermission("chatfilter.*")) {
-//            return;
-//        }
+        if(event.getPlayer().getSender().hasPermission("chatfilter.bypass") || event.getPlayer().getSender().hasPermission("chatfilter.*")) {
+            return;
+        }
         event.getPlayer().getChatMetrics().incrementTotalMessageCount();
-        final FilterChainResult result = filterPlugin.getFilterChain().process(event.getPlayer(), event.getMessage(), filterPlugin.getFilterConfig().isStopOnBlock());
+        final FilterChainResult result = plugin.getFilterChain().process(event.getPlayer(), event.getMessage(), plugin.getFilterConfig().isStopOnBlock());
         final long messageTime = System.currentTimeMillis();
         if(result.isAllowed()) {
             event.getPlayer().getChatMetrics().incrementAllowedMessageCount();
@@ -47,9 +63,9 @@ public class ChatFilterListener {
                 );
             });
             event.getPlayer().getChatMetrics().incrementBlockedMessageCount();
-            filterPlugin.runAsync(() -> {
+            plugin.runAsync(() -> {
                 try {
-                    filterPlugin.getDatabase().insertViolation(
+                    plugin.getDatabase().insertViolation(
                             event.getPlayer().getSender().getUniqueId(),
                             result.getBlockedBy().map(processor -> processor.processor().getName()).orElse(""),
                             event.getMessage(),
@@ -77,9 +93,9 @@ public class ChatFilterListener {
                     () -> event.getPlayer().getChatMetrics().setLastMessage(event.getMessage())
             );
             event.getPlayer().getChatMetrics().setLastMessageTime(messageTime);
-            filterPlugin.runAsync(() -> {
+            plugin.runAsync(() -> {
                 try {
-                    filterPlugin.getDatabase().insertViolation(
+                    plugin.getDatabase().insertViolation(
                             event.getPlayer().getSender().getUniqueId(),
                             result.getFilteredBy().map(processor -> processor.processor().getName()).orElse("Unknown"),
                             event.getMessage(),
@@ -95,20 +111,20 @@ public class ChatFilterListener {
     }
 
     private void sendBlockedBroadcastMessage(ChatFilterPlayer player, String filter, String reason, String message) {
-        filterPlugin.getPlayers().forEach(p -> {
+        plugin.getPlayers().forEach(p -> {
             if(!p.getSender().hasPermission("chatfilter.broadcast.blocked") || !p.getSender().hasPermission("chatfilter.*")) return;
-            if(p.getReceiveBroadcastType() == null) return;
-            if(!p.getReceiveBroadcastType().canReceiveBroadcast(filterPlugin.getFilterConfig().isBroadcastFilteredMessages())) return;
+            if(p.getBlockedBroadcastType() == null) return;
+            if(!p.getBlockedBroadcastType().canReceiveBroadcast(plugin.getFilterConfig().isBroadcastFilteredMessages())) return;
 
             BROADCAST_BLOCKED.send(p.getSender(), player.getSender().getName(), filter, reason, message);
         });
     }
 
     private void sendFilteredBroadcastMessage(ChatFilterPlayer player, String filter, String reason, String message) {
-        filterPlugin.getPlayers().forEach(p -> {
+        plugin.getPlayers().forEach(p -> {
             if(!p.getSender().hasPermission("chatfilter.broadcast.filtered") || !p.getSender().hasPermission("chatfilter.*")) return;
-            if(p.getReceiveBroadcastType() == null) return;
-            if(!p.getReceiveBroadcastType().canReceiveBroadcast(filterPlugin.getFilterConfig().isBroadcastFilteredMessages())) return;
+            if(p.getFilteredBroadcastType() == null) return;
+            if(!p.getFilteredBroadcastType().canReceiveBroadcast(plugin.getFilterConfig().isBroadcastFilteredMessages())) return;
 
             BROADCAST_FILTERED.send(p.getSender(), player.getSender().getName(), filter, reason, message);
         });

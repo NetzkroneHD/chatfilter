@@ -5,8 +5,8 @@ import de.netzkronehd.chatfilter.plugin.command.FilterCommand;
 
 import java.util.List;
 
-import static de.netzkronehd.chatfilter.locale.Messages.BASE_USAGE;
-import static de.netzkronehd.chatfilter.locale.Messages.NO_PERMISSION;
+import static de.netzkronehd.chatfilter.locale.Messages.COMMAND_BASE_USAGE;
+import static de.netzkronehd.chatfilter.locale.Messages.COMMAND_NO_PERMISSION;
 import static java.util.Collections.emptyList;
 
 public class BaseCommand implements FilterCommand {
@@ -14,11 +14,11 @@ public class BaseCommand implements FilterCommand {
     @Override
     public void execute(ChatFilterPlayer chatFilterPlayer, String[] args) {
         if(!hasPermission(chatFilterPlayer)) {
-            NO_PERMISSION.send(chatFilterPlayer.getSender());
+            COMMAND_NO_PERMISSION.send(chatFilterPlayer.getSender());
             return;
         }
         if(args.length < 1) {
-            BASE_USAGE.send(chatFilterPlayer.getSender());
+            COMMAND_BASE_USAGE.send(chatFilterPlayer.getSender());
             return;
         }
 

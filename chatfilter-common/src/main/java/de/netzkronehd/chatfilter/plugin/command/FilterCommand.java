@@ -38,7 +38,7 @@ public interface FilterCommand {
     static void executeSubCommand(String command, ChatFilterPlayer chatFilterPlayer, String[] args) {
         final FilterCommand subCommand = COMMANDS.get(command.toLowerCase());
         if(subCommand == null) {
-            Messages.BASE_USAGE.send(chatFilterPlayer.getSender());
+            Messages.COMMAND_BASE_USAGE.send(chatFilterPlayer.getSender());
             return;
         }
         final String[] subArgs = new String[args.length - 1];

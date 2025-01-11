@@ -1,14 +1,14 @@
 package de.netzkronehd.chatfilter.locale;
 
 import de.netzkronehd.chatfilter.chain.FilterChainResult;
-import de.netzkronehd.chatfilter.message.MessageState;
-import de.netzkronehd.chatfilter.processor.FilterProcessorResult;
 import de.netzkronehd.chatfilter.locale.translation.args.Args;
+import de.netzkronehd.chatfilter.message.MessageState;
+import de.netzkronehd.chatfilter.player.ReceiveBroadcastType;
+import de.netzkronehd.chatfilter.processor.FilterProcessorResult;
 import de.netzkronehd.chatfilter.violation.FilterViolation;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
-import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 
 import java.text.SimpleDateFormat;
@@ -26,6 +26,8 @@ public interface Messages {
 
     SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm:ss dd-MM-yyyy");
 
+    TextComponent UNKNOWN = text("UNKNOWN", LIGHT_PURPLE);
+
     static TextComponent prefixed(ComponentLike component) {
         return text()
                 .append(deserialize(translate("chatfilter.prefix")))
@@ -42,11 +44,18 @@ public interface Messages {
         return text(DATE_FORMAT.format(new Date(time)));
     }
 
+    static TextComponent formatReceiverType(ReceiveBroadcastType type) {
+        if(type == ReceiveBroadcastType.DEFAULT) return text(type.name().toLowerCase(), GRAY);
+        if(type == ReceiveBroadcastType.HIDE) return text(type.name().toLowerCase(), DARK_GRAY);
+        if(type == ReceiveBroadcastType.SHOW) return text(type.name().toLowerCase(), GREEN);
+        return UNKNOWN;
+    }
+
     static TextComponent formatMessageState(MessageState state) {
-        if(state.isAllowed()) return text("ALLOWED", NamedTextColor.GREEN);
+        if(state.isAllowed()) return text("ALLOWED", GREEN);
         if(state.isFiltered()) return text("FILTERED", GOLD);
-        if(state.isBlocked()) return text("BLOCKED", NamedTextColor.RED);
-        return text("UNKNOWN", LIGHT_PURPLE);
+        if(state.isBlocked()) return text("BLOCKED", RED);
+        return UNKNOWN;
     }
 
     static Component formatProcessorResult(FilterProcessorResult result) {
@@ -70,7 +79,7 @@ public interface Messages {
 
 
 
-    Args.Args0 NO_PERMISSION = () ->
+    Args.Args0 COMMAND_NO_PERMISSION = () ->
             // "&cYou do not have permission to use this command."
             deserialize(
                     translate("chatfilter.command.no-permission"),
@@ -78,7 +87,7 @@ public interface Messages {
             )
             .color(RED);
 
-    Args.Args0 RELOADING = () ->
+    Args.Args0 COMMAND_RELOADING = () ->
             // "&7Reloading..."
             deserialize(
                     translate("chatfilter.command.reload.reloading"),
@@ -86,7 +95,15 @@ public interface Messages {
             )
             .color(GRAY);
 
-    Args.Args1<Long> RELOAD_COMPLETE = (time) ->
+    Args.Args0 COMMAND_BROADCAST_USAGE = () ->
+            // "&cUsage: &e/chatfilter broadcast <filter/block> <hide/show/default>"
+            deserialize(
+                    translate("chatfilter.command.broadcast.usage"),
+                    component("prefix", prefix())
+            )
+            .color(RED);
+
+    Args.Args1<Long> COMMAND_RELOAD_COMPLETE = (time) ->
             // "&aReloaded after &e<time>ms"
             deserialize(
                     translate("chatfilter.command.reload.complete"),
@@ -95,7 +112,7 @@ public interface Messages {
             )
             .color(GREEN);
 
-    Args.Args0 PARSE_USAGE = () ->
+    Args.Args0 COMMAND_PARSE_USAGE = () ->
             // "&cUsage: &e/chatfilter parse <filter> <message>"
             deserialize(
                     translate("chatfilter.command.parse.usage"),
@@ -103,7 +120,7 @@ public interface Messages {
             )
             .color(RED);
 
-    Args.Args0 BASE_USAGE = () ->
+    Args.Args0 COMMAND_BASE_USAGE = () ->
             // "&eparse <filter> <message>&8 -&7 Parses a message through the filter chain\n"
             // "&eviolations <player> [options]&8 -&7 Lists the violations of a player\n"
             // "&ereload&8 -&7 Reloads the plugin\"
@@ -114,7 +131,7 @@ public interface Messages {
             )
             .color(RED);
 
-    Args.Args0 VIOLATIONS_USAGE = () ->
+    Args.Args0 COMMAND_VIOLATIONS_USAGE = () ->
             // &cOptions: &e-f <from> &e-t <to> &e-n <filterName>\n
             // "&cUsage: &e/chatfilter violations <player> [options]
             deserialize(
@@ -150,7 +167,7 @@ public interface Messages {
             )
             .color(RED);
 
-    Args.Args1<String> FILTER_NOT_FOUND = (filter) ->
+    Args.Args1<String> COMMAND_FILTER_NOT_FOUND = (filter) ->
             // "&cFilter &e{0}&c not found."
             deserialize(
                     translate("chatfilter.command.filter-not-found"),
@@ -159,7 +176,7 @@ public interface Messages {
             )
             .color(RED);
 
-    Args.Args1<FilterChainResult> PARSE_RESULT = (result) ->
+    Args.Args1<FilterChainResult> COMMAND_PARSE_RESULT = (result) ->
             // "&3allowed&7: {0} &3filtered&7: {1} &3blocked&7: {2}\n
             // &3Filters&7:\n
             // <filters>"
@@ -173,7 +190,17 @@ public interface Messages {
             )
             .color(GRAY);
 
-    Args.Args2<String, Integer> CLEARED = (player, count) ->
+    Args.Args2<String, ReceiveBroadcastType> COMMAND_BROADCAST_SUCCESS = (broadcastType, receiveBroadcastType) ->
+            // "&7Successfully set &e{0}&7 to &e{1}"
+            deserialize(
+                    translate("chatfilter.command.broadcast.success"),
+                    component("prefix", prefix()),
+                    component("broadcast_type", text(broadcastType)),
+                    component("receive_broadcast_type", text(receiveBroadcastType.name().toLowerCase()))
+            )
+            .color(GRAY);
+
+    Args.Args2<String, Integer> COMMAND_CLEARED = (player, count) ->
             // "&7Cleared &e{0}&7 violations."
             deserialize(
                     translate("chatfilter.command.violations.cleared"),
@@ -205,7 +232,7 @@ public interface Messages {
                     component("message", text(message))
             );
 
-    Args.Args2<FilterViolation, String> FILTER_VIOLATION = (violation, playerName) ->
+    Args.Args2<FilterViolation, String> COMMAND_FILTER_VIOLATION = (violation, playerName) ->
             // "&3<id>&7: &e<player> &7(<filter>) &7- <state> &7- (<datetime:'yyyy-MM-dd HH:mm:ss'>) <message>"
             // &31&7: &eNetzkroneHD &7(MaxSimilarityFilter) &7- &cBLOCKED &7- (12:00:00 05.06.2002) Hello World"
             deserialize(
@@ -220,9 +247,9 @@ public interface Messages {
             )
             .color(GRAY);
 
-    Args.Args4<List<FilterViolation>, String, Integer, Integer> VIOLATIONS = (violations, playerName, currentPage, maxPage) -> {
+    Args.Args4<List<FilterViolation>, String, Integer, Integer> COMMAND_VIOLATIONS = (violations, playerName, currentPage, maxPage) -> {
         final TextComponent.Builder builder = text();
-        violations.forEach(violation -> builder.append(FILTER_VIOLATION.build(violation, playerName)).append(newline()));
+        violations.forEach(violation -> builder.append(COMMAND_FILTER_VIOLATION.build(violation, playerName)).append(newline()));
 
         return deserialize(
                 translate("chatfilter.command.violations.violations"),

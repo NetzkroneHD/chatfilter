@@ -9,11 +9,12 @@ import de.netzkronehd.chatfilter.dependency.exception.DependencyDownloadExceptio
 import de.netzkronehd.chatfilter.dependency.exception.DependencyNotDownloadedException;
 import de.netzkronehd.chatfilter.exception.NoFilterChainException;
 import de.netzkronehd.chatfilter.locale.MessagesProvider;
-import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
-import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
-import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 import de.netzkronehd.chatfilter.locale.translation.exception.UnknownLocaleException;
 import de.netzkronehd.chatfilter.locale.translation.sender.SenderFactory;
+import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
+import de.netzkronehd.chatfilter.plugin.command.impl.*;
+import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
+import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
@@ -25,9 +26,20 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import static de.netzkronehd.chatfilter.plugin.command.FilterCommand.registerCommand;
+
 public interface FilterPlugin {
 
-    void registerCommands();
+    default BaseCommand registerCommands() {
+        final BaseCommand baseCommand = new BaseCommand();
+
+        registerCommand(baseCommand);
+        registerCommand(new BroadcastCommand(this));
+        registerCommand(new ParseCommand(this));
+        registerCommand(new ReloadCommand(this));
+        registerCommand(new ViolationsCommand(this));
+        return baseCommand;
+    }
 
     default void loadConfig() throws IOException {
         getLogger().info("Loading config...");
@@ -109,6 +121,7 @@ public interface FilterPlugin {
     void runAsync(Runnable runnable);
 
     void callChatEvent(PlatformChatEvent event) throws NoFilterChainException;
+    void callJoinEvent(ChatFilterPlayer player) throws SQLException;
 
     void setDatabase(Database database);
 

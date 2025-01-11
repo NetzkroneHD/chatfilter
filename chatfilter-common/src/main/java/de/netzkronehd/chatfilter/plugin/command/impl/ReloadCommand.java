@@ -18,14 +18,14 @@ public class ReloadCommand implements FilterCommand {
     @Override
     public void execute(ChatFilterPlayer chatFilterPlayer, String[] args) {
         if(!hasPermission(chatFilterPlayer)) {
-            NO_PERMISSION.send(chatFilterPlayer.getSender());
+            COMMAND_NO_PERMISSION.send(chatFilterPlayer.getSender());
             return;
         }
-        Messages.RELOADING.send(chatFilterPlayer.getSender());
+        Messages.COMMAND_RELOADING.send(chatFilterPlayer.getSender());
         final long before = System.currentTimeMillis();
         try {
             filterPlugin.reload();
-            RELOAD_COMPLETE.send(chatFilterPlayer.getSender(), System.currentTimeMillis() - before);
+            COMMAND_RELOAD_COMPLETE.send(chatFilterPlayer.getSender(), System.currentTimeMillis() - before);
         } catch (Exception ex) {
             ERROR.send(chatFilterPlayer.getSender(), ex);
         }

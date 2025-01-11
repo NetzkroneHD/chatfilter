@@ -14,6 +14,7 @@ import de.netzkronehd.chatfilter.database.Database;
 import de.netzkronehd.chatfilter.dependency.DependencyManager;
 import de.netzkronehd.chatfilter.dependency.impl.DependencyManagerImpl;
 import de.netzkronehd.chatfilter.exception.NoFilterChainException;
+import de.netzkronehd.chatfilter.locale.translation.sender.SenderFactory;
 import de.netzkronehd.chatfilter.platform.velocity.command.ChatFilterCommand;
 import de.netzkronehd.chatfilter.platform.velocity.config.VelocityConfigLoader;
 import de.netzkronehd.chatfilter.platform.velocity.listener.ChatListener;
@@ -21,23 +22,17 @@ import de.netzkronehd.chatfilter.platform.velocity.listener.PlayerListener;
 import de.netzkronehd.chatfilter.platform.velocity.translation.VelocitySenderFactory;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.FilterPlugin;
-import de.netzkronehd.chatfilter.plugin.command.impl.BaseCommand;
-import de.netzkronehd.chatfilter.plugin.command.impl.ParseCommand;
-import de.netzkronehd.chatfilter.plugin.command.impl.ReloadCommand;
-import de.netzkronehd.chatfilter.plugin.command.impl.ViolationsCommand;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 import de.netzkronehd.chatfilter.plugin.listener.ChatFilterListener;
-import de.netzkronehd.chatfilter.locale.translation.sender.SenderFactory;
 import lombok.Getter;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static de.netzkronehd.chatfilter.plugin.command.FilterCommand.registerCommand;
 
 @Plugin(
         id = "netzchatfilter",
@@ -100,28 +95,16 @@ public class ChatFilterVelocity implements FilterPlugin {
             throw new RuntimeException(e);
         }
 
-        registerCommands();
-        proxyServer.getEventManager().register(this, new PlayerListener(this));
-        proxyServer.getEventManager().register(this, new ChatListener(this));
-
-    }
-
-    @Override
-    public void registerCommands() {
-        final BaseCommand baseCommand = new BaseCommand();
-
-        registerCommand(baseCommand);
-        registerCommand(new ParseCommand(this));
-        registerCommand(new ReloadCommand(this));
-        registerCommand(new ViolationsCommand(this));
-
         proxyServer.getCommandManager().register(
                 proxyServer.getCommandManager().metaBuilder("netzchatfilter")
                         .aliases("chatfilter", "ncf", "cf")
                         .plugin(this)
                         .build(),
-                new ChatFilterCommand(this, baseCommand)
+                new ChatFilterCommand(this, registerCommands())
         );
+        proxyServer.getEventManager().register(this, new PlayerListener(this));
+        proxyServer.getEventManager().register(this, new ChatListener(this));
+
     }
 
     @Override
@@ -139,7 +122,10 @@ public class ChatFilterVelocity implements FilterPlugin {
         this.chatFilterListener.onChat(event);
     }
 
-
+    @Override
+    public void callJoinEvent(ChatFilterPlayer player) throws SQLException {
+        this.chatFilterListener.onJoin(player);
+    }
 
     @Override
     public void saveConfigsFromResources() {

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 import static de.netzkronehd.chatfilter.locale.Messages.*;
 import static org.apache.commons.cli.Option.builder;
 
@@ -43,11 +42,11 @@ public class ViolationsCommand implements FilterCommand {
     @Override
     public void execute(ChatFilterPlayer chatFilterPlayer, String[] args) {
         if(!hasPermission(chatFilterPlayer)) {
-            NO_PERMISSION.send(chatFilterPlayer.getSender());
+            COMMAND_NO_PERMISSION.send(chatFilterPlayer.getSender());
             return;
         }
         if(args.length < 1) {
-            VIOLATIONS_USAGE.send(chatFilterPlayer.getSender());
+            COMMAND_VIOLATIONS_USAGE.send(chatFilterPlayer.getSender());
             return;
         }
 
@@ -73,7 +72,7 @@ public class ViolationsCommand implements FilterCommand {
                     } else if (args[0].equalsIgnoreCase("clear")) {
                         handleClear(chatFilterPlayer, uuid, filterName, fromTime, toTime);
                     } else {
-                        VIOLATIONS_USAGE.send(chatFilterPlayer.getSender());
+                        COMMAND_VIOLATIONS_USAGE.send(chatFilterPlayer.getSender());
                     }
 
                 } catch (SQLException e) {
@@ -82,7 +81,7 @@ public class ViolationsCommand implements FilterCommand {
                 }
             });
         } catch (ParseException | java.text.ParseException e) {
-            VIOLATIONS_USAGE.send(chatFilterPlayer.getSender());
+            COMMAND_VIOLATIONS_USAGE.send(chatFilterPlayer.getSender());
         }
     }
 
@@ -93,7 +92,7 @@ public class ViolationsCommand implements FilterCommand {
         } else {
             violations = filterPlugin.getDatabase().deleteViolations(uuidAndName.uuid(), filterName, fromTime, toTime);
         }
-        CLEARED.send(player.getSender(), uuidAndName.name(), violations);
+        COMMAND_CLEARED.send(player.getSender(), uuidAndName.name(), violations);
     }
 
     private void handleShow(ChatFilterPlayer player, UuidAndName uuidAndName, String filterName, long fromTime, long toTime, int page) throws SQLException {
@@ -105,7 +104,7 @@ public class ViolationsCommand implements FilterCommand {
         }
         Collections.reverse(violations);
         final int maxPages = Utils.getPages(violations.size(), PAGE_SIZE);
-        VIOLATIONS.send(player.getSender(), Utils.getPage(violations, page, PAGE_SIZE), uuidAndName.name(), page, maxPages);
+        COMMAND_VIOLATIONS.send(player.getSender(), Utils.getPage(violations, page, PAGE_SIZE), uuidAndName.name(), page, maxPages);
     }
 
     @Override
