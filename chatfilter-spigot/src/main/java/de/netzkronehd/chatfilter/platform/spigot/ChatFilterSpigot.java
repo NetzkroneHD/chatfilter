@@ -55,11 +55,6 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
 
         try {
             loadDependencies();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
             getLogger().info("Reading config and connecting to database...");
             reload();
         } catch (Exception e) {

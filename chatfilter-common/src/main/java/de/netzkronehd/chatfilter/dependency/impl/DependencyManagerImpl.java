@@ -87,9 +87,6 @@ public class DependencyManagerImpl implements DependencyManager {
 
     @Override
     public Path downloadDependency(Dependency dependency) throws IOException, InterruptedException, DependencyDownloadException {
-        if(isDownloaded(dependency)) {
-            return getDependencyPath(dependency);
-        }
         final byte[] bytes = downloadRaw(dependency);
         checkChecksum(dependency, bytes);
         final Path dependencyPath = dependenciesFolder.resolve(dependency.getFileName());

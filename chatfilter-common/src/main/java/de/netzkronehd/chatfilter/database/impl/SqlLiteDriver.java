@@ -2,7 +2,6 @@ package de.netzkronehd.chatfilter.database.impl;
 
 import de.netzkronehd.chatfilter.database.Database;
 import de.netzkronehd.chatfilter.dependency.Dependency;
-import org.sqlite.JDBC;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -31,7 +30,7 @@ public class SqlLiteDriver extends Database {
         }
         final Method createConnection = driverClass.getMethod("createConnection", String.class, Properties.class);
         createConnection.setAccessible(true);
-        return (Connection) createConnection.invoke(driverClass, JDBC.PREFIX+databasePath.toFile().getAbsolutePath(), new Properties());
+        return (Connection) createConnection.invoke(driverClass, "jdbc:sqlite:"+databasePath.toFile().getAbsolutePath(), new Properties());
     }
 
     @Override

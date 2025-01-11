@@ -23,7 +23,6 @@ import java.util.UUID;
 public abstract class Database {
 
     protected Connection connection;
-
     protected Class<?> driverClass;
 
     public void loadDriverClass(DependencyManager dependencyManager) {

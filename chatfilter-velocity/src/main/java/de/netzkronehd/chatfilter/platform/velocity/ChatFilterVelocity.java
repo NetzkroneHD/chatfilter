@@ -84,11 +84,6 @@ public class ChatFilterVelocity implements FilterPlugin {
 
         try {
             loadDependencies();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
             getPluginLogger().info("Reading config and connecting to database...");
             reload();
         } catch (Exception e) {

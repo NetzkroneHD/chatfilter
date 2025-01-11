@@ -64,7 +64,10 @@ public interface FilterPlugin {
         getLogger().info("Loading dependencies...");
         for (Dependency dependency : Dependency.values()) {
             getLogger().info("Loading dependency: "+dependency.getMavenRepoPath());
-            getDependencyManager().downloadDependency(dependency);
+            if(!getDependencyManager().isDownloaded(dependency)) {
+                getLogger().info("Downloading dependency: "+dependency.getMavenRepoPath());
+                getDependencyManager().downloadDependency(dependency);
+            }
             getDependencyManager().loadDependency(dependency);
         }
         getLogger().info("Loaded dependencies.");

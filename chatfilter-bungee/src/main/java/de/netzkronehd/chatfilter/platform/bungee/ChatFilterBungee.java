@@ -21,7 +21,6 @@ import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.*;
@@ -54,17 +53,7 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
                     new File(getDataFolder(), "filter.yml"),
                     new File(getDataFolder(), "config.yml")
             );
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
             loadDependencies();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-
-        try {
             getLogger().info("Reading config and connecting to database...");
             reload();
         } catch (Exception e) {

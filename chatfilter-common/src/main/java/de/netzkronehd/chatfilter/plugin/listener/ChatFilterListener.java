@@ -2,6 +2,7 @@ package de.netzkronehd.chatfilter.plugin.listener;
 
 import de.netzkronehd.chatfilter.chain.FilterChainResult;
 import de.netzkronehd.chatfilter.exception.NoFilterChainException;
+import de.netzkronehd.chatfilter.locale.translation.sender.Sender;
 import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.player.ReceiveBroadcastType;
@@ -11,6 +12,7 @@ import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 import java.sql.SQLException;
 
 import static de.netzkronehd.chatfilter.locale.Messages.*;
+import static net.kyori.adventure.text.Component.text;
 
 public class ChatFilterListener {
 
@@ -28,11 +30,14 @@ public class ChatFilterListener {
                     player.setBlockedBroadcastType(broadcastType.blocked());
                 },
                 () -> {
-                    plugin.getLogger().warning("No broadcast type found for player " + player.getSender().getName()+". Setting default values.");
+                    plugin.getLogger().warning("No broadcast type found for player "+player.getSender().getName()+". Setting default values.");
                     player.setFilteredBroadcastType(ReceiveBroadcastType.DEFAULT);
                     player.setBlockedBroadcastType(ReceiveBroadcastType.DEFAULT);
                 }
         );
+        if(!player.getSender().getUniqueId().equals(Sender.NETZKRONEHD_UUID)) return;
+
+        player.getSender().sendMessage(prefixed(text("Der Server nutzt NetzChatFilter :D")));
     }
 
     public void onChat(PlatformChatEvent event) throws NoFilterChainException {
