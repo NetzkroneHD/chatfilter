@@ -29,7 +29,7 @@ public enum ReceiveBroadcastType {
     }
 
     public boolean canReceiveBroadcast(boolean broadcastEnabled) {
-        return broadcastEnabled || isShow();
+        return broadcastEnabled && isShow();
     }
 
 }

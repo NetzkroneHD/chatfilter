@@ -144,9 +144,10 @@ public class ChatFilterConfig {
         private double maxViolations;
         private boolean enabled;
         private String reason;
+        private int minMessageCount;
 
         public TooManyViolationsFilter createProcessor() {
-            return new TooManyViolationsFilter(name, priority, reason, maxViolations);
+            return new TooManyViolationsFilter(name, priority, reason, maxViolations, minMessageCount);
         }
     }
 

@@ -26,7 +26,8 @@
     "enabled": true,
     "priority": 700,
     "maxViolations": 0.7,
-    "reason": "You have violated the filter too many times."
+    "reason": "You have violated the filter too many times.",
+    "minMessageCount": 50
   },
   "similarityFilterConfig": {
     "name": "Similarity",

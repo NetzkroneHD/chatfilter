@@ -30,14 +30,16 @@ maxUpperCaseFilter:
   # Can be 'BLOCKED' or 'FILTERED'
   # BLOCKED: The message will be blocked
   # FILTERED: The message will be filtered by replacing the uppercase letters with lowercase letters.
-  messageAction: BLOCKED
+  messageAction: FILTERED
 tooManyViolationsFilter:
   name: TooManyViolations
   enabled: true
   priority: 700
   # The maximum percentage of violations allowed
   # Calculates the percentage of violations by dividing the number of violations by the number total messages sent by the player
-  maxViolations: 0.7
+  maxViolations: 0.75
+  # The minimum message count
+  minMessageCount: 50
   reason: "You have violated the filter too many times."
 similarityFilter:
   name: Similarity

@@ -14,16 +14,21 @@ public class TooManyViolationsFilter implements FilterProcessor {
     private final int priority;
     private final String reason;
     private final double maxViolations;
+    private final int minMessageCount;
 
-    public TooManyViolationsFilter(String name, int priority, String reason, double maxViolations) {
+    public TooManyViolationsFilter(String name, int priority, String reason, double maxViolations, int minMessageCount) {
         this.name = name;
         this.priority = priority;
         this.reason = reason;
         this.maxViolations = maxViolations;
+        this.minMessageCount = minMessageCount;
     }
 
     @Override
     public FilterProcessorResult process(ChatFilterPlayer player, @Nullable FilterProcessorResult previousResult, String message) {
+        if(player.getChatMetrics().getTotalMessageCount() < minMessageCount) {
+            return allowed(message, this, reason);
+        }
         final double violations = getPercentage(player.getChatMetrics().getViolations(), player.getChatMetrics().getTotalMessageCount());
         if(!exceedsMaxViolations(violations)) {
             return allowed(message, this, reason);
