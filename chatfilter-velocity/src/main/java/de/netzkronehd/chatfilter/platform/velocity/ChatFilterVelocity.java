@@ -8,6 +8,8 @@ import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.plugin.annotation.DataDirectory;
 import com.velocitypowered.api.proxy.Player;
 import com.velocitypowered.api.proxy.ProxyServer;
+import de.netzkronehd.chatfilter.api.ChatFilterApi;
+import de.netzkronehd.chatfilter.api.impl.ChatFilterApiImpl;
 import de.netzkronehd.chatfilter.chain.FilterChain;
 import de.netzkronehd.chatfilter.config.ChatFilterConfig;
 import de.netzkronehd.chatfilter.database.Database;
@@ -58,6 +60,7 @@ public class ChatFilterVelocity implements FilterPlugin {
     private final ChatFilterListener chatFilterListener;
 
     private final Map<UUID, ChatFilterPlayer> playerCache;
+    private final ChatFilterApi api;
 
     private Database database;
 
@@ -75,6 +78,7 @@ public class ChatFilterVelocity implements FilterPlugin {
         this.filterChain = new FilterChain();
         this.filterConfig = new ChatFilterConfig();
         this.playerCache = new HashMap<>();
+        this.api = new ChatFilterApiImpl(this);
     }
 
     @Subscribe

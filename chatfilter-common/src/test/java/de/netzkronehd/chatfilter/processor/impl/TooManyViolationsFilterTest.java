@@ -14,7 +14,7 @@ class TooManyViolationsFilterTest {
     @Test
     void testProcessWithBlockedMessage() {
         // Arrange
-        final TooManyViolationsFilter tooManyViolationsFilter = new TooManyViolationsFilter("name", 1, "reason", 0.8);
+        final TooManyViolationsFilter tooManyViolationsFilter = new TooManyViolationsFilter("name", 1, "reason", 0.8, 0);
         final ChatFilterPlayer player = mock(ChatFilterPlayer.class);
         final ChatMetrics chatMetrics = new ChatMetrics();
 
@@ -38,7 +38,7 @@ class TooManyViolationsFilterTest {
     @Test
     void testProcessWithAllowedMessage() {
         // Arrange
-        final TooManyViolationsFilter tooManyViolationsFilter = new TooManyViolationsFilter("name", 1, "reason", 0.8);
+        final TooManyViolationsFilter tooManyViolationsFilter = new TooManyViolationsFilter("name", 1, "reason", 0.8, 0);
         final ChatFilterPlayer player = mock(ChatFilterPlayer.class);
         final ChatMetrics chatMetrics = new ChatMetrics();
 

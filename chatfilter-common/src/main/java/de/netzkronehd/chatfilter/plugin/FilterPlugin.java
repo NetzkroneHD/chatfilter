@@ -1,5 +1,6 @@
 package de.netzkronehd.chatfilter.plugin;
 
+import de.netzkronehd.chatfilter.api.ChatFilterApi;
 import de.netzkronehd.chatfilter.chain.FilterChain;
 import de.netzkronehd.chatfilter.config.ChatFilterConfig;
 import de.netzkronehd.chatfilter.database.Database;
@@ -127,6 +128,8 @@ public interface FilterPlugin {
     void callJoinEvent(ChatFilterPlayer player) throws SQLException;
 
     void setDatabase(Database database);
+
+    ChatFilterApi getApi();
 
     Database getDatabase();
     FilterChain getFilterChain();

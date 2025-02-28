@@ -11,7 +11,7 @@ import static de.netzkronehd.chatfilter.processor.FilterProcessorResult.blocked;
 
 /**
  * A filter that blocks messages that are too similar to the last message.
- * The similarity is calculated using the Levenshtein distance.
+ * The similarity is calculated by a {@link StringComparator}.
  */
 public class SimilarityFilter implements FilterProcessor {
 

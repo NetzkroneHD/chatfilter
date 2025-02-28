@@ -1,5 +1,7 @@
 package de.netzkronehd.chatfilter.platform.bungee;
 
+import de.netzkronehd.chatfilter.api.ChatFilterApi;
+import de.netzkronehd.chatfilter.api.impl.ChatFilterApiImpl;
 import de.netzkronehd.chatfilter.chain.FilterChain;
 import de.netzkronehd.chatfilter.config.ChatFilterConfig;
 import de.netzkronehd.chatfilter.database.Database;
@@ -38,6 +40,7 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
     private ConfigLoader configLoader;
     private ChatFilterListener chatFilterListener;
     private Database database;
+    private ChatFilterApi api;
 
     @Override
     public void onEnable() {
@@ -59,6 +62,7 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        this.api = new ChatFilterApiImpl(this);
 
         getProxy().getPluginManager().registerCommand(this, new ChatFilterCommand(this, registerCommands()));
         getProxy().getPluginManager().registerListener(this, new PlayerListener(this));
