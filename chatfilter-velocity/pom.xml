@@ -7,7 +7,7 @@
     <parent>
         <groupId>de.netzkronehd.chatfilter</groupId>
         <artifactId>chatfilter</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>chatfilter-velocity</artifactId>
@@ -111,6 +111,7 @@
     </profiles>
 
     <build>
+        <finalName>NetzChatFilter-velocity-${project.version}</finalName>
         <defaultGoal>clean package</defaultGoal>
         <resources>
             <resource>

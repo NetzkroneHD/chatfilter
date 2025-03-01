@@ -6,7 +6,7 @@
     <parent>
         <groupId>de.netzkronehd.chatfilter</groupId>
         <artifactId>chatfilter</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version>
     </parent>
 
     <artifactId>chatfilter-common</artifactId>
