@@ -2,12 +2,12 @@ package de.netzkronehd.chatfilter.plugin.listener;
 
 import de.netzkronehd.chatfilter.chain.FilterChainResult;
 import de.netzkronehd.chatfilter.exception.NoFilterChainException;
-import de.netzkronehd.chatfilter.locale.translation.sender.Sender;
 import de.netzkronehd.chatfilter.message.MessageState;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.player.ReceiveBroadcastType;
 import de.netzkronehd.chatfilter.plugin.FilterPlugin;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
+import de.netzkronehd.translation.sender.Sender;
 
 import java.sql.SQLException;
 

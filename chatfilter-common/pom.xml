@@ -111,64 +111,64 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.6.0</version>
-                <executions>
-                    <!-- Relocate zuerst -->
-                    <execution>
-                        <id>relocate</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <relocations>
-                                <relocation>
-                                    <pattern>org.apache.commons.cli</pattern>
-                                    <shadedPattern>de.netzkronehd.chatfilter.lib.org.apache.commons.cli</shadedPattern>
-                                </relocation>
-                                <relocation>
-                                    <pattern>de.netzkronehd.translation</pattern>
-                                    <shadedPattern>de.netzkronehd.chatfilter.lib.de.netzkronehd.translation</shadedPattern>
-                                </relocation>
-                            </relocations>
-                        </configuration>
-                    </execution>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-shade-plugin</artifactId>-->
+<!--                <version>3.6.0</version>-->
+<!--                <executions>-->
+<!--                    &lt;!&ndash; Relocate zuerst &ndash;&gt;-->
+<!--                    <execution>-->
+<!--                        <id>relocate</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>shade</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <relocations>-->
+<!--                                <relocation>-->
+<!--                                    <pattern>org.apache.commons.cli</pattern>-->
+<!--                                    <shadedPattern>de.netzkronehd.chatfilter.lib.org.apache.commons.cli</shadedPattern>-->
+<!--                                </relocation>-->
+<!--                                <relocation>-->
+<!--                                    <pattern>de.netzkronehd.translation</pattern>-->
+<!--                                    <shadedPattern>de.netzkronehd.chatfilter.lib.de.netzkronehd.translation</shadedPattern>-->
+<!--                                </relocation>-->
+<!--                            </relocations>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
 
-                    <execution>
-                        <id>remove</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                            <filters>
-                                <!-- Include only the packages you want -->
-                                <filter>
-                                    <artifact>*:*</artifact> <!-- Applies to all artifacts -->
-                                    <includes>
-                                        <!-- Include specific packages or classes -->
-                                        <include>de/netzkronehd/chatfilter/**</include>
-                                        <include>*.yml</include>
-                                        <include>*.json</include>
-                                        <include>locales/**</include>
-                                        <include>chatfilter.db</include>
-                                        <include>net/kyori/**</include>
-                                    </includes>
-                                </filter>
-                            </filters>
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>
-                            </transformers>
-                        </configuration>
-                    </execution>
-                </executions>
+<!--                    <execution>-->
+<!--                        <id>remove</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>shade</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <createDependencyReducedPom>false</createDependencyReducedPom>-->
+<!--                            <filters>-->
+<!--                                &lt;!&ndash; Include only the packages you want &ndash;&gt;-->
+<!--                                <filter>-->
+<!--                                    <artifact>*:*</artifact> &lt;!&ndash; Applies to all artifacts &ndash;&gt;-->
+<!--                                    <includes>-->
+<!--                                        &lt;!&ndash; Include specific packages or classes &ndash;&gt;-->
+<!--                                        <include>de/netzkronehd/chatfilter/**</include>-->
+<!--                                        <include>*.yml</include>-->
+<!--                                        <include>*.json</include>-->
+<!--                                        <include>locales/**</include>-->
+<!--                                        <include>chatfilter.db</include>-->
+<!--                                        <include>net/kyori/**</include>-->
+<!--                                    </includes>-->
+<!--                                </filter>-->
+<!--                            </filters>-->
+<!--                            <transformers>-->
+<!--                                <transformer-->
+<!--                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer"/>-->
+<!--                            </transformers>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
 
-            </plugin>
+<!--            </plugin>-->
         </plugins>
     </build>
 
