@@ -15,10 +15,6 @@ public class ChatListener implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onChat(AsyncPlayerChatEvent e) {
-        if(plugin.getFilterChain() == null) {
-            plugin.getLogger().warning("FilterProcessorChain is null, ignoring chat event.");
-            return;
-        }
         plugin.getPlayer(e.getPlayer()).ifPresentOrElse(player -> {
             try {
                 final PlatformChatEvent event = new PlatformChatEvent(player, e.getMessage());

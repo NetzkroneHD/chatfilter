@@ -16,18 +16,20 @@ import de.netzkronehd.chatfilter.database.Database;
 import de.netzkronehd.chatfilter.dependency.DependencyManager;
 import de.netzkronehd.chatfilter.dependency.impl.DependencyManagerImpl;
 import de.netzkronehd.chatfilter.exception.NoFilterChainException;
-import de.netzkronehd.chatfilter.locale.translation.sender.SenderFactory;
 import de.netzkronehd.chatfilter.platform.velocity.command.ChatFilterCommand;
 import de.netzkronehd.chatfilter.platform.velocity.config.VelocityConfigLoader;
 import de.netzkronehd.chatfilter.platform.velocity.listener.ChatListener;
 import de.netzkronehd.chatfilter.platform.velocity.listener.PlayerListener;
-import de.netzkronehd.chatfilter.platform.velocity.translation.VelocitySenderFactory;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.FilterPlugin;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 import de.netzkronehd.chatfilter.plugin.listener.ChatFilterListener;
+import de.netzkronehd.translation.manager.TranslationManager;
+import de.netzkronehd.translation.sender.SenderFactory;
+import de.netzkronehd.translation.sender.velocity.VelocitySenderFactory;
 import lombok.Getter;
+import net.kyori.adventure.key.Key;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
@@ -52,6 +54,7 @@ public class ChatFilterVelocity implements FilterPlugin {
     private final ExecutorService executorService;
 
     private final DependencyManager dependencyManager;
+    private final TranslationManager translationManager;
     private final ConfigLoader configLoader;
     private final VelocitySenderFactory senderFactory;
 
@@ -72,6 +75,7 @@ public class ChatFilterVelocity implements FilterPlugin {
         this.dataDirectory = dataDirectory;
         this.executorService = Executors.newCachedThreadPool();
         this.dependencyManager = new DependencyManagerImpl(dataDirectory.resolve("libs"));
+        this.translationManager = new TranslationManager(Key.key("netzchatfilter", "translations"));
         this.configLoader = new VelocityConfigLoader(dataDirectory.resolve("config.json"), dataDirectory.resolve("database.json"), dataDirectory.resolve("filter.json"));
         this.senderFactory = new VelocitySenderFactory(proxyServer);
         this.chatFilterListener = new ChatFilterListener(this);
@@ -87,6 +91,7 @@ public class ChatFilterVelocity implements FilterPlugin {
         saveConfigsFromResources();
 
         try {
+            translationManager.loadFromFileSystem(getDataDirectory().resolve("locales/"));
             loadDependencies();
             getPluginLogger().info("Reading config and connecting to database...");
             reload();

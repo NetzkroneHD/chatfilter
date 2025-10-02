@@ -9,20 +9,19 @@ import de.netzkronehd.chatfilter.dependency.DependencyManager;
 import de.netzkronehd.chatfilter.dependency.exception.DependencyDownloadException;
 import de.netzkronehd.chatfilter.dependency.exception.DependencyNotDownloadedException;
 import de.netzkronehd.chatfilter.exception.NoFilterChainException;
-import de.netzkronehd.chatfilter.locale.MessagesProvider;
-import de.netzkronehd.chatfilter.locale.translation.exception.UnknownLocaleException;
-import de.netzkronehd.chatfilter.locale.translation.sender.SenderFactory;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.command.impl.*;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
+import de.netzkronehd.translation.exception.UnknownLocaleException;
+import de.netzkronehd.translation.manager.TranslationManager;
+import de.netzkronehd.translation.sender.SenderFactory;
 
 import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.sql.SQLException;
 import java.util.Collection;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
@@ -77,9 +76,7 @@ public interface FilterPlugin {
     default void reload() throws SQLException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException, UnknownLocaleException {
         loadConfig();
         loadDatabase();
-        MessagesProvider.clear();
-        MessagesProvider.loadFromFilePath(getPluginDataFolder().resolve("locales/"));
-        MessagesProvider.setCurrentLocale(new Locale(getFilterConfig().getLocale()));
+        getTranslationManager().loadFromFileSystem(getPluginDataFolder().resolve("locales/"));
     }
 
     default void saveConfigsFromResources() {
@@ -137,10 +134,12 @@ public interface FilterPlugin {
     SenderFactory<?> getSenderFactory();
     ConfigLoader getConfigLoader();
     DependencyManager getDependencyManager();
+    TranslationManager getTranslationManager();
 
     Optional<ChatFilterPlayer> getPlayer(UUID uuid);
     Optional<ChatFilterPlayer> getPlayer(String name);
     Collection<ChatFilterPlayer> getPlayers();
     Path getPluginDataFolder();
     Logger getLogger();
+
 }

@@ -22,10 +22,6 @@ public class ChatListener implements Listener {
     public void onChat(ChatEvent e) {
         if(e.isCommand()) return;
         if(e.isCancelled()) return;
-        if(plugin.getFilterChain() == null) {
-            plugin.getLogger().warning("FilterProcessorChain is null, ignoring chat event.");
-            return;
-        }
         if(!(e.getSender() instanceof final ProxiedPlayer proxiedPlayer)) {
             return;
         }

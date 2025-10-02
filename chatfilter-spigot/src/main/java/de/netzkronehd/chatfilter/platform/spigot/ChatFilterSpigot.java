@@ -12,13 +12,15 @@ import de.netzkronehd.chatfilter.platform.spigot.command.ChatFilterCommand;
 import de.netzkronehd.chatfilter.platform.spigot.config.SpigotConfigLoader;
 import de.netzkronehd.chatfilter.platform.spigot.listener.ChatListener;
 import de.netzkronehd.chatfilter.platform.spigot.listener.PlayerListener;
-import de.netzkronehd.chatfilter.platform.spigot.translation.SpigotSenderFactory;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.FilterPlugin;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 import de.netzkronehd.chatfilter.plugin.listener.ChatFilterListener;
+import de.netzkronehd.translation.manager.TranslationManager;
+import de.netzkronehd.translation.sender.spigot.SpigotSenderFactory;
 import lombok.Getter;
+import net.kyori.adventure.key.Key;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -37,6 +39,7 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
     private final ChatFilterConfig filterConfig = new ChatFilterConfig();
 
     private DependencyManager dependencyManager;
+    private TranslationManager translationManager;
     private ConfigLoader configLoader;
     private ChatFilterListener chatFilterListener;
     private Database database;
@@ -48,6 +51,7 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
         this.dependencyManager = new DependencyManagerImpl(getPluginDataFolder().resolve("libs"));
         this.senderFactory = new SpigotSenderFactory(this);
         this.chatFilterListener = new ChatFilterListener(this);
+        this.translationManager = new TranslationManager(Key.key("netzchatfilter", "translations"));
         saveConfigsFromResources();
 
         configLoader = new SpigotConfigLoader(
@@ -57,6 +61,7 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
         );
 
         try {
+            translationManager.loadFromFileSystem(getPluginDataFolder().resolve("locales/"));
             loadDependencies();
             getLogger().info("Reading config and connecting to database...");
             reload();

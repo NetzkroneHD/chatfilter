@@ -12,13 +12,15 @@ import de.netzkronehd.chatfilter.platform.bungee.command.ChatFilterCommand;
 import de.netzkronehd.chatfilter.platform.bungee.config.BungeeConfigLoader;
 import de.netzkronehd.chatfilter.platform.bungee.listener.ChatListener;
 import de.netzkronehd.chatfilter.platform.bungee.listener.PlayerListener;
-import de.netzkronehd.chatfilter.platform.bungee.translation.BungeeSenderFactory;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
 import de.netzkronehd.chatfilter.plugin.FilterPlugin;
 import de.netzkronehd.chatfilter.plugin.config.ConfigLoader;
 import de.netzkronehd.chatfilter.plugin.event.PlatformChatEvent;
 import de.netzkronehd.chatfilter.plugin.listener.ChatFilterListener;
+import de.netzkronehd.translation.manager.TranslationManager;
+import de.netzkronehd.translation.sender.bungee.BungeeSenderFactory;
 import lombok.Getter;
+import net.kyori.adventure.key.Key;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.plugin.Plugin;
 
@@ -37,6 +39,7 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
     private final ChatFilterConfig filterConfig = new ChatFilterConfig();
 
     private DependencyManager dependencyManager;
+    private TranslationManager translationManager;
     private ConfigLoader configLoader;
     private ChatFilterListener chatFilterListener;
     private Database database;
@@ -48,9 +51,11 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
         this.senderFactory = new BungeeSenderFactory(this);
         this.chatFilterListener = new ChatFilterListener(this);
         this.dependencyManager = new DependencyManagerImpl(getPluginDataFolder().resolve("libs"));
+        this.translationManager = new TranslationManager(Key.key("netzchatfilter", "translations"));
         saveConfigsFromResources();
 
         try {
+            translationManager.loadFromFileSystem(getPluginDataFolder().resolve("locales/"));
             configLoader = new BungeeConfigLoader(
                     new File(getDataFolder(), "blocked-patterns.yml"),
                     new File(getDataFolder(), "filter.yml"),
