@@ -1,6 +1,7 @@
 package de.netzkronehd.chatfilter.platform.velocity.listener;
 
 import com.velocitypowered.api.event.Subscribe;
+import com.velocitypowered.api.event.connection.DisconnectEvent;
 import com.velocitypowered.api.event.connection.PostLoginEvent;
 import de.netzkronehd.chatfilter.platform.velocity.ChatFilterVelocity;
 import de.netzkronehd.chatfilter.player.ChatFilterPlayer;
@@ -23,12 +24,7 @@ public class PlayerListener {
     }
 
     @Subscribe
-    public void onQuit(PostLoginEvent e) {
-        plugin.getPlayerCache().remove(e.getPlayer().getUniqueId());
-    }
-
-    @Subscribe
-    public void onDisconnect(PostLoginEvent e) {
+    public void onDisconnect(DisconnectEvent e) {
         plugin.getPlayerCache().remove(e.getPlayer().getUniqueId());
     }
 

@@ -27,7 +27,7 @@
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-api</artifactId>
-            <version>1.21-R0.1-SNAPSHOT</version>
+            <version>1.21-R0.4</version>
             <scope>provided</scope>
         </dependency>
 
@@ -52,6 +52,12 @@
             <version>${kyori-bungeecord.version}</version>
         </dependency>
 
+        <!-- https://jitpack.io/#NetzkroneHD/Translation -->
+        <dependency>
+            <groupId>com.github.NetzkroneHD.Translation</groupId>
+            <artifactId>translation-bungee</artifactId>
+            <version>${translation.version}</version>
+        </dependency>
 
     </dependencies>
 

@@ -26,7 +26,7 @@ public class ChatListener implements Listener {
             plugin.getLogger().warning("FilterProcessorChain is null, ignoring chat event.");
             return;
         }
-        if(!(e.getSender() instanceof ProxiedPlayer proxiedPlayer)) {
+        if(!(e.getSender() instanceof final ProxiedPlayer proxiedPlayer)) {
             return;
         }
 

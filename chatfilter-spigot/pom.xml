@@ -56,6 +56,13 @@
             <version>${kyori-bukkit.version}</version>
         </dependency>
 
+        <!-- https://jitpack.io/#NetzkroneHD/Translation -->
+        <dependency>
+            <groupId>com.github.NetzkroneHD.Translation</groupId>
+            <artifactId>translation-spigot</artifactId>
+            <version>${translation.version}</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -84,7 +91,10 @@
                         </goals>
                         <configuration>
                             <relocations>
-
+                                <relocation>
+                                    <pattern>de.netzkronehd.translation</pattern>
+                                    <shadedPattern>de.netzkronehd.chatfilter.lib.de.netzkronehd.translation</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>

@@ -4,8 +4,9 @@ import de.netzkronehd.chatfilter.locale.translation.exception.UnknownLocaleExcep
 import de.netzkronehd.chatfilter.locale.translation.manager.TranslationManager;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -49,7 +50,7 @@ public class MessagesProvider {
 
     public static void loadFromFile(Locale locale, Path file) throws IOException {
         final Properties properties = new Properties();
-        try (final BufferedReader reader = Files.newBufferedReader(file)) {
+        try (final InputStreamReader reader = new InputStreamReader(Files.newInputStream(file), StandardCharsets.UTF_8)) {
             properties.load(reader);
         }
         addMessages(locale, properties);

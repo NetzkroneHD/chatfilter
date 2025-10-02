@@ -46,6 +46,13 @@
             <version>${project.version}</version>
         </dependency>
 
+        <!-- https://jitpack.io/#NetzkroneHD/Translation -->
+        <dependency>
+            <groupId>com.github.NetzkroneHD.Translation</groupId>
+            <artifactId>translation-velocity</artifactId>
+            <version>${translation.version}</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -186,7 +193,10 @@
                         </goals>
                         <configuration>
                             <relocations>
-
+                                <relocation>
+                                    <pattern>de.netzkronehd.translation</pattern>
+                                    <shadedPattern>de.netzkronehd.chatfilter.lib.de.netzkronehd.translation</shadedPattern>
+                                </relocation>
                             </relocations>
                         </configuration>
                     </execution>
