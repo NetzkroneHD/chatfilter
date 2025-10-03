@@ -38,9 +38,5 @@ build/
 .DS_Store
 /.idea/
 /docker-compose/
-/chatfilter-bundle/dependency-reduced-pom.xml
-/chatfilter-spigot/dependency-reduced-pom.xml
-/chatfilter-bungee/dependency-reduced-pom.xml
-/chatfilter-common/dependency-reduced-pom.xml
-/chatfilter-common/dependency-reduced-pom.xml
-/chatfilter-velocity/dependency-reduced-pom.xml
+**/dependency-reduced-pom.xml
+*.sh
