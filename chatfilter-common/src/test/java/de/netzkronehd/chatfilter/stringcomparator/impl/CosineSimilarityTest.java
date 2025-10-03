@@ -4,7 +4,6 @@ import de.netzkronehd.chatfilter.stringcomparator.StringComparator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class CosineSimilarityTest {
 
@@ -25,15 +24,16 @@ class CosineSimilarityTest {
     @Test
     void testSimilarityWithPartialMatch() {
         // Arrange
-        final String s1 = "hello";
-        final String s2 = "hallo";
+        final String s1 = "abcde";
+        final String s2 = "abcef";
         final StringComparator stringComparator = new CosineSimilarity();
 
         // Act
         final double similarity = stringComparator.getSimilarity(s1, s2);
 
         // Assert
-        assertTrue(similarity > 0.0 && similarity < 1.0, "Similarity should be between 0.0 and 1.0 for partial match");
+
+        assertEquals(0.8, similarity, 1e-9, "Similarity should be 0.8 for partial match");
     }
 
     @Test

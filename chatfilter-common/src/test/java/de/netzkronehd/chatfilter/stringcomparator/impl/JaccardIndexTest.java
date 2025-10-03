@@ -24,15 +24,15 @@ class JaccardIndexTest {
     @Test
     void testSimilarityWithPartialMatch() {
         // Arrange
-        final String s1 = "hello";
-        final String s2 = "hallo";
+        final String s1 = "abcd";
+        final String s2 = "abcde";
         final StringComparator stringComparator = new JaccardIndex();
 
         // Act
         final double similarity = stringComparator.getSimilarity(s1, s2);
 
         // Assert
-        assertTrue(similarity > 0.0 && similarity < 1.0, "Similarity should be between 0.0 and 1.0 for partial match");
+        assertEquals(0.8, similarity, "Similarity should be 0.8 for partial match");
     }
 
     @Test
