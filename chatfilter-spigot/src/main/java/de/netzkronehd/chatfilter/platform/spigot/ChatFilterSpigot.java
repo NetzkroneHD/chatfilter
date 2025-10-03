@@ -61,7 +61,6 @@ public final class ChatFilterSpigot extends JavaPlugin implements FilterPlugin {
         );
 
         try {
-            translationManager.loadFromFileSystem(getPluginDataFolder().resolve("locales/"));
             loadDependencies();
             getLogger().info("Reading config and connecting to database...");
             reload();

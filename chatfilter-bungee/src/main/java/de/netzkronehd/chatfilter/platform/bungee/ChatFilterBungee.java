@@ -55,7 +55,6 @@ public final class ChatFilterBungee extends Plugin implements FilterPlugin {
         saveConfigsFromResources();
 
         try {
-            translationManager.loadFromFileSystem(getPluginDataFolder().resolve("locales/"));
             configLoader = new BungeeConfigLoader(
                     new File(getDataFolder(), "blocked-patterns.yml"),
                     new File(getDataFolder(), "filter.yml"),

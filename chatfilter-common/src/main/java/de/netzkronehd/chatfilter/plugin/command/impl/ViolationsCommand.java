@@ -45,7 +45,7 @@ public class ViolationsCommand implements FilterCommand {
             COMMAND_NO_PERMISSION.send(chatFilterPlayer.getSender());
             return;
         }
-        if(args.length < 1) {
+        if(args.length < 2) {
             COMMAND_VIOLATIONS_USAGE.send(chatFilterPlayer.getSender());
             return;
         }

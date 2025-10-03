@@ -38,21 +38,23 @@ public class SqlLiteDriver extends Database {
         connection.prepareStatement("""
                 CREATE TABLE IF NOT EXISTS chatfilter_players
                 (
-                    player_uniqueId VARCHAR(36) PRIMARY KEY,
-                    player_name     VARCHAR(16) NOT NULL
+                    player_uniqueId    VARCHAR(36) PRIMARY KEY,
+                    player_name        VARCHAR(16) NOT NULL,
+                    blocked_broadcast  VARCHAR(8) NOT NULL DEFAULT 'DEFAULT',
+                    filtered_broadcast VARCHAR(8) NOT NULL DEFAULT 'DEFAULT'
                 )
                 """).executeUpdate();
         connection.prepareStatement("""
                 CREATE TABLE IF NOT EXISTS chatfilter_violations
                 (
-                     id              INTEGER PRIMARY KEY,
+                     id              INTEGER PRIMARY KEY AUTOINCREMENT,
                      player_uniqueId VARCHAR(36),
                      filter_name     TEXT NOT NULL,
                      message_text    TEXT NOT NULL,
                      message_state   VARCHAR(8),
-                     message_time    LONG,
+                     message_time    INTEGER,
                      FOREIGN KEY (player_uniqueId) REFERENCES chatfilter_players(player_uniqueId)
-                 )
+                )
                 """).executeUpdate();
     }
 

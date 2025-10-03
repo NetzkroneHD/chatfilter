@@ -91,7 +91,6 @@ public class ChatFilterVelocity implements FilterPlugin {
         saveConfigsFromResources();
 
         try {
-            translationManager.loadFromFileSystem(getDataDirectory().resolve("locales/"));
             loadDependencies();
             getPluginLogger().info("Reading config and connecting to database...");
             reload();

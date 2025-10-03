@@ -28,6 +28,7 @@ public class ReloadCommand implements FilterCommand {
             COMMAND_RELOAD_COMPLETE.send(chatFilterPlayer.getSender(), System.currentTimeMillis() - before);
         } catch (Exception ex) {
             ERROR.send(chatFilterPlayer.getSender(), ex);
+            throw new RuntimeException(ex);
         }
     }
 

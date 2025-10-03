@@ -76,6 +76,8 @@ public interface FilterPlugin {
     default void reload() throws SQLException, IOException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException, UnknownLocaleException {
         loadConfig();
         loadDatabase();
+        getLogger().info("Registering translations...");
+        getTranslationManager().unregisterAll();
         getTranslationManager().loadFromFileSystem(getPluginDataFolder().resolve("locales/"));
     }
 
@@ -83,7 +85,7 @@ public interface FilterPlugin {
         savePluginResource("blocked-patterns.yml", false);
         savePluginResource("filter.yml", false);
         savePluginResource("config.yml", false);
-        savePluginResource("chatfilter.db", false);
+//        savePluginResource("chatfilter.db", false);
         savePluginResource("locales/en.properties", false);
     }
 

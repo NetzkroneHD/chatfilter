@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import static de.netzkronehd.translation.MessageUtils.formatBoolean;
 import static net.kyori.adventure.text.Component.*;
 import static net.kyori.adventure.text.format.NamedTextColor.*;
 import static net.kyori.adventure.text.minimessage.MiniMessage.miniMessage;
@@ -81,6 +82,7 @@ public interface Messages {
 
     Args.Args0 COMMAND_RELOADING = () -> translatable()
             .key("chatfilter.command.reload.reloading")
+            .arguments(prefix())
             .build();
 
     Args.Args0 COMMAND_BROADCAST_USAGE = () -> translatable()
@@ -131,9 +133,9 @@ public interface Messages {
     Args.Args1<FilterChainResult> COMMAND_PARSE_RESULT = (result) -> translatable()
             .key("chatfilter.command.parse.result")
             .arguments(prefix(),
-                    text(result.isAllowed()),
-                    text(result.isFiltered()),
-                    text(result.isBlocked()),
+                    formatBoolean(result.isAllowed()),
+                    formatBoolean(result.isFiltered()),
+                    formatBoolean(result.isBlocked()),
                     formatProcessorResult(result.getResults()))
             .build();
 
